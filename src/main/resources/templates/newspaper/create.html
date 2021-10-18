@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Newspaper</title>
+</head>
+<body>
+<h1>Insert data for newspaper</h1>
+
+<form th:action="@{/newspaper/create}" th:method="POST">
+  <label for="title">Title</label>
+  <input name="title" id="title" type="text" autofocus placeholder="enter title">
+
+  <label for="author"></label>
+  <input name="author" id="author" type="text" placeholder="enter author name">
+
+  <label for="pageNumber">Page number</label>
+  <input name="pageNumber" id="pageNumber" type="number" placeholder="enter pagenumber">
+
+  <label for="publicationDate">Date</label>
+  <input name="publicationDate" id="publicationDate" type="date" placeholder="enter publicationDate">
+
+  <label for="text">Date</label>
+  <textarea name="text" id="text" placeholder="enter article text"></textarea>
+
+  <select name="newsPaperName">
+    <option th:each="newspaper : ${T(com.example.stanfordnlpgerman.models.dao.NewsPaperEnum).values()}"
+            th:value="${newspaper}" th:text="${newspaper}"></option>
+  </select>
+  <button type="submit">SUBMIT</button>
+  <button type="RESET">REST</button>
+
+</form>
+
+</body>
+</html>
