@@ -3,7 +3,9 @@ package com.example.stanfordnlpgerman.models.dao;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,16 +20,16 @@ public class Lemma {
   private String phraseType;
   private boolean deleted;
 
-  @ManyToMany
-  private Set<Sentence> sentences = new HashSet<>();
+  @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private List<Sentence> sentences = new ArrayList<>();
 
-  @ManyToMany
-  private Set<NewsArticle> newsArticles = new HashSet<>();
+  @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private List<NewsArticle> newsArticles = new ArrayList<>();
 
   public Lemma() {
   }
 
-  public Lemma(long id, String text, String phraseType, boolean deleted, Set<Sentence> sentences, Set<NewsArticle> newsArticles) {
+  public Lemma(long id, String text, String phraseType, boolean deleted, List<Sentence> sentences, List<NewsArticle> newsArticles) {
     this.id = id;
     this.text = text;
     this.phraseType = phraseType;
@@ -68,19 +70,27 @@ public class Lemma {
     this.deleted = deleted;
   }
 
-  public Set<Sentence> getSentences() {
+  public List<Sentence> getSentences() {
     return sentences;
   }
 
-  public void setSentences(Set<Sentence> sentences) {
+  public void setSentences(List<Sentence> sentences) {
     this.sentences = sentences;
   }
 
-  public Set<NewsArticle> getNewsArticles() {
+  public List<NewsArticle> getNewsArticles() {
     return newsArticles;
   }
 
-  public void setNewsArticles(Set<NewsArticle> newsArticles) {
+  public void setNewsArticles(List<NewsArticle> newsArticles) {
     this.newsArticles = newsArticles;
+  }
+
+  public void addOneSentence(Sentence sentence) {
+    this.sentences.add(sentence);
+  }
+
+  public void addOneNewsArticle(NewsArticle newsArticle) {
+    this.newsArticles.add(newsArticle);
   }
 }

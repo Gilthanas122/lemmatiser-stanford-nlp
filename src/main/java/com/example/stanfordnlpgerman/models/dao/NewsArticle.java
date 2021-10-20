@@ -14,8 +14,7 @@ public class NewsArticle {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  @Enumerated(EnumType.STRING)
-  private NewsPaperEnum newsPaperEnum;
+  private String newsPaperName;
   private String title;
   private String author;
   @Temporal(TemporalType.DATE)
@@ -24,17 +23,17 @@ public class NewsArticle {
   private boolean deleted;
 
   @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private Set<Sentence> sentences = new HashSet<>();
+  private List<Sentence> sentences = new ArrayList<>();
 
-  @ManyToMany(mappedBy = "newsArticles")
-  private Set<Lemma> lemmas = new HashSet<>();
+  @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private List<Lemma> lemmas = new ArrayList<>();
 
   public NewsArticle() {
   }
 
-  public NewsArticle(Long id, NewsPaperEnum newsPaperEnum, String title, String author, Date publicationDate, int pageNumber, boolean deleted, Set<Sentence> sentences, Set<Lemma> lemmas) {
+  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, int pageNumber, boolean deleted, List<Sentence> sentences, List<Lemma> lemmas) {
     this.id = id;
-    this.newsPaperEnum = newsPaperEnum;
+    this.newsPaperName = newsPaperName;
     this.title = title;
     this.author = author;
     this.publicationDate = publicationDate;
@@ -52,12 +51,12 @@ public class NewsArticle {
     this.id = id;
   }
 
-  public NewsPaperEnum getNewsPaperEnum() {
-    return newsPaperEnum;
+  public String getNewsPaperName() {
+    return newsPaperName;
   }
 
-  public void setNewsPaperEnum(NewsPaperEnum newsPaperEnum) {
-    this.newsPaperEnum = newsPaperEnum;
+  public void setNewsPaperName(String newsPaperName) {
+    this.newsPaperName = newsPaperName;
   }
 
   public String getTitle() {
@@ -92,14 +91,6 @@ public class NewsArticle {
     this.pageNumber = pageNumber;
   }
 
-  public Set<Sentence> getSentences() {
-    return sentences;
-  }
-
-  public void setSentences(Set<Sentence> sentences) {
-    this.sentences = sentences;
-  }
-
   public boolean isDeleted() {
     return deleted;
   }
@@ -108,11 +99,23 @@ public class NewsArticle {
     this.deleted = deleted;
   }
 
-  public Set<Lemma> getLemmas() {
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public List<Sentence> getSentences() {
+    return sentences;
+  }
+
+  public void setSentences(List<Sentence> sentences) {
+    this.sentences = sentences;
+  }
+
+  public List<Lemma> getLemmas() {
     return lemmas;
   }
 
-  public void setLemmas(Set<Lemma> lemmas) {
+  public void setLemmas(List<Lemma> lemmas) {
     this.lemmas = lemmas;
   }
 }
