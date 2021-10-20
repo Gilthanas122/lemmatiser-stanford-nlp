@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.controllers;
 
+import com.example.stanfordnlpgerman.exceptions.validations.MissingParamsException;
 import com.example.stanfordnlpgerman.models.dtos.CreateNewsPaperArticleDTO;
 import com.example.stanfordnlpgerman.services.lemmaservice.LemmaService;
 import org.springframework.stereotype.Controller;
@@ -17,17 +18,23 @@ public class NewsArticleController {
 
   @GetMapping("create")
   public String generateFormForNewsArticle(Model model){
+    model.addAttribute("createNewsPapeArticleDTO", new CreateNewsPaperArticleDTO());
     return "newspaper/create";
   }
 
   @PostMapping("create")
-  @ResponseBody
   public String saveSubmittedNewsArticle(@ModelAttribute CreateNewsPaperArticleDTO createNewsPaperArticleDTO, Model model){
     try {
       lemmaService.saveArticle(createNewsPaperArticleDTO);
-    }catch (Exception e){
+      return "index";
+    }catch (MissingParamsException e){
       model.addAttribute("error", e.getMessage());
+      model.addAttribute("createNewsPapeArticleDTO", createNewsPaperArticleDTO);
     }
-    return "index";
+    catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+      model.addAttribute("createNewsPapeArticleDTO", createNewsPaperArticleDTO);
+    }
+    return "newspaper/create";
   }
 }

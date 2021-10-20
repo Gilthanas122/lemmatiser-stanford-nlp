@@ -31,9 +31,16 @@ public class LemmaServiceImpl implements LemmaService {
 
 
   @Override
-  @Async
   public void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws MissingParamsException {
     ErrorServiceImpl.buildMissingFieldErrorMessage(createNewsPaperArticleDTO);
+    if (createNewsPaperArticleDTO.getPageNumber() < 1){
+      throw new MissingParamsException("Following parameters are missing: pageNumber");
+    }
+    createNewsPaperArticle(createNewsPaperArticleDTO);
+  }
+
+  @Async
+  protected void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO){
     NewsArticle newsArticle = NewsArticle
             .builder()
             .newsPaperName(createNewsPaperArticleDTO.getNewsPaperName())
@@ -45,7 +52,6 @@ public class LemmaServiceImpl implements LemmaService {
     newsArticle.setSentences(createSentencesFromNewsPaperArticle(createNewsPaperArticleDTO.getText(), newsArticle));
     newsArticleRepository.save(newsArticle);
   }
-
   private List<Sentence> createSentencesFromNewsPaperArticle(String text, NewsArticle newsArticle) {
     CoreDocument coreDocument = new CoreDocument(text);
     pipeline.annotate(coreDocument);
