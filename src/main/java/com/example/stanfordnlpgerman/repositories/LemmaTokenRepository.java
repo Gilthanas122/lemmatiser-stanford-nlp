@@ -1,9 +1,9 @@
 package com.example.stanfordnlpgerman.repositories;
 
-import com.example.stanfordnlpgerman.models.dao.Lemma;
+import com.example.stanfordnlpgerman.models.dao.LemmaToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LemmaRepository extends JpaRepository<Lemma, Long> {
+public interface LemmaTokenRepository extends JpaRepository<LemmaToken, Long> {
 }

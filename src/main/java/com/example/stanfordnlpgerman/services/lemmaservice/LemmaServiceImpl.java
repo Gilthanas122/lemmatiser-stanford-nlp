@@ -1,7 +1,7 @@
 package com.example.stanfordnlpgerman.services.lemmaservice;
 
 import com.example.stanfordnlpgerman.exceptions.validations.MissingParamsException;
-import com.example.stanfordnlpgerman.models.dao.Lemma;
+import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dao.NewsArticle;
 import com.example.stanfordnlpgerman.models.dao.Sentence;
 import com.example.stanfordnlpgerman.models.dtos.CreateNewsPaperArticleDTO;
@@ -70,7 +70,7 @@ public class LemmaServiceImpl implements LemmaService {
               .text(sent)
               .textPosition(position)
               .build();
-      sentence.setLemmas(createLemmasFromSentences(coreDocument, sentence, newsArticle));
+      sentence.setLemmaTypes(createLemmasFromSentences(coreDocument, sentence, newsArticle));
 
       sentences.add(sentence);
       position++;
@@ -78,24 +78,23 @@ public class LemmaServiceImpl implements LemmaService {
     return sentences;
   }
 
-  private List<Lemma> createLemmasFromSentences(CoreDocument coreDocument, Sentence sentence, NewsArticle newsArticle) {
+  private List<LemmaType> createLemmasFromSentences(CoreDocument coreDocument, Sentence sentence, NewsArticle newsArticle) {
     List<CoreLabel> coreLabels =  coreDocument.tokens();
-    List <Lemma> lemmas= new ArrayList<>();
+    List <LemmaType> lemmaTypes = new ArrayList<>();
 
     for (CoreLabel coreLabel: coreLabels) {
       if (!".,_?!:;-*'/+^/|&".contains(coreLabel.originalText())){
         GermanCoreLabel germanCoreLabel = new GermanCoreLabel(coreLabel);
         String stem = germanCoreLabel.lemma();
         String phraseType = coreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-        Lemma lemma = new Lemma();
-        lemma.setText(stem);
-        lemma.setPhraseType(phraseType);
-        lemma.addOneSentence(sentence);
-        lemma.addOneNewsArticle(newsArticle);
-        lemmas.add(lemma);
+        LemmaType lemmaType = new LemmaType();
+        lemmaType.setText(stem);
+        lemmaType.addOneSentence(sentence);
+        lemmaType.addOneNewsArticle(newsArticle);
+        lemmaTypes.add(lemmaType);
       }
     }
-    return lemmas;
+    return lemmaTypes;
   }
 
 

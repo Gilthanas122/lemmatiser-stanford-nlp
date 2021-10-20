@@ -5,9 +5,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "sentences")
@@ -27,18 +25,22 @@ public class Sentence {
   private NewsArticle newsArticle;
 
   @ManyToMany(mappedBy = "sentences", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<Lemma> lemmas = new ArrayList<>();
+  private List<LemmaType> lemmaTypes = new ArrayList<>();
+
+  @OneToMany(mappedBy = "sentence", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private List<TextToken> textTokens;
 
   public Sentence() {
   }
 
-  public Sentence(long id, String text, int textPosition, boolean deleted, NewsArticle newsArticle, List<Lemma> lemmas) {
+  public Sentence(long id, String text, int textPosition, boolean deleted, NewsArticle newsArticle, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
     this.id = id;
     this.text = text;
     this.textPosition = textPosition;
     this.deleted = deleted;
     this.newsArticle = newsArticle;
-    this.lemmas = lemmas;
+    this.lemmaTypes = lemmaTypes;
+    this.textTokens = textTokens;
   }
 
   public long getId() {
@@ -81,11 +83,19 @@ public class Sentence {
     this.deleted = deleted;
   }
 
-  public List<Lemma> getLemmas() {
-    return lemmas;
+  public List<LemmaType> getLemmaTypes() {
+    return lemmaTypes;
   }
 
-  public void setLemmas(List<Lemma> lemmas) {
-    this.lemmas = lemmas;
+  public void setLemmaTypes(List<LemmaType> lemmaTypes) {
+    this.lemmaTypes = lemmaTypes;
+  }
+
+  public List<TextToken> getTextTokens() {
+    return textTokens;
+  }
+
+  public void setTextTokens(List<TextToken> textTokens) {
+    this.textTokens = textTokens;
   }
 }

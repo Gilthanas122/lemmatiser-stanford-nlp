@@ -26,12 +26,15 @@ public class NewsArticle {
   private List<Sentence> sentences = new ArrayList<>();
 
   @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<Lemma> lemmas = new ArrayList<>();
+  private List<LemmaType> lemmaTypes = new ArrayList<>();
+
+  @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private List<TextToken> textTokens;
 
   public NewsArticle() {
   }
 
-  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, int pageNumber, boolean deleted, List<Sentence> sentences, List<Lemma> lemmas) {
+  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, int pageNumber, boolean deleted, List<Sentence> sentences, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
     this.id = id;
     this.newsPaperName = newsPaperName;
     this.title = title;
@@ -40,7 +43,8 @@ public class NewsArticle {
     this.pageNumber = pageNumber;
     this.deleted = deleted;
     this.sentences = sentences;
-    this.lemmas = lemmas;
+    this.lemmaTypes = lemmaTypes;
+    this.textTokens = textTokens;
   }
 
   public Long getId() {
@@ -111,11 +115,19 @@ public class NewsArticle {
     this.sentences = sentences;
   }
 
-  public List<Lemma> getLemmas() {
-    return lemmas;
+  public List<LemmaType> getLemmaTypes() {
+    return lemmaTypes;
   }
 
-  public void setLemmas(List<Lemma> lemmas) {
-    this.lemmas = lemmas;
+  public void setLemmaTypes(List<LemmaType> lemmaTypes) {
+    this.lemmaTypes = lemmaTypes;
+  }
+
+  public List<TextToken> getTextTokens() {
+    return textTokens;
+  }
+
+  public void setTextTokens(List<TextToken> textTokens) {
+    this.textTokens = textTokens;
   }
 }

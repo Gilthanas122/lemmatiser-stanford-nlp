@@ -9,15 +9,14 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "lemmas")
+@Table(name = "lemmaTypes")
 @Where(clause="deleted=0")
-public class Lemma {
+public class LemmaType {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   private String text;
-  private String phraseType;
   private boolean deleted;
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -26,16 +25,23 @@ public class Lemma {
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private List<NewsArticle> newsArticles = new ArrayList<>();
 
-  public Lemma() {
+  @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private Set<LemmaToken> lemmaTokens = new HashSet<>();
+
+  @OneToMany(mappedBy = "lemmaType")
+  private List<TextToken> textTokens = new ArrayList<>();
+
+  public LemmaType() {
   }
 
-  public Lemma(long id, String text, String phraseType, boolean deleted, List<Sentence> sentences, List<NewsArticle> newsArticles) {
+  public LemmaType(long id, String text, boolean deleted, List<Sentence> sentences, List<NewsArticle> newsArticles, Set<LemmaToken> lemmaTokens, List<TextToken> textTokens) {
     this.id = id;
     this.text = text;
-    this.phraseType = phraseType;
     this.deleted = deleted;
     this.sentences = sentences;
     this.newsArticles = newsArticles;
+    this.lemmaTokens = lemmaTokens;
+    this.textTokens = textTokens;
   }
 
   public long getId() {
@@ -52,14 +58,6 @@ public class Lemma {
 
   public void setText(String text) {
     this.text = text;
-  }
-
-  public String getPhraseType() {
-    return phraseType;
-  }
-
-  public void setPhraseType(String phraseType) {
-    this.phraseType = phraseType;
   }
 
   public boolean isDeleted() {
@@ -92,5 +90,21 @@ public class Lemma {
 
   public void addOneNewsArticle(NewsArticle newsArticle) {
     this.newsArticles.add(newsArticle);
+  }
+
+  public Set<LemmaToken> getLemmaTokens() {
+    return lemmaTokens;
+  }
+
+  public void setLemmaTokens(Set<LemmaToken> lemmaTokens) {
+    this.lemmaTokens = lemmaTokens;
+  }
+
+  public List<TextToken> getTextTokens() {
+    return textTokens;
+  }
+
+  public void setTextTokens(List<TextToken> textTokens) {
+    this.textTokens = textTokens;
   }
 }
