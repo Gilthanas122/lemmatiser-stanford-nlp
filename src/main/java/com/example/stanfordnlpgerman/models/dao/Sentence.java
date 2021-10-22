@@ -98,4 +98,12 @@ public class Sentence {
   public void setTextTokens(List<TextToken> textTokens) {
     this.textTokens = textTokens;
   }
+
+  public void addOneLemmaType(LemmaType lemmaType) {
+    this.lemmaTypes.add(lemmaType);
+  }
+
+  public void addOneTexttoken(TextToken textToken) {
+    this.textTokens.add(textToken);
+  }
 }

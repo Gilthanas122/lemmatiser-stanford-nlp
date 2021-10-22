@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.models.dao;
 
+import lombok.Builder;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -7,7 +8,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "lemmatokens")
 @Where(clause="deleted=0")
-public class LemmaToken {
+@Builder
+public class LemmaToken implements Comparable<LemmaToken> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public long id;
@@ -27,6 +29,10 @@ public class LemmaToken {
     this.phraseType = phraseType;
     this.deleted = deleted;
     this.lemmaType = lemmaType;
+  }
+
+  public LemmaToken(String value) {
+    this.text = value;
   }
 
   public long getId() {
@@ -67,5 +73,10 @@ public class LemmaToken {
 
   public void setLemmaType(LemmaType lemmaType) {
     this.lemmaType = lemmaType;
+  }
+
+  @Override
+  public int compareTo(LemmaToken lemmaToken) {
+    return this.text.compareTo(lemmaToken.text);
   }
 }

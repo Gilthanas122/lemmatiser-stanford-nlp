@@ -1,6 +1,8 @@
 package com.example.stanfordnlpgerman.models.dao;
 
+import lombok.Builder;
 import org.hibernate.annotations.Where;
+import org.springframework.boot.CommandLineRunner;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,9 +11,10 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "lemmaTypes")
+@Table(name = "lemmatypes")
 @Where(clause="deleted=0")
-public class LemmaType {
+@Builder
+public class LemmaType implements Comparable<LemmaType> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -106,5 +109,14 @@ public class LemmaType {
 
   public void setTextTokens(List<TextToken> textTokens) {
     this.textTokens = textTokens;
+  }
+
+  @Override
+  public int compareTo(LemmaType lemmaType) {
+    return this.text.compareTo(lemmaType.text);
+  }
+
+  public void addOneTextToken(TextToken textToken) {
+    this.textTokens.add(textToken);
   }
 }
