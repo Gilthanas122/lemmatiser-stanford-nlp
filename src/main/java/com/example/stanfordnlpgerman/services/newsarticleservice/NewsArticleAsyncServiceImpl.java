@@ -34,6 +34,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
 
   @Async
   public void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) {
+    long startTime = System.currentTimeMillis();
     NewsArticle newsArticle = NewsArticle
             .builder()
             .newsPaperName(createNewsPaperArticleDTO.getNewsPaperName())
@@ -44,8 +45,9 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
             .build();
     newsArticle.setSentences(createSentencesFromNewsPaperArticle(createNewsPaperArticleDTO.getText(), newsArticle));
     newsArticle.setLemmaTypes(createLemmaTypesFromSentencesForNewsArticle(newsArticle.getSentences()));
-    newsArticle.setTextTokens(createTextTokensFromSentencesForNewsArticle(newsArticle.getSentences()));
     newsArticleRepository.save(newsArticle);
+    long endTime = System.currentTimeMillis();
+    System.out.println("Time elapsed: " + (endTime - startTime));
   }
 
   private List<LemmaType> createLemmaTypesFromSentencesForNewsArticle(List<Sentence> sentences) {
@@ -56,20 +58,12 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     return lemmaTypes;
   }
 
-  private List<TextToken> createTextTokensFromSentencesForNewsArticle(List<Sentence> sentences) {
-    List<TextToken> textTokens = new ArrayList<>();
-    for (Sentence sentence : sentences) {
-      textTokens.addAll(sentence.getTextTokens());
-    }
-    return textTokens;
-  }
-
   private List<Sentence> createSentencesFromNewsPaperArticle(String text, NewsArticle newsArticle) {
     CoreDocument coreDocument = new CoreDocument(text);
     pipeline.annotate(coreDocument);
     List<CoreSentence> coreSentences = coreDocument.sentences();
     List<Sentence> sentences = new ArrayList<>();
-    int position = 0;
+    short position = 0;
     for (CoreSentence sent : coreSentences) {
       Sentence sentence = Sentence
               .builder()
@@ -77,28 +71,22 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
               .text(sent.text())
               .textPosition(position)
               .build();
-      sentence.setLemmaTypes(createLemmaTypesFromSentences(sent, sentence, newsArticle, coreDocument));
+      sentence.setLemmaTypes(createLemmaTypesFromSentences(sent, sentence, newsArticle));
       sentence.setTextTokens(filteredTextTokens);
+      filteredTextTokens.clear();
       sentences.add(sentence);
       position++;
     }
     return sentences;
   }
 
-  private List<TextToken> createTextTokensFromSentences(List<LemmaType> lemmaTypes) {
-    List<TextToken> textTokens = new ArrayList<>();
-    for (LemmaType lemmaType : lemmaTypes) {
-      textTokens.addAll(lemmaType.getTextTokens());
-    }
-    return textTokens;
-  }
 
   @Transactional
-  protected List<LemmaType> createLemmaTypesFromSentences(CoreSentence coreSentence, Sentence sentence, NewsArticle newsArticle, CoreDocument coreDocument) {
+  protected List<LemmaType> createLemmaTypesFromSentences(CoreSentence coreSentence, Sentence sentence, NewsArticle newsArticle) {
     List<CoreLabel> coreLabels = coreSentence.tokens();
     List<LemmaType> lemmaTypes = new ArrayList<>();
-    int position = 0;
-    int coreLabelPosition = 0;
+    short position = 0;
+    short coreLabelPosition = 0;
     for (String word : coreSentence.tokensAsStrings()) {
       if (word.matches("^[a-zA-Z0-9\u00C0-\u00FF]*$")) {
         String phraseType = coreLabels.get(coreLabelPosition).get(CoreAnnotations.PartOfSpeechAnnotation.class);
@@ -107,7 +95,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                 .builder()
                 .text(word)
                 .sentencePosition(position)
-                .newsArticle(newsArticle)
                 .sentence(sentence)
                 .phraseType(phraseType)
                 .build();
@@ -130,7 +117,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
       }
       coreLabelPosition++;
     }
-    sentence.setLemmaTypes(lemmaTypes);
     return lemmaTypes;
   }
 
@@ -141,7 +127,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
       } else {
         return lemmaType.getLemmaTokens()
                 .stream()
-                .filter(lemmaToken -> lemmaToken.getText().equals(word))
+                .filter(lemmaToken -> lemmaToken.getText().equalsIgnoreCase(word))
                 .findFirst()
                 .map(LemmaToken::getLemmaType)
                 .orElse(null);
