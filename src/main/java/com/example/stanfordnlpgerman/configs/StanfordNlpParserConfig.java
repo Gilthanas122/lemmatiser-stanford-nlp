@@ -13,7 +13,7 @@ public class StanfordNlpParserConfig {
 
   @Bean
   @Primary
-  StanfordCoreNLP getStanfordCoreNlp(){
+  StanfordCoreNLP getStanfordCoreNlp() {
     Properties germanProperties = StringUtils.argsToProperties(
             "-props", "StanfordCoreNLP-german.properties");
     StanfordCoreNLP pipeline = new StanfordCoreNLP(germanProperties);

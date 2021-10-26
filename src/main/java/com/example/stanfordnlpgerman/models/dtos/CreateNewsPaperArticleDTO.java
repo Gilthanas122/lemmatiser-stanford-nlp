@@ -2,7 +2,7 @@ package com.example.stanfordnlpgerman.models.dtos;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.*;
+import java.util.Date;
 
 public class CreateNewsPaperArticleDTO {
   private String title;

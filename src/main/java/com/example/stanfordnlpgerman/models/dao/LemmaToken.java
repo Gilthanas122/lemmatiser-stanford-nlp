@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "lemmatokens")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 @Builder
 public class LemmaToken implements Comparable<LemmaToken> {
   @Id

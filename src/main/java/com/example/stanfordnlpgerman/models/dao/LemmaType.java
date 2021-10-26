@@ -2,7 +2,6 @@ package com.example.stanfordnlpgerman.models.dao;
 
 import lombok.Builder;
 import org.hibernate.annotations.Where;
-import org.springframework.boot.CommandLineRunner;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "lemmatypes")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 @Builder
 public class LemmaType implements Comparable<LemmaType> {
 

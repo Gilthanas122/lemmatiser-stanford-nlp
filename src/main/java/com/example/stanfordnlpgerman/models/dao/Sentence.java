@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "sentences")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 @Builder
 public class Sentence {
 

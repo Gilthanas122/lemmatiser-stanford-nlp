@@ -4,12 +4,14 @@ import lombok.Builder;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "newsarticles")
 @Builder
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 public class NewsArticle {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

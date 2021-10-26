@@ -14,12 +14,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
 public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
-  private List<TextToken> filteredTextTokens = new ArrayList<>();
+  private final List<TextToken> filteredTextTokens = new ArrayList<>();
   private final NewsArticleRepository newsArticleRepository;
   private final LemmaTypeService lemmaTypeService;
   private final StanfordCoreNLP pipeline;
@@ -109,7 +111,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
         }
         if (lemmaTypesReturned.size() != 1) {
           textToken.setInvalid(true);
-          if (lemmaTypesReturned.size() < 1){
+          if (lemmaTypesReturned.size() < 1) {
             textTokenService.saveTextTokenWithoutLemmaType(textToken);
           }
         }
@@ -121,7 +123,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
   }
 
   private LemmaType getLemmaTypeFromSet(String word, Set<LemmaType> lemmaTypesReturned) {
-    for (LemmaType lemmaType : lemmaTypesReturned ) {
+    for (LemmaType lemmaType : lemmaTypesReturned) {
       if (lemmaType.getText().equalsIgnoreCase(word)) {
         return lemmaType;
       } else {

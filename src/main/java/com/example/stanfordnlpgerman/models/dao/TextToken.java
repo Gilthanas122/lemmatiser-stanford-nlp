@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "texttokens")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 @Builder
 public class TextToken {
   @Id

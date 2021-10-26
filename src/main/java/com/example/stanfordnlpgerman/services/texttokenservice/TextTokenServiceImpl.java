@@ -1,7 +1,5 @@
 package com.example.stanfordnlpgerman.services.texttokenservice;
 
-import com.example.stanfordnlpgerman.models.dao.NewsArticle;
-import com.example.stanfordnlpgerman.models.dao.Sentence;
 import com.example.stanfordnlpgerman.models.dao.TextToken;
 import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
 import org.springframework.stereotype.Service;
@@ -17,6 +15,6 @@ public class TextTokenServiceImpl implements TextTokenService {
 
   @Override
   public void saveTextTokenWithoutLemmaType(TextToken textToken) {
-      textTokenRepository.save(textToken);
+    textTokenRepository.save(textToken);
   }
 }
