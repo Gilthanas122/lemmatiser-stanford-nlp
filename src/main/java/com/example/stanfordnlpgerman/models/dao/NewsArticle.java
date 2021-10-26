@@ -28,13 +28,10 @@ public class NewsArticle {
   @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private List<LemmaType> lemmaTypes = new ArrayList<>();
 
-  @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<TextToken> textTokens;
-
   public NewsArticle() {
   }
 
-  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, int pageNumber, boolean deleted, List<Sentence> sentences, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
+  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, int pageNumber, boolean deleted, List<Sentence> sentences, List<LemmaType> lemmaTypes) {
     this.id = id;
     this.newsPaperName = newsPaperName;
     this.title = title;
@@ -44,7 +41,6 @@ public class NewsArticle {
     this.deleted = deleted;
     this.sentences = sentences;
     this.lemmaTypes = lemmaTypes;
-    this.textTokens = textTokens;
   }
 
   public Long getId() {
@@ -123,19 +119,7 @@ public class NewsArticle {
     this.lemmaTypes = lemmaTypes;
   }
 
-  public List<TextToken> getTextTokens() {
-    return textTokens;
-  }
-
-  public void setTextTokens(List<TextToken> textTokens) {
-    this.textTokens = textTokens;
-  }
-
   public void addOneLemmaType(LemmaType lemmaType) {
     this.lemmaTypes.add(lemmaType);
-  }
-
-  public void addOneTexttoken(TextToken textToken) {
-    this.textTokens.add(textToken);
   }
 }

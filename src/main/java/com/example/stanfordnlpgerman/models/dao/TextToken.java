@@ -13,10 +13,12 @@ public class TextToken {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  @Column(columnDefinition = "varchar(50)")
   private String text;
+  @Column(columnDefinition = "varchar(8)")
   private String phraseType;
-  @Column(columnDefinition = "integer default 0")
-  private int sentencePosition = 1;
+  @Column(columnDefinition = "smallint default 0")
+  private short sentencePosition = 1;
   private boolean deleted;
   private boolean invalid;
 
@@ -26,14 +28,11 @@ public class TextToken {
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Sentence sentence;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private NewsArticle newsArticle;
-
   public TextToken() {
     sentencePosition = 1;
   }
 
-  public TextToken(long id, String text, String phraseType, int sentencePosition, boolean deleted, boolean invalid, LemmaType lemmaType, Sentence sentence, NewsArticle newsArticle) {
+  public TextToken(long id, String text, String phraseType, short sentencePosition, boolean deleted, boolean invalid, LemmaType lemmaType, Sentence sentence) {
     this.id = id;
     this.text = text;
     this.phraseType = phraseType;
@@ -42,7 +41,6 @@ public class TextToken {
     this.invalid = invalid;
     this.lemmaType = lemmaType;
     this.sentence = sentence;
-    this.newsArticle = newsArticle;
   }
 
   public long getId() {
@@ -69,11 +67,11 @@ public class TextToken {
     this.phraseType = phraseType;
   }
 
-  public int getSentencePosition() {
+  public short getSentencePosition() {
     return sentencePosition;
   }
 
-  public void setSentencePosition(int sentencePosition) {
+  public void setSentencePosition(short sentencePosition) {
     this.sentencePosition = sentencePosition;
   }
 
@@ -99,14 +97,6 @@ public class TextToken {
 
   public void setSentence(Sentence sentence) {
     this.sentence = sentence;
-  }
-
-  public NewsArticle getNewsArticle() {
-    return newsArticle;
-  }
-
-  public void setNewsArticle(NewsArticle newsArticle) {
-    this.newsArticle = newsArticle;
   }
 
   public boolean isInvalid() {

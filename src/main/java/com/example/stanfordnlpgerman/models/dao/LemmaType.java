@@ -19,6 +19,7 @@ public class LemmaType implements Comparable<LemmaType> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  @Column(columnDefinition = "varchar(50)")
   private String text;
   private boolean deleted;
 
@@ -31,7 +32,7 @@ public class LemmaType implements Comparable<LemmaType> {
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<LemmaToken> lemmaTokens = new HashSet<>();
 
-  @OneToMany(mappedBy = "lemmaType")
+  @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private List<TextToken> textTokens = new ArrayList<>();
 
   public LemmaType() {

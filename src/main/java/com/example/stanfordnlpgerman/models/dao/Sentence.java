@@ -18,7 +18,8 @@ public class Sentence {
   @Column(name = "id", nullable = false)
   private long id;
   private String text;
-  private int textPosition;
+  @Column(columnDefinition = "smallint")
+  private short textPosition;
   private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -33,7 +34,7 @@ public class Sentence {
   public Sentence() {
   }
 
-  public Sentence(long id, String text, int textPosition, boolean deleted, NewsArticle newsArticle, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
+  public Sentence(long id, String text, short textPosition, boolean deleted, NewsArticle newsArticle, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
     this.id = id;
     this.text = text;
     this.textPosition = textPosition;
@@ -59,11 +60,11 @@ public class Sentence {
     this.text = text;
   }
 
-  public int getTextPosition() {
+  public short getTextPosition() {
     return textPosition;
   }
 
-  public void setTextPosition(int textPosition) {
+  public void setTextPosition(short textPosition) {
     this.textPosition = textPosition;
   }
 
