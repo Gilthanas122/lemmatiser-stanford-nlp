@@ -29,6 +29,13 @@
     </tbody>
   </table>
 
+<div>
+  <th:block th:each="i: ${#numbers.sequence(0, 25)}">
+    <a th:text="${i}" th:href="@{|/lemma-type/most-common/${i}|}"></a>
+  </th:block>
+</div>
+
+
   <script th:replace="fragments/links.html :: jquery"></script>
   <script th:replace="fragments/links.html :: cloudflare"></script>
   <script th:replace="fragments/links.html :: bootstrap"></script>
