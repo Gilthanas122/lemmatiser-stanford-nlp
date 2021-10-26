@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("newspaper")
+@RequestMapping("news-article")
 public class NewsArticleController {
   private final NewsArticleService newsArticleService;
 
