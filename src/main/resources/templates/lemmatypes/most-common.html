@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Most Common Lemmas</title>
+  <link th:replace="fragments/links.html :: bootstrap-link">
+</head>
+<body>
+<div th:replace="fragments/navbar.html :: navbar" ></div>
+
+<div th:replace="fragments/messages.html :: error" ></div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Lemma Text</th>
+      <th>Occurences</th>
+      <th>Show Sentences</th>
+      <th>Show texts</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="mostCommonLemma : ${mostCommonLemmas}" th:object="${mostCommonLemma}">
+      <td th:text="*{text}"></td>
+      <td th:text="*{count}"></td>
+      <td>Sentences</td>
+      <td>Text</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <script th:replace="fragments/links.html :: jquery"></script>
+  <script th:replace="fragments/links.html :: cloudflare"></script>
+  <script th:replace="fragments/links.html :: bootstrap"></script>
+</body>
+</html>

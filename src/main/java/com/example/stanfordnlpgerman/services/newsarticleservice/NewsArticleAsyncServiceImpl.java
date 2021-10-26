@@ -1,7 +1,7 @@
 package com.example.stanfordnlpgerman.services.newsarticleservice;
 
 import com.example.stanfordnlpgerman.models.dao.*;
-import com.example.stanfordnlpgerman.models.dtos.CreateNewsPaperArticleDTO;
+import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
 import com.example.stanfordnlpgerman.repositories.NewsArticleRepository;
 import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import com.example.stanfordnlpgerman.services.texttokenservice.TextTokenService;

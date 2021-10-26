@@ -1,4 +1,4 @@
-package com.example.stanfordnlpgerman.models.dtos;
+package com.example.stanfordnlpgerman.models.dtos.newsarticle;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;

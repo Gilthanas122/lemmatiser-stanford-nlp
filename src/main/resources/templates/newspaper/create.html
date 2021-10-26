@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Create Newspaper</title>
+  <link th:replace="fragments/links.html :: bootstrap-link">
+
 </head>
 <body>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/navbar.html :: navbar" ></div>
 
+<div th:replace="fragments/messages.html :: error" ></div>
 <h1>Insert data for newspaper</h1>
 
 <form th:action="@{/newspaper/create}" th:method="POST" th:object="${createNewsPapeArticleDTO}">
@@ -35,5 +38,8 @@
 
 </form>
 
+<script th:replace="fragments/links.html :: jquery"></script>
+<script th:replace="fragments/links.html :: cloudflare"></script>
+<script th:replace="fragments/links.html :: bootstrap"></script>
 </body>
 </html>

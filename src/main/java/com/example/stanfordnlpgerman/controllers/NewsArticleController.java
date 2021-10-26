@@ -1,7 +1,7 @@
 package com.example.stanfordnlpgerman.controllers;
 
 import com.example.stanfordnlpgerman.exceptions.validations.MissingParamsException;
-import com.example.stanfordnlpgerman.models.dtos.CreateNewsPaperArticleDTO;
+import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
 import com.example.stanfordnlpgerman.services.newsarticleservice.NewsArticleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

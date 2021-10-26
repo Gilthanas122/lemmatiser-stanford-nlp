@@ -3,10 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Index</title>
+  <link th:replace="fragments/links.html :: bootstrap-link">
+
 </head>
 <body>
+<h1>Welcome</h1>
+
+<div th:replace="fragments/navbar.html :: navbar" ></div>
 
 <div th:replace="fragments/messages.html :: error" ></div>
 
+<script th:replace="fragments/links.html :: jquery"></script>
+<script th:replace="fragments/links.html :: cloudflare"></script>
+<script th:replace="fragments/links.html :: bootstrap"></script>
 </body>
 </html>
