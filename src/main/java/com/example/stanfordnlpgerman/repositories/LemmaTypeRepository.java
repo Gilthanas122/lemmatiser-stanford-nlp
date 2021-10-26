@@ -19,6 +19,7 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
           "WHERE lto.text = ?1 OR lt.text = ?1")
   Set<LemmaType> findAllByText(String originalText);
 
-  @Query("SELECT lt.text as text, lt.textTokens.size as count FROM LemmaType lt ORDER BY lt.textTokens.size desc")
+  @Query("SELECT lt.id as lemmaTypeId, lt.text as text, size(lt.textTokens) as count FROM LemmaType lt ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(Pageable pageable);
+
 }

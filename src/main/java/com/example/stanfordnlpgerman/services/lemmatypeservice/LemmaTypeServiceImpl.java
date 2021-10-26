@@ -32,6 +32,7 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
 
   @Override
   public List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber) {
-    return lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
+    List<ShowMostCommonLemmasDTO>  showMostCommonLemmasDTOS = lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
+    return showMostCommonLemmasDTOS;
   }
 }

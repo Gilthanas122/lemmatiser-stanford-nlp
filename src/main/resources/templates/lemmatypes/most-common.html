@@ -6,38 +6,38 @@
   <link th:replace="fragments/links.html :: bootstrap-link">
 </head>
 <body>
-<div th:replace="fragments/navbar.html :: navbar" ></div>
+<div th:replace="fragments/navbar.html :: navbar"></div>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 
-  <table>
-    <thead>
-    <tr>
-      <th>Lemma Text</th>
-      <th>Occurences</th>
-      <th>Show Sentences</th>
-      <th>Show texts</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="mostCommonLemma : ${mostCommonLemmas}" th:object="${mostCommonLemma}">
-      <td th:text="*{text}"></td>
-      <td th:text="*{count}"></td>
-      <td>Sentences</td>
-      <td>Text</td>
-    </tr>
-    </tbody>
-  </table>
+<table>
+  <thead>
+  <tr>
+    <th>Lemma Text</th>
+    <th>Occurences</th>
+    <th>Show Sentences</th>
+    <th>Show texts</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="mostCommonLemma : ${mostCommonLemmas}" th:object="${mostCommonLemma}">
+    <td th:text="*{text}"></td>
+    <td th:text="*{count}"></td>
+    <td><a th:href="@{|/sentences/*{lemmaTypeId}|}">Show sentences</a></td>
+    <td><a th:href="@{|/articles/*{lemmaTypeId}|}">Show articles</a></td>
+  </tr>
+  </tbody>
+</table>
 
 <div>
   <th:block th:each="i: ${#numbers.sequence(0, 25)}">
-    <a th:text="${i}" th:href="@{|/lemma-type/most-common/${i}|}"></a>
+    <a th:href="@{|/lemma-type/most-common/${i}|}" th:text="${i}"></a>
   </th:block>
 </div>
 
 
-  <script th:replace="fragments/links.html :: jquery"></script>
-  <script th:replace="fragments/links.html :: cloudflare"></script>
-  <script th:replace="fragments/links.html :: bootstrap"></script>
+<script th:replace="fragments/links.html :: jquery"></script>
+<script th:replace="fragments/links.html :: cloudflare"></script>
+<script th:replace="fragments/links.html :: bootstrap"></script>
 </body>
 </html>
