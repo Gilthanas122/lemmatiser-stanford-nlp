@@ -21,7 +21,7 @@ public class NewsArticle {
   private String author;
   @Temporal(TemporalType.DATE)
   private Date publicationDate;
-  private int pageNumber;
+  private short pageNumber;
   private boolean deleted;
 
   @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -33,7 +33,7 @@ public class NewsArticle {
   public NewsArticle() {
   }
 
-  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, int pageNumber, boolean deleted, List<Sentence> sentences, List<LemmaType> lemmaTypes) {
+  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, short pageNumber, boolean deleted, List<Sentence> sentences, List<LemmaType> lemmaTypes) {
     this.id = id;
     this.newsPaperName = newsPaperName;
     this.title = title;
@@ -85,11 +85,11 @@ public class NewsArticle {
     this.publicationDate = publicationDate;
   }
 
-  public int getPageNumber() {
+  public short getPageNumber() {
     return pageNumber;
   }
 
-  public void setPageNumber(int pageNumber) {
+  public void setPageNumber(short pageNumber) {
     this.pageNumber = pageNumber;
   }
 

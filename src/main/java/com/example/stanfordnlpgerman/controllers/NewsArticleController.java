@@ -5,10 +5,7 @@ import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArti
 import com.example.stanfordnlpgerman.services.newsarticleservice.NewsArticleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("news-article")
@@ -38,5 +35,16 @@ public class NewsArticleController {
       model.addAttribute("createNewsPapeArticleDTO", createNewsPaperArticleDTO);
     }
     return "newspaper/create";
+  }
+
+  @GetMapping("/get/{newsArticleId}")
+  public String getNewsArticleBelongingToSentence(@PathVariable long newsArticleId, Model model){
+    try {
+      model.addAttribute("newsArticleDataDTO", newsArticleService.findNewsPaperBySentenceId(newsArticleId));
+      return "newspaper/list";
+    }catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "index";
   }
 }

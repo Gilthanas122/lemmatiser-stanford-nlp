@@ -16,7 +16,6 @@ public class SentenceServiceImpl implements SentenceService{
 
   @Override
   public List<SentenceTextAndNewsPaperIdDTO> getAllSentencesBelongingToLemmaType(long lemmaTypId) {
-    List<SentenceTextAndNewsPaperIdDTO> sentenceTextAndNewsPaperIdDTOS =  sentenceRepository.findByLemmaTypeId(lemmaTypId);
-    return sentenceTextAndNewsPaperIdDTOS;
+    return sentenceRepository.findByLemmaTypeId(lemmaTypId);
   }
 }

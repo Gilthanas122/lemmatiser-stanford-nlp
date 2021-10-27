@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
-  <title>Show sentences</title>
+  <title>Show Newsarticle</title>
   <link th:replace="fragments/links.html :: bootstrap-link">
 
 </head>
@@ -10,21 +10,16 @@
 <div th:replace="fragments/navbar.html :: navbar" ></div>
 
 <div th:replace="fragments/messages.html :: error" ></div>
+<div th:object="${newsArticleDataDTO}">
+  <h1 th:text="|Article title: *{title}|"></h1>
+  <h2 th:text="|Article author: *{author}|"></h2>
+  <p th:text="|Page number is *{pageNumber}|"></p>
+  <p th:text="|Newspaper name is *{newsPaperName}|"></p>
+  <p th:text="|Publication date: *{date}|"></p>
+  <p th:text="*{text}"></p>
 
-<table class="table table-hover">
-  <thead>
-  <tr>
-    <th>Text</th>
-    <th>Show article</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="sentenceTextAndNewsPaperIdDTO: ${sentenceTextAndNewsPaperIdDTOs}" th:object="${sentenceTextAndNewsPaperIdDTO}">
-    <td th:text="*{sentenceText}"></td>
-    <td><a th:href="@{|/news-article/get/*{newsArticleId}|}">Show article</a></td>
-  </tr>
-  </tbody>
-</table>
+</div>
+
 
 <script th:replace="fragments/links.html :: jquery"></script>
 <script th:replace="fragments/links.html :: cloudflare"></script>

@@ -15,11 +15,12 @@ import java.util.Set;
 @Repository
 public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, PagingAndSortingRepository<LemmaType,Long> {
 
-  @Query("SELECT lt FROM LemmaToken lto JOIN FETCH LemmaType lt ON lto.lemmaType.id = lt.id " +
+  @Query("SELECT lt FROM LemmaToken lto JOIN LemmaType lt ON lto.lemmaType.id = lt.id " +
           "WHERE lto.text = ?1 OR lt.text = ?1")
   Set<LemmaType> findAllByText(String originalText);
 
-  @Query("SELECT lt.id as lemmaTypeId, lt.text as text, size(lt.textTokens) as count FROM LemmaType lt ORDER BY size(lt.textTokens) desc")
+  @Query("SELECT lt.id as lemmaTypeId, lt.text as text, size(lt.textTokens) as count " +
+          "FROM LemmaType lt ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(Pageable pageable);
 
 }

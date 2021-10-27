@@ -7,7 +7,7 @@ import java.util.Date;
 public class CreateNewsPaperArticleDTO {
   private String title;
   private String author;
-  private int pageNumber;
+  private short pageNumber;
   private String newsPaperName;
   private String text;
 
@@ -17,7 +17,7 @@ public class CreateNewsPaperArticleDTO {
   public CreateNewsPaperArticleDTO() {
   }
 
-  public CreateNewsPaperArticleDTO(String title, String author, int pageNumber, String newsPaperName, String text, Date publicationDate) {
+  public CreateNewsPaperArticleDTO(String title, String author, short pageNumber, String newsPaperName, String text, Date publicationDate) {
     this.title = title;
     this.author = author;
     this.pageNumber = pageNumber;
@@ -42,11 +42,11 @@ public class CreateNewsPaperArticleDTO {
     this.author = author;
   }
 
-  public int getPageNumber() {
+  public short getPageNumber() {
     return pageNumber;
   }
 
-  public void setPageNumber(int pageNumber) {
+  public void setPageNumber(short pageNumber) {
     this.pageNumber = pageNumber;
   }
 

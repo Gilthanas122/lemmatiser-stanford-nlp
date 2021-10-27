@@ -1,16 +1,25 @@
 package com.example.stanfordnlpgerman.services.newsarticleservice;
 
 import com.example.stanfordnlpgerman.exceptions.validations.MissingParamsException;
+import com.example.stanfordnlpgerman.models.dao.NewsArticle;
+import com.example.stanfordnlpgerman.models.dao.Sentence;
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
+import com.example.stanfordnlpgerman.models.dtos.newsarticle.NewsArticleDataDTO;
+import com.example.stanfordnlpgerman.repositories.NewsArticleRepository;
 import com.example.stanfordnlpgerman.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NewsArticleServiceImpl implements NewsArticleService {
   private final NewsArticleAsyncService newsArticleAsyncService;
+  private final NewsArticleRepository newsArticleRepository;
 
-  public NewsArticleServiceImpl(NewsArticleAsyncService newsArticleAsyncService) {
+  public NewsArticleServiceImpl(NewsArticleAsyncService newsArticleAsyncService, NewsArticleRepository newsArticleRepository) {
     this.newsArticleAsyncService = newsArticleAsyncService;
+    this.newsArticleRepository = newsArticleRepository;
   }
 
   @Override
@@ -22,32 +31,19 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     newsArticleAsyncService.createNewsPaperArticle(createNewsPaperArticleDTO);
   }
 
-
-
-
-
-
-
-
-
-  /*public static void main(String[] args) {
-    String sampleGermanText = "Hallo, du, hi. Du solltest dich schämen.";
-    Properties germanProperties = StringUtils.argsToProperties(
-            new String[]{"-props", "StanfordCoreNLP-german.properties"});
-    StanfordCoreNLP pipeline = new StanfordCoreNLP(germanProperties);
-
-    CoreDocument coreDocument = new CoreDocument(sampleGermanText);
-
-    pipeline.annotate(coreDocument);
-    List<CoreLabel> coreLabels =  coreDocument.tokens();
-
-    for (CoreLabel coreLabel: coreLabels) {
-      if (!".,_?!:;-*'/+^/|&".contains(coreLabel.originalText())){
-        GermanCoreLabel germanCoreLabel = new GermanCoreLabel(coreLabel);
-        String lemma = germanCoreLabel.lemma();
-        System.out.println(coreLabel.originalText() + " ~ " + lemma);
-      }
-    }
-  }*/
-
+  @Override
+  public NewsArticleDataDTO findNewsPaperBySentenceId(long newsArticleId) {
+   NewsArticle newsArticle = newsArticleRepository.findNewsArticleBySentenceId(newsArticleId);
+   if (newsArticle != null){
+     return NewsArticleDataDTO.builder()
+             .newsPaperName(newsArticle.getNewsPaperName())
+             .author(newsArticle.getAuthor())
+             .pageNumber(newsArticle.getPageNumber())
+             .title(newsArticle.getTitle())
+             .date(newsArticle.getPublicationDate())
+             .text(newsArticle.getSentences().stream().map(Sentence::getText).collect(Collectors.joining()))
+             .build();
+   }
+   return new NewsArticleDataDTO();
+  }
 }
