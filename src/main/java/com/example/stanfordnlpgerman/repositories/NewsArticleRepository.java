@@ -14,9 +14,4 @@ public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long> 
 
   @Query("SELECT na from NewsArticle na where na.id = ?1")
   NewsArticle findNewsArticleBySentenceId(long newsArticleId);
-/*
-  SELECT col1, col2, ..., colN
-  GROUP_CONCAT ( [DISTINCT] col_name1
-                  [ORDER BY clause]  [SEPARATOR str_val] )
-  FROM table_name GROUP BY col_name2;*/
 }

@@ -2,6 +2,7 @@ package com.example.stanfordnlpgerman.repositories;
 
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
+import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,8 +20,10 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
           "WHERE lto.text = ?1 OR lt.text = ?1")
   Set<LemmaType> findAllByText(String originalText);
 
-  @Query("SELECT lt.id as lemmaTypeId, lt.text as text, size(lt.textTokens) as count " +
-          "FROM LemmaType lt ORDER BY size(lt.textTokens) desc")
+  @Query("SELECT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
+          "FROM LemmaType lt JOIN lt.newsArticles na WHERE size(lt.textTokens) > 0 ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(Pageable pageable);
 
+  @Query("SELECT lt.text AS lemmaTexts, COUNT(lt.id) AS lemmaOccurences FROM LemmaType lt JOIN lt.sentences s WHERE s.id IN ?1 GROUP BY lt.id")
+  List<LemmaOccurenceInSentencesDTO> findLemmaTypeOccurencesInSentences(List<Long> sentenceIdsContainingLemma);
 }

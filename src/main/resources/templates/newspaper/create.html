@@ -13,7 +13,7 @@
 <div th:replace="fragments/messages.html :: error" ></div>
 <h1>Insert data for newspaper</h1>
 
-<form th:action="@{/newspaper/create}" th:method="POST" th:object="${createNewsPapeArticleDTO}">
+<form th:action="@{/news-article/create}" th:method="POST" th:object="${createNewsPapeArticleDTO}">
   <label for="title">Title</label>
   <input th:field=*{title} name="title" id="title" type="text" autofocus placeholder="enter title">
 

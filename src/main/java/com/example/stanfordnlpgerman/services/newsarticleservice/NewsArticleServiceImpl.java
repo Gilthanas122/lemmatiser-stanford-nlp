@@ -32,7 +32,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
   }
 
   @Override
-  public NewsArticleDataDTO findNewsPaperBySentenceId(long newsArticleId) {
+  public NewsArticleDataDTO findByNewsArticleId(long newsArticleId) {
    NewsArticle newsArticle = newsArticleRepository.findNewsArticleBySentenceId(newsArticleId);
    if (newsArticle != null){
      return NewsArticleDataDTO.builder()

@@ -24,7 +24,8 @@
     <td th:text="*{text}"></td>
     <td th:text="*{count}"></td>
     <td><a th:href="@{|/sentence/get/*{lemmaTypeId}|}">Show sentences</a></td>
-    <td><a th:href="@{|/news-article/get/*{lemmaTypeId}|}">Show articles</a></td>
+    <td><a th:href="@{|/news-article/get/*{newsArticleId}|}">Show articles</a></td>
+    <td><a th:href="@{|/sentence/context/*{lemmaTypeId}|}">Show words in context</a></td>
   </tr>
   </tbody>
 </table>

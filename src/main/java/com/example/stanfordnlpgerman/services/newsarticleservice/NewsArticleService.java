@@ -14,5 +14,5 @@ public interface NewsArticleService {
 
   void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws MissingParamsException, LemmaTokenNotFoundByTextException, MoreThanOneLemmaTokenBelongingToTheText;
 
-  NewsArticleDataDTO findNewsPaperBySentenceId(long newsArticleId);
+  NewsArticleDataDTO findByNewsArticleId(long newsArticleId);
 }
