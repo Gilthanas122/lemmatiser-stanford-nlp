@@ -27,7 +27,7 @@ public class SentenceServiceImpl implements SentenceService{
   @Override
   public List<LemmaOccurenceInSentencesDTO> showWordsInContext(long lemmaTypeId) {
     List<Long> sentenceIdsContainingLemma = sentenceRepository.sentencesContainingLemma(lemmaTypeId);
-    List<LemmaOccurenceInSentencesDTO> lemmasAndOccurences = lemmaTypeService.findLemmasAndOccurencesInSentences(sentenceIdsContainingLemma);
+    List<LemmaOccurenceInSentencesDTO> lemmasAndOccurences = lemmaTypeService.findLemmasAndOccurencesInSentences(sentenceIdsContainingLemma, lemmaTypeId);
     return lemmasAndOccurences;
   }
 }

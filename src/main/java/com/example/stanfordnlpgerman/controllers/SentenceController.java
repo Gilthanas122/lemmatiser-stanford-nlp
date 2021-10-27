@@ -32,8 +32,14 @@ public class SentenceController {
   }
 
   @GetMapping("context/{lemmaTypeId}")
-  @ResponseBody
-  public List<LemmaOccurenceInSentencesDTO> showWordsInContext(@PathVariable long lemmaTypeId, Model model) {
-    return sentenceService.showWordsInContext(lemmaTypeId);
+  public String showWordsInContext(@PathVariable long lemmaTypeId, Model model) {
+    try {
+      model.addAttribute("lemmaOccurenceInSentencesDTOs", sentenceService.showWordsInContext(lemmaTypeId));
+      return "sentence/show-lemmas-context";
+    }catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "index";
   }
+
 }

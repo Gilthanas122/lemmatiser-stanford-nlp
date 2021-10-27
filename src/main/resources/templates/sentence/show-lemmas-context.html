@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Show lemmas in context</title>
+  <link th:replace="fragments/links.html :: bootstrap-link">
+
+</head>
+<body>
+<div th:replace="fragments/navbar.html :: navbar" ></div>
+
+<div th:replace="fragments/messages.html :: error" ></div>
+
+<h2 th:text="|researched lemma text: ${lemmaOccurenceInSentencesDTOs[0].originalLemmaText}|"></h2>
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>Lemma text</th>
+    <th>Number of occurences</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="lemmaOccurenceInSentencesDTO : ${lemmaOccurenceInSentencesDTOs}" th:object="${lemmaOccurenceInSentencesDTO}">
+    <td th:text="*{lemmaText}"></td>
+    <td th:text="*{lemmaOccurence}"></td>
+
+  </tr>
+  </tbody>
+</table>
+
+<script th:replace="fragments/links.html :: jquery"></script>
+<script th:replace="fragments/links.html :: cloudflare"></script>
+<script th:replace="fragments/links.html :: bootstrap"></script>
+</body>
+</html>

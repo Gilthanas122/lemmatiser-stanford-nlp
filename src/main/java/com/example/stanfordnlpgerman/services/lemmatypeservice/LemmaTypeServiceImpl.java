@@ -7,14 +7,9 @@ import com.example.stanfordnlpgerman.repositories.LemmaTypeRepository;
 import com.example.stanfordnlpgerman.services.lemmatokenservice.LemmaTokenService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +36,8 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
   }
 
   @Override
-  public List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma) {
-    return lemmaTypeRepository.findLemmaTypeOccurencesInSentences(sentenceIdsContainingLemma);
+  public List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId) {
+    return lemmaTypeRepository.findLemmaTypeOccurencesInSentences(sentenceIdsContainingLemma, lemmaTypeId);
   }
 
 
