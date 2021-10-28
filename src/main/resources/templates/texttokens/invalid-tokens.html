@@ -20,7 +20,7 @@
   <tbody>
   <tr th:each="invalidLemmasDTO : ${invalidLemmasDTOS}" th:object="${invalidLemmasDTO}">
     <td th:text="*{textTokenText}"></td>
-    <td><a th:href="@{|/text-token/change/*{textTokenId}|}">Change this</a></td>
+    <td><a th:href="@{|/text-token/change/*{textTokenId}/*{textTokenText}|}">Change this</a></td>
   </tr>
   </tbody>
 </table>

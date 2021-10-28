@@ -2,6 +2,7 @@ package com.example.stanfordnlpgerman.services.texttokenservice;
 
 import com.example.stanfordnlpgerman.models.dao.TextToken;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.InvalidLemmasDTO;
+import com.example.stanfordnlpgerman.models.dtos.texttoken.AddLemmaTypeToTextTokenDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -11,4 +12,6 @@ public interface TextTokenService {
   void saveTextTokenWithoutLemmaType(TextToken textToken);
 
   Set<InvalidLemmasDTO> getInvalidLemmas();
+
+  AddLemmaTypeToTextTokenDTO findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(long textTokenId, String textTokenText);
 }

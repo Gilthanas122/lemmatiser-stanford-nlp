@@ -1,10 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Add Lemma Type to Text Token</title>
+  <link th:replace="fragments/links.html :: bootstrap-link">
+
 </head>
 <body>
-$END$
+<div th:replace="fragments/navbar.html :: navbar" ></div>
+<div th:replace="fragments/messages.html :: error" ></div>
+
+<form th:object="${addLemmaTypeToTextTokenDTO}" method="POST" th:action="@{|/lemma-type/add-to-text-token/*{textTokenId}|}">
+  <h1 th:utext="|The researched text token is : <strong> *{textTokenText}</strong>|"> </h1>
+  <h3 th:utext="|Sentence is :<strong> *{sentenceText} </strong>|"></h3>
+
+  <div th:if="*{lemmaTypeTexts.isEmpty()}">
+    <input name="lemmaTypeText" placeholder="Add your word stem matching the text token">
+  </div>
+  <div th:unless="*{lemmaTypeTexts.isEmpty()}">
+    <p>Choose the right word stem!</p>
+    <select name="lemmaTypeText" >
+     <option th:each="lemmaTypeText : *{lemmaTypeTexts}" th:text="${lemmaTypeText}" th:value="${lemmaTypeText}"></option>
+    </select>
+  </div>
+  <button type="submit">SUBMIT</button>
+  <button type="reset">RESET</button>
+</form>
+
+<script th:replace="fragments/links.html :: jquery"></script>
+<script th:replace="fragments/links.html :: cloudflare"></script>
+<script th:replace="fragments/links.html :: bootstrap"></script>
 </body>
 </html>

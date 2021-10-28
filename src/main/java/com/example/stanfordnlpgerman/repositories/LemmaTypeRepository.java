@@ -23,6 +23,8 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
           "FROM LemmaType lt JOIN lt.newsArticles na WHERE size(lt.textTokens) > 0 ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(Pageable pageable);
 
-  @Query("SELECT lt.text AS lemmaText, COUNT(lt.id) AS lemmaOccurence, (SELECT ltoriginal.text FROM LemmaType ltoriginal WHERE ltoriginal.id = ?2) AS originalLemmaText FROM LemmaType lt JOIN lt.sentences s WHERE s.id IN ?1 AND lt.id <> ?2 GROUP BY lt.id")
+  @Query("SELECT lt.text AS lemmaText, COUNT(lt.id) AS lemmaOccurence, " +
+          "(SELECT ltoriginal.text FROM LemmaType ltoriginal WHERE ltoriginal.id = ?2) AS originalLemmaText " +
+          "FROM LemmaType lt JOIN lt.sentences s WHERE s.id IN ?1 AND lt.id <> ?2 GROUP BY lt.id")
   List<LemmaOccurenceInSentencesDTO> findLemmaTypeOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
 }

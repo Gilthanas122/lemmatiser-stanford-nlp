@@ -13,4 +13,6 @@ public interface TextTokenRepository extends JpaRepository<TextToken, Long> {
   @Query("SELECT tt from TextToken tt where tt.invalid = true")
   Set<TextToken> getTextTokensInvalid();
 
+
+  TextToken findById(long id);
 }

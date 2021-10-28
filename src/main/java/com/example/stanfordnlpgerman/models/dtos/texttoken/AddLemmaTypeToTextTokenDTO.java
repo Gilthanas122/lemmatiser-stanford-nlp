@@ -6,16 +6,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Builder
-public class AddLemmaTypeToTextTokenProjection {
+public class AddLemmaTypeToTextTokenDTO {
   private long textTokenId;
   private String textTokenText;
   private String sentenceText;
   private Set<String> lemmaTypeTexts = new HashSet<>();
 
-  public AddLemmaTypeToTextTokenProjection() {
+  public AddLemmaTypeToTextTokenDTO() {
   }
 
-  public AddLemmaTypeToTextTokenProjection(long textTokenId, String textTokenText, String sentenceText, Set<String> lemmaTypeTexts) {
+  public AddLemmaTypeToTextTokenDTO(long textTokenId, String textTokenText, String sentenceText, Set<String> lemmaTypeTexts) {
     this.textTokenId = textTokenId;
     this.textTokenText = textTokenText;
     this.sentenceText = sentenceText;
