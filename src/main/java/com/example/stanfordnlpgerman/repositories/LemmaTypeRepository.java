@@ -5,6 +5,7 @@ import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasD
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -27,4 +28,10 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
           "(SELECT ltoriginal.text FROM LemmaType ltoriginal WHERE ltoriginal.id = ?2) AS originalLemmaText " +
           "FROM LemmaType lt JOIN lt.sentences s WHERE s.id IN ?1 AND lt.id <> ?2 GROUP BY lt.id")
   List<LemmaOccurenceInSentencesDTO> findLemmaTypeOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
+
+  @Modifying
+  @Query("UPDATE TextToken tt SET tt.invalid = false, tt.lemmaType.id = ?2 WHERE tt.text = ?1")
+  void updateIfLemmaTypeHasMatchingTextTokens(String lemmaTypeText, long lemmaTypeId);
+
+  boolean existsLemmaTypeByText(String lemmaTypeIdOrText);
 }

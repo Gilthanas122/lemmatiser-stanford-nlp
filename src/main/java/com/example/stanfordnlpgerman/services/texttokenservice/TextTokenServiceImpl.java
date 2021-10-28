@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class TextTokenServiceImpl implements TextTokenService {
@@ -49,7 +48,7 @@ public class TextTokenServiceImpl implements TextTokenService {
     TextToken textToken = textTokenRepository.findById(textTokenId);
     Set<LemmaType> lemmaTypes = lemmaTypeService.findByText(textTokenText);
     Map<Long, String> lemmaTypeTextAndToken = new HashMap<>();
-    for (LemmaType lt: lemmaTypes) {
+    for (LemmaType lt : lemmaTypes) {
       lemmaTypeTextAndToken.put(lt.getId(), lt.getText());
     }
 
@@ -61,5 +60,10 @@ public class TextTokenServiceImpl implements TextTokenService {
             .textTokenText(textTokenText)
             .build();
     return addLemmaTypeToTextTokenDTO;
+  }
+
+  @Override
+  public TextToken findById(long textTokenId) {
+    return textTokenRepository.findById(textTokenId);
   }
 }

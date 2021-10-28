@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -17,7 +16,7 @@ public class TextTokenController {
     this.textTokenService = textTokenService;
   }
 
-  @GetMapping("invalid-text-tokens")
+  @GetMapping("invalid")
   public String getInvalidLemmas(Model model) {
     try {
       model.addAttribute("invalidLemmasDTOS", textTokenService.getInvalidLemmas());
@@ -29,11 +28,11 @@ public class TextTokenController {
   }
 
   @GetMapping("change/{textTokenId}/{textTokenText}")
-  public String changeTextToken(@PathVariable long textTokenId, @PathVariable String textTokenText, Model model){
+  public String changeTextToken(@PathVariable long textTokenId, @PathVariable String textTokenText, Model model) {
     try {
-      model.addAttribute("addLemmaTypeToTextTokenDTO",textTokenService.findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(textTokenId, textTokenText));
+      model.addAttribute("addLemmaTypeToTextTokenDTO", textTokenService.findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(textTokenId, textTokenText));
       return "texttokens/add-lemma-type";
-    }catch (Exception e){
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "index";

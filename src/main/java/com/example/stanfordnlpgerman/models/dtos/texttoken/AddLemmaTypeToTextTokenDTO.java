@@ -3,9 +3,7 @@ package com.example.stanfordnlpgerman.models.dtos.texttoken;
 import lombok.Builder;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Builder
 public class AddLemmaTypeToTextTokenDTO {

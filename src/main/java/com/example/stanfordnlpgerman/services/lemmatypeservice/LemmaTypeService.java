@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.services.lemmatypeservice;
 
+import com.example.stanfordnlpgerman.exceptions.validations.NountFoundByIdException;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
@@ -18,5 +19,5 @@ public interface LemmaTypeService {
 
   List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
 
-  void addTextTokenToLemmaType(long textTokenId, String lemmaTypeText);
+  void addTextTokenToLemmaType(long textTokenId, String lemmaTypeId) throws NountFoundByIdException;
 }

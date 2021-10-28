@@ -18,7 +18,7 @@ public class LemmaTypeController {
   public String getMostCommonLemmas(@PathVariable short pageNumber, Model model) {
     try {
       model.addAttribute("mostCommonLemmas", lemmaTypeService.findMostCommonLemmas(pageNumber));
-      return "redirect:/text-token/invalid-text-tokens";
+      return "redirect:/text-token/most-common";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
@@ -26,11 +26,11 @@ public class LemmaTypeController {
   }
 
   @PostMapping("update/{textTokenId}")
-  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @ModelAttribute String lemmaTypeId, Model model){
+  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @RequestParam(required = false) String lemmaTypeId, Model model) {
     try {
       lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeId);
-      return "texttokens/invalid-tokens";
-    }catch (Exception e){
+      return "redirect:/text-token/invalid";
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "index";

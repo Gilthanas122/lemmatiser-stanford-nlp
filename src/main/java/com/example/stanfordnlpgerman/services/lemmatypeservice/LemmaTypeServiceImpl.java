@@ -1,9 +1,14 @@
 package com.example.stanfordnlpgerman.services.lemmatypeservice;
 
+import com.example.stanfordnlpgerman.exceptions.validations.NountFoundByIdException;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
+import com.example.stanfordnlpgerman.models.dao.NewsArticle;
+import com.example.stanfordnlpgerman.models.dao.Sentence;
+import com.example.stanfordnlpgerman.models.dao.TextToken;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.repositories.LemmaTypeRepository;
+import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
 import com.example.stanfordnlpgerman.services.lemmatokenservice.LemmaTokenService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,10 +23,12 @@ import java.util.Set;
 public class LemmaTypeServiceImpl implements LemmaTypeService {
   private final LemmaTypeRepository lemmaTypeRepository;
   private final LemmaTokenService lemmaTokenService;
+  private final TextTokenRepository textTokenRepository;
 
-  public LemmaTypeServiceImpl(LemmaTypeRepository lemmaTypeRepository, LemmaTokenService lemmaTokenService) {
+  public LemmaTypeServiceImpl(LemmaTypeRepository lemmaTypeRepository, LemmaTokenService lemmaTokenService, TextTokenRepository textTokenRepository) {
     this.lemmaTypeRepository = lemmaTypeRepository;
     this.lemmaTokenService = lemmaTokenService;
+    this.textTokenRepository = textTokenRepository;
   }
 
   @Override
@@ -41,7 +48,33 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
   }
 
   @Override
-  public void addTextTokenToLemmaType(long textTokenId, String lemmaTypeText) {
+  public void addTextTokenToLemmaType(long textTokenId, String lemmaTypeIdOrText) throws NountFoundByIdException {
+    TextToken textToken = textTokenRepository.findById(textTokenId);
+    try {
+      textToken.setInvalid(false);
+      Long lemmaTypeIdParsed = Long.parseLong(lemmaTypeIdOrText);
+      LemmaType lemmaType = lemmaTypeRepository.findById(lemmaTypeIdParsed).orElse(null);
+      lemmaType.addOneTextToken(textToken);
+      textToken.setLemmaType(lemmaType);
+      lemmaTypeRepository.save(lemmaType);
+    } catch (NullPointerException e) {
+      throw new NountFoundByIdException("Could find given object by id, cause: " + e.getCause());
+    } catch (NumberFormatException e) {
+      if (!lemmaTypeRepository.existsLemmaTypeByText(lemmaTypeIdOrText)) {
+        LemmaType lemmaType = new LemmaType(textToken.getText());
+        lemmaType.addOneTextToken(textToken);
+        textToken.setLemmaType(lemmaType);
+        Sentence sentence = textToken.getSentence();
+        NewsArticle newsArticle = sentence.getNewsArticle();
+        lemmaType.addOneSentence(sentence);
+        lemmaType.addOneNewsArticle(newsArticle);
+        lemmaTypeRepository.save(lemmaType);
+        checkIfNewLemmaTypeHasMatchingTextTokensSetValid(lemmaTypeIdOrText, lemmaType.getId());
+      }
+    }
+  }
 
+  private void checkIfNewLemmaTypeHasMatchingTextTokensSetValid(String lemmaText, long lemmaTypeId) {
+    lemmaTypeRepository.updateIfLemmaTypeHasMatchingTextTokens(lemmaText, lemmaTypeId);
   }
 }

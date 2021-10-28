@@ -4,9 +4,7 @@ import lombok.Builder;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,21 +21,21 @@ public class LemmaType implements Comparable<LemmaType> {
   private boolean deleted;
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<Sentence> sentences = new ArrayList<>();
+  private Set<Sentence> sentences = new HashSet<>();
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<NewsArticle> newsArticles = new ArrayList<>();
+  private Set<NewsArticle> newsArticles = new HashSet<>();
 
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<LemmaToken> lemmaTokens = new HashSet<>();
 
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<TextToken> textTokens = new ArrayList<>();
+  private Set<TextToken> textTokens = new HashSet<>();
 
   public LemmaType() {
   }
 
-  public LemmaType(long id, String text, boolean deleted, List<Sentence> sentences, List<NewsArticle> newsArticles, Set<LemmaToken> lemmaTokens, List<TextToken> textTokens) {
+  public LemmaType(long id, String text, boolean deleted, Set<Sentence> sentences, Set<NewsArticle> newsArticles, Set<LemmaToken> lemmaTokens, Set<TextToken> textTokens) {
     this.id = id;
     this.text = text;
     this.deleted = deleted;
@@ -45,6 +43,10 @@ public class LemmaType implements Comparable<LemmaType> {
     this.newsArticles = newsArticles;
     this.lemmaTokens = lemmaTokens;
     this.textTokens = textTokens;
+  }
+
+  public LemmaType(String text) {
+    this.text = text;
   }
 
   public long getId() {
@@ -71,30 +73,6 @@ public class LemmaType implements Comparable<LemmaType> {
     this.deleted = deleted;
   }
 
-  public List<Sentence> getSentences() {
-    return sentences;
-  }
-
-  public void setSentences(List<Sentence> sentences) {
-    this.sentences = sentences;
-  }
-
-  public List<NewsArticle> getNewsArticles() {
-    return newsArticles;
-  }
-
-  public void setNewsArticles(List<NewsArticle> newsArticles) {
-    this.newsArticles = newsArticles;
-  }
-
-  public void addOneSentence(Sentence sentence) {
-    this.sentences.add(sentence);
-  }
-
-  public void addOneNewsArticle(NewsArticle newsArticle) {
-    this.newsArticles.add(newsArticle);
-  }
-
   public Set<LemmaToken> getLemmaTokens() {
     return lemmaTokens;
   }
@@ -103,11 +81,27 @@ public class LemmaType implements Comparable<LemmaType> {
     this.lemmaTokens = lemmaTokens;
   }
 
-  public List<TextToken> getTextTokens() {
+  public Set<Sentence> getSentences() {
+    return sentences;
+  }
+
+  public void setSentences(Set<Sentence> sentences) {
+    this.sentences = sentences;
+  }
+
+  public Set<NewsArticle> getNewsArticles() {
+    return newsArticles;
+  }
+
+  public void setNewsArticles(Set<NewsArticle> newsArticles) {
+    this.newsArticles = newsArticles;
+  }
+
+  public Set<TextToken> getTextTokens() {
     return textTokens;
   }
 
-  public void setTextTokens(List<TextToken> textTokens) {
+  public void setTextTokens(Set<TextToken> textTokens) {
     this.textTokens = textTokens;
   }
 
@@ -118,5 +112,13 @@ public class LemmaType implements Comparable<LemmaType> {
 
   public void addOneTextToken(TextToken textToken) {
     this.textTokens.add(textToken);
+  }
+
+  public void addOneSentence(Sentence sentence) {
+    this.sentences.add(sentence);
+  }
+
+  public void addOneNewsArticle(NewsArticle newsArticle) {
+    this.newsArticles.add(newsArticle);
   }
 }

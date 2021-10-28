@@ -14,4 +14,6 @@ public interface TextTokenService {
   Set<InvalidLemmasDTO> getInvalidLemmas();
 
   AddLemmaTypeToTextTokenDTO findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(long textTokenId, String textTokenText);
+
+  TextToken findById(long textTokenId);
 }
