@@ -8,7 +8,9 @@ import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
 import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,10 +47,15 @@ public class TextTokenServiceImpl implements TextTokenService {
   @Override
   public AddLemmaTypeToTextTokenDTO findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(long textTokenId, String textTokenText) {
     TextToken textToken = textTokenRepository.findById(textTokenId);
-    Set<String> lemmaTypeTexts = lemmaTypeService.findByText(textTokenText).stream().map(LemmaType::getText).collect(Collectors.toSet());
+    Set<LemmaType> lemmaTypes = lemmaTypeService.findByText(textTokenText);
+    Map<Long, String> lemmaTypeTextAndToken = new HashMap<>();
+    for (LemmaType lt: lemmaTypes) {
+      lemmaTypeTextAndToken.put(lt.getId(), lt.getText());
+    }
+
     AddLemmaTypeToTextTokenDTO addLemmaTypeToTextTokenDTO = AddLemmaTypeToTextTokenDTO
             .builder()
-            .lemmaTypeTexts(lemmaTypeTexts)
+            .lemmaTypeTextsAndIds(lemmaTypeTextAndToken)
             .sentenceText(textToken.getSentence().getText())
             .textTokenId(textTokenId)
             .textTokenText(textTokenText)

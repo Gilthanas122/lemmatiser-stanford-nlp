@@ -10,17 +10,17 @@
 <div th:replace="fragments/navbar.html :: navbar" ></div>
 <div th:replace="fragments/messages.html :: error" ></div>
 
-<form th:object="${addLemmaTypeToTextTokenDTO}" method="POST" th:action="@{|/lemma-type/add-to-text-token/*{textTokenId}|}">
+<form th:object="${addLemmaTypeToTextTokenDTO}" method="POST" th:action="@{|/lemma-type/update/*{textTokenId}|}">
   <h1 th:utext="|The researched text token is : <strong> *{textTokenText}</strong>|"> </h1>
   <h3 th:utext="|Sentence is :<strong> *{sentenceText} </strong>|"></h3>
 
-  <div th:if="*{lemmaTypeTexts.isEmpty()}">
+  <div th:if="*{lemmaTypeTextsAndIds.isEmpty()}">
     <input name="lemmaTypeText" placeholder="Add your word stem matching the text token">
   </div>
-  <div th:unless="*{lemmaTypeTexts.isEmpty()}">
+  <div th:unless="*{lemmaTypeTextsAndIds.isEmpty()}">
     <p>Choose the right word stem!</p>
     <select name="lemmaTypeText" >
-     <option th:each="lemmaTypeText : *{lemmaTypeTexts}" th:text="${lemmaTypeText}" th:value="${lemmaTypeText}"></option>
+     <option th:each="lemmaTypeTextsAndId: *{lemmaTypeTextsAndIds}" th:text="${lemmaTypeTextsAndId.value}" th:value="${lemmaTypeTextsAndId.key}"></option>
     </select>
   </div>
   <button type="submit">SUBMIT</button>

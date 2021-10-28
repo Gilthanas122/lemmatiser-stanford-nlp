@@ -2,7 +2,9 @@ package com.example.stanfordnlpgerman.models.dtos.texttoken;
 
 import lombok.Builder;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Builder
@@ -10,16 +12,16 @@ public class AddLemmaTypeToTextTokenDTO {
   private long textTokenId;
   private String textTokenText;
   private String sentenceText;
-  private Set<String> lemmaTypeTexts = new HashSet<>();
+  private Map<Long, String> lemmaTypeTextsAndIds = new HashMap();
 
   public AddLemmaTypeToTextTokenDTO() {
   }
 
-  public AddLemmaTypeToTextTokenDTO(long textTokenId, String textTokenText, String sentenceText, Set<String> lemmaTypeTexts) {
+  public AddLemmaTypeToTextTokenDTO(long textTokenId, String textTokenText, String sentenceText, Map<Long, String> lemmaTypeTextsAndIds) {
     this.textTokenId = textTokenId;
     this.textTokenText = textTokenText;
     this.sentenceText = sentenceText;
-    this.lemmaTypeTexts = lemmaTypeTexts;
+    this.lemmaTypeTextsAndIds = lemmaTypeTextsAndIds;
   }
 
   public long getTextTokenId() {
@@ -46,11 +48,11 @@ public class AddLemmaTypeToTextTokenDTO {
     this.sentenceText = sentenceText;
   }
 
-  public Set<String> getLemmaTypeTexts() {
-    return lemmaTypeTexts;
+  public Map<Long, String> getLemmaTypeTextsAndIds() {
+    return lemmaTypeTextsAndIds;
   }
 
-  public void setLemmaTypeTexts(Set<String> lemmaTypeTexts) {
-    this.lemmaTypeTexts = lemmaTypeTexts;
+  public void setLemmaTypeTextsAndIds(Map<Long, String> lemmaTypeTextsAndIds) {
+    this.lemmaTypeTextsAndIds = lemmaTypeTextsAndIds;
   }
 }

@@ -17,4 +17,6 @@ public interface LemmaTypeService {
   List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber);
 
   List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
+
+  void addTextTokenToLemmaType(long textTokenId, String lemmaTypeText);
 }
