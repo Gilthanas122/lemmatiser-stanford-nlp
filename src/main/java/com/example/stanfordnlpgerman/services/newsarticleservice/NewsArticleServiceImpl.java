@@ -9,7 +9,6 @@ import com.example.stanfordnlpgerman.repositories.NewsArticleRepository;
 import com.example.stanfordnlpgerman.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,17 +32,17 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
   @Override
   public NewsArticleDataDTO findByNewsArticleId(long newsArticleId) {
-   NewsArticle newsArticle = newsArticleRepository.findNewsArticleBySentenceId(newsArticleId);
-   if (newsArticle != null){
-     return NewsArticleDataDTO.builder()
-             .newsPaperName(newsArticle.getNewsPaperName())
-             .author(newsArticle.getAuthor())
-             .pageNumber(newsArticle.getPageNumber())
-             .title(newsArticle.getTitle())
-             .date(newsArticle.getPublicationDate())
-             .text(newsArticle.getSentences().stream().map(Sentence::getText).collect(Collectors.joining()))
-             .build();
-   }
-   return new NewsArticleDataDTO();
+    NewsArticle newsArticle = newsArticleRepository.findNewsArticleBySentenceId(newsArticleId);
+    if (newsArticle != null) {
+      return NewsArticleDataDTO.builder()
+              .newsPaperName(newsArticle.getNewsPaperName())
+              .author(newsArticle.getAuthor())
+              .pageNumber(newsArticle.getPageNumber())
+              .title(newsArticle.getTitle())
+              .date(newsArticle.getPublicationDate())
+              .text(newsArticle.getSentences().stream().map(Sentence::getText).collect(Collectors.joining()))
+              .build();
+    }
+    return new NewsArticleDataDTO();
   }
 }

@@ -39,6 +39,4 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
   public List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId) {
     return lemmaTypeRepository.findLemmaTypeOccurencesInSentences(sentenceIdsContainingLemma, lemmaTypeId);
   }
-
-
 }

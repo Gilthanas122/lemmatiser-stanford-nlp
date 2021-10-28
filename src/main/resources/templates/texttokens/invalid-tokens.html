@@ -7,13 +7,28 @@
 
 </head>
 <body>
-<h1>Welcome</h1>
 
 <div th:replace="fragments/navbar.html :: navbar" ></div>
 <div th:replace="fragments/messages.html :: error" ></div>
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>Text Token Text</th>
+    <th>Fix this</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="invalidLemmasDTO : ${invalidLemmasDTOS}" th:object="${invalidLemmasDTO}">
+    <td th:text="*{textTokenText}"></td>
+    <td><a th:href="@{|/text-token/change/*{textTokenId}|}">Change this</a></td>
+  </tr>
+  </tbody>
+</table>
+
 
 <script th:replace="fragments/links.html :: jquery"></script>
 <script th:replace="fragments/links.html :: cloudflare"></script>
 <script th:replace="fragments/links.html :: bootstrap"></script>
+
 </body>
 </html>

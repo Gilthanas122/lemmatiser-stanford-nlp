@@ -1,15 +1,11 @@
 package com.example.stanfordnlpgerman.controllers;
 
-import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.services.sentenceservice.SentenceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("sentence")
@@ -36,7 +32,7 @@ public class SentenceController {
     try {
       model.addAttribute("lemmaOccurenceInSentencesDTOs", sentenceService.showWordsInContext(lemmaTypeId));
       return "sentence/show-lemmas-context";
-    }catch (Exception e){
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "index";

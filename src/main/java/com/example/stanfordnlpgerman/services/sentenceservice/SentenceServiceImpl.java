@@ -7,10 +7,9 @@ import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
-public class SentenceServiceImpl implements SentenceService{
+public class SentenceServiceImpl implements SentenceService {
   private final SentenceRepository sentenceRepository;
   private final LemmaTypeService lemmaTypeService;
 

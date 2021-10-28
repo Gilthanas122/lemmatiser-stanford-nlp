@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.models.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import org.hibernate.annotations.Where;
 
@@ -23,9 +24,11 @@ public class TextToken {
   private boolean invalid;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JsonIgnore
   private LemmaType lemmaType;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JsonIgnore
   private Sentence sentence;
 
   public TextToken() {

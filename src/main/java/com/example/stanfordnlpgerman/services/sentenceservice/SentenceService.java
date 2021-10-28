@@ -5,7 +5,6 @@ import com.example.stanfordnlpgerman.models.dtos.sentence.SentenceTextAndNewsPap
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public interface SentenceService {

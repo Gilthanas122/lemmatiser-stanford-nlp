@@ -38,11 +38,11 @@ public class NewsArticleController {
   }
 
   @GetMapping("/get/{newsArticleId}")
-  public String getNewsArticleBelongingToSentence(@PathVariable long newsArticleId, Model model){
+  public String getNewsArticleBelongingToSentence(@PathVariable long newsArticleId, Model model) {
     try {
       model.addAttribute("newsArticleDataDTO", newsArticleService.findByNewsArticleId(newsArticleId));
       return "newspaper/list";
-    }catch (Exception e){
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "index";
