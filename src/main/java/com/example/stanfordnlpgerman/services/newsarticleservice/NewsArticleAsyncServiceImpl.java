@@ -90,7 +90,9 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     short position = 0;
     short coreLabelPosition = 0;
     for (String word : coreSentence.tokensAsStrings()) {
-      if (word.matches("^[a-zA-Z0-9\u00C0-\u00FF]*$")) {
+      word = word.replaceAll(
+              "[^a-zA-Z0-9]", "");
+      if (!word.isEmpty()) {
         String phraseType = coreLabels.get(coreLabelPosition).get(CoreAnnotations.PartOfSpeechAnnotation.class);
         Set<LemmaType> lemmaTypesReturned = lemmaTypeService.findByText(word);
         TextToken textToken = TextToken
@@ -101,19 +103,16 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                 .phraseType(phraseType)
                 .build();
         filteredTextTokens.add(textToken);
-        if (lemmaTypesReturned.size() > 0) {
+        if (lemmaTypesReturned.size() == 1) {
           LemmaType lemmaType = getLemmaTypeFromSet(word, lemmaTypesReturned);
           lemmaType.addOneTextToken(textToken);
           lemmaType.addOneSentence(sentence);
           lemmaType.addOneNewsArticle(newsArticle);
           textToken.setLemmaType(lemmaType);
           lemmaTypes.add(lemmaType);
-        }
-        if (lemmaTypesReturned.size() != 1) {
+        } else {
           textToken.setInvalid(true);
-          if (lemmaTypesReturned.size() < 1) {
-            textTokenService.saveTextTokenWithoutLemmaType(textToken);
-          }
+          textTokenService.saveTextTokenWithoutLemmaType(textToken);
         }
         position++;
       }
