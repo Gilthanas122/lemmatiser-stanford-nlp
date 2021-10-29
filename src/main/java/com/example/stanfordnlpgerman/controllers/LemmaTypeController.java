@@ -18,7 +18,7 @@ public class LemmaTypeController {
   public String getMostCommonLemmas(@PathVariable short pageNumber, Model model) {
     try {
       model.addAttribute("mostCommonLemmas", lemmaTypeService.findMostCommonLemmas(pageNumber));
-      return "redirect:/text-token/most-common";
+      return "lemmatypes/most-common";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }

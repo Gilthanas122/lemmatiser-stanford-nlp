@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import java.util.Set;
 @Transactional
 public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
   private final List<TextToken> filteredTextTokens = new ArrayList<>();
+  private final Set<TextToken> invalidTextTokens = new HashSet<>();
   private final NewsArticleRepository newsArticleRepository;
   private final LemmaTypeService lemmaTypeService;
   private final StanfordCoreNLP pipeline;
@@ -48,6 +50,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     newsArticle.setSentences(createSentencesFromNewsPaperArticle(createNewsPaperArticleDTO.getText(), newsArticle));
     newsArticle.setLemmaTypes(createLemmaTypesFromSentencesForNewsArticle(newsArticle.getSentences()));
     newsArticleRepository.save(newsArticle);
+    textTokenService.saveAllInvalidTextTokens(invalidTextTokens);
     long endTime = System.currentTimeMillis();
     System.out.println("Time elapsed: " + (endTime - startTime));
   }
@@ -112,7 +115,8 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
           lemmaTypes.add(lemmaType);
         } else {
           textToken.setInvalid(true);
-          textTokenService.saveTextTokenWithoutLemmaType(textToken);
+          invalidTextTokens.add(textToken);
+          //textTokenService.saveTextTokenWithoutLemmaType(textToken);
         }
         position++;
       }

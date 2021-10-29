@@ -66,4 +66,9 @@ public class TextTokenServiceImpl implements TextTokenService {
   public TextToken findById(long textTokenId) {
     return textTokenRepository.findById(textTokenId);
   }
+
+  @Override
+  public void saveAllInvalidTextTokens(Set<TextToken> invalidTextTokens) {
+      textTokenRepository.saveAll(invalidTextTokens);
+  }
 }
