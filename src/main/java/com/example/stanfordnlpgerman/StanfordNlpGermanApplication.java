@@ -1,26 +1,25 @@
 package com.example.stanfordnlpgerman;
 
-import com.example.stanfordnlpgerman.repositories.LemmaTypeRepository;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.util.*;
+
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableAsync
-public class StanfordNlpGermanApplication  /*implements CommandLineRunner*/ {
-  @Autowired
+public class StanfordNlpGermanApplication  /* implements CommandLineRunner */ {
+/*  @Autowired
   private LemmaTypeRepository lemmaTypeRepository;
   @Autowired
-  private StanfordCoreNLP pipeline;
+  private StanfordCoreNLP pipeline;*/
 
   public static void main(String[] args) {
     SpringApplication.run(StanfordNlpGermanApplication.class, args);
   }
 
-  /*@Override
+/*  @Override
   public void run(String... args) throws Exception {
     List<String> fileContent = GermanCoreLabel.getFileContent();
     TreeMap<String, TreeSet<String>> typeTokens = splitFileContent(fileContent);

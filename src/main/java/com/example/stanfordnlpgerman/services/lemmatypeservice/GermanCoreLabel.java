@@ -1,4 +1,4 @@
-package com.example.stanfordnlpgerman.services.newsarticleservice;
+package com.example.stanfordnlpgerman.services.lemmatypeservice;
 
 import edu.stanford.nlp.ling.CoreLabel;
 
@@ -40,13 +40,6 @@ public class GermanCoreLabel extends CoreLabel {
             .map(lemma -> lemma.split("\\s+")[0])
             .findFirst()
             .orElse(null);
-  }
-
-  public List<String> checkFor1LengthLemmas() {
-    return lemmaFileContent
-            .stream()
-            .filter(lemma -> lemma.split("\t").length < 2)
-            .collect(Collectors.toList());
   }
 
   public static List<String> getFileContent() {
