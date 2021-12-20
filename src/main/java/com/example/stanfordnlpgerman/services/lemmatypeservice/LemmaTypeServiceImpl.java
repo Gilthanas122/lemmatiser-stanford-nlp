@@ -61,6 +61,7 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
       lemmaType.addOneTextToken(textToken);
       textToken.setLemmaType(lemmaType);
       lemmaTypeRepository.save(lemmaType);
+
     } catch (NullPointerException e) {
       throw new NountFoundByIdException("Could find given object by id, cause: " + e.getCause());
     } catch (NumberFormatException e) {
@@ -72,8 +73,10 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
         NewsArticle newsArticle = sentence.getNewsArticle();
         lemmaType.addOneSentence(sentence);
         lemmaType.addOneNewsArticle(newsArticle);
+        textToken.setLemmaType(lemmaType);
         lemmaTypeRepository.save(lemmaType);
-        checkIfNewLemmaTypeHasMatchingTextTokensSetValid(lemmaTypeIdOrText, lemmaType.getId());
+        textTokenRepository.save(textToken);
+        checkIfNewLemmaTypeHasMatchingTextTokensSetValidByText(lemmaTypeIdOrText, lemmaType.getId());
       }
     }
   }
@@ -87,7 +90,8 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
     return lemmaTypeOptional.get();
   }
 
-  private void checkIfNewLemmaTypeHasMatchingTextTokensSetValid(String lemmaText, long lemmaTypeId) {
+  private void checkIfNewLemmaTypeHasMatchingTextTokensSetValidByText(String lemmaText, long lemmaTypeId) {
     lemmaTypeRepository.updateIfLemmaTypeHasMatchingTextTokens(lemmaText, lemmaTypeId);
   }
+
 }
