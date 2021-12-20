@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.services.lemmatypeservice;
 
+import com.example.stanfordnlpgerman.exceptions.lemmatypes.LemmaTokenNotFoundByIdException;
 import com.example.stanfordnlpgerman.exceptions.validations.NountFoundByIdException;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dao.NewsArticle;
@@ -15,7 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
+import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -72,6 +76,15 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
         checkIfNewLemmaTypeHasMatchingTextTokensSetValid(lemmaTypeIdOrText, lemmaType.getId());
       }
     }
+  }
+
+  @Override
+  public LemmaType findById(long lemmaTypeId) throws LemmaTokenNotFoundByIdException {
+    Optional<LemmaType> lemmaTypeOptional =  lemmaTypeRepository.findById(lemmaTypeId);
+    if (lemmaTypeOptional.get() == null){
+      throw new LemmaTokenNotFoundByIdException("Couldn't find lemmaType with given id");
+    }
+    return lemmaTypeOptional.get();
   }
 
   private void checkIfNewLemmaTypeHasMatchingTextTokensSetValid(String lemmaText, long lemmaTypeId) {

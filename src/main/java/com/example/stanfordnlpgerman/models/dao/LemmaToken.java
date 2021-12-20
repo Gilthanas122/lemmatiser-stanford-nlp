@@ -13,13 +13,13 @@ public class LemmaToken implements Comparable<LemmaToken> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public long id;
-  //@Column(columnDefinition = "varchar(50)")
+  @Column(columnDefinition = "varchar(50)")
   private String text;
-  //@Column(columnDefinition = "varchar(8)")
+  @Column(columnDefinition = "varchar(8)")
   private String phraseType;
   private boolean deleted;
 
-  @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private LemmaType lemmaType;
 
   public LemmaToken() {

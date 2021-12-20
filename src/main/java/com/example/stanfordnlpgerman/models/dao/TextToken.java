@@ -23,11 +23,11 @@ public class TextToken {
   private boolean deleted;
   private boolean invalid;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE},  fetch = FetchType.LAZY)
   @JsonIgnore
   private LemmaType lemmaType;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE},  fetch = FetchType.LAZY)
   @JsonIgnore
   private Sentence sentence;
 

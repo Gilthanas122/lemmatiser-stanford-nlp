@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.services.lemmatypeservice;
 
+import com.example.stanfordnlpgerman.exceptions.lemmatypes.LemmaTokenNotFoundByIdException;
 import com.example.stanfordnlpgerman.exceptions.validations.NountFoundByIdException;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
@@ -7,6 +8,7 @@ import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSenten
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
@@ -20,4 +22,6 @@ public interface LemmaTypeService {
   List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
 
   void addTextTokenToLemmaType(long textTokenId, String lemmaTypeId) throws NountFoundByIdException;
+
+  LemmaType findById(long lemmaTypeId) throws LemmaTokenNotFoundByIdException;
 }

@@ -3,9 +3,7 @@ package com.example.stanfordnlpgerman.controllers;
 import com.example.stanfordnlpgerman.services.sentenceservice.SentenceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("sentence")
@@ -28,9 +26,15 @@ public class SentenceController {
   }
 
   @GetMapping("context/{lemmaTypeId}")
-  public String showWordsInContext(@PathVariable long lemmaTypeId, Model model) {
+  public String searchLemmaTypeIdAndContext(@PathVariable long lemmaTypeId, Model model){
+    model.addAttribute("lemmaTypeId", lemmaTypeId);
+    return "lemmatypes/context";
+  }
+
+  @PostMapping("context/{lemmaTypeId}")
+  public String showWordsInContext(@PathVariable long lemmaTypeId, Model model, @RequestParam int distance) {
     try {
-      model.addAttribute("lemmaOccurenceInSentencesDTOs", sentenceService.showWordsInContext(lemmaTypeId));
+      model.addAttribute("lemmaOccurenceInSentencesDTOs", sentenceService.showWordsInContext(lemmaTypeId, distance));
       return "sentence/show-lemmas-context";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());

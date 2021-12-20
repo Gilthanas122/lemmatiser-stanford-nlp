@@ -24,10 +24,10 @@ public class NewsArticle {
   private short pageNumber;
   private boolean deleted;
 
-  @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<Sentence> sentences = new ArrayList<>();
 
-  @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
   private List<LemmaType> lemmaTypes = new ArrayList<>();
 
   public NewsArticle() {
