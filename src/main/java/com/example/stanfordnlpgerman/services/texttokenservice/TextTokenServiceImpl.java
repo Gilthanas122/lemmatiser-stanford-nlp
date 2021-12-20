@@ -71,4 +71,9 @@ public class TextTokenServiceImpl implements TextTokenService {
   public void saveAllInvalidTextTokens(Set<TextToken> invalidTextTokens) {
       textTokenRepository.saveAll(invalidTextTokens);
   }
+
+  @Override
+  public void deleteById(long textTokenId) {
+    textTokenRepository.setToBeDeleted(textTokenId);
+  }
 }

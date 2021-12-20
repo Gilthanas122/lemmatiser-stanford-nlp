@@ -18,4 +18,6 @@ public interface TextTokenService {
   TextToken findById(long textTokenId);
 
   void saveAllInvalidTextTokens(Set<TextToken> invalidTextTokens);
+
+  void deleteById(long textTokenId);
 }
