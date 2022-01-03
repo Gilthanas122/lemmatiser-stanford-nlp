@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface NewsArticleService {
 
-  void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws MissingParamsException, LemmaTokenNotFoundByTextException, MoreThanOneLemmaTokenBelongingToTheText;
+  void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception;
 
   NewsArticleDataDTO findByNewsArticleId(long newsArticleId);
 }

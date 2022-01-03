@@ -22,7 +22,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
   }
 
   @Override
-  public void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws MissingParamsException {
+  public void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception {
     ErrorServiceImpl.buildMissingFieldErrorMessage(createNewsPaperArticleDTO);
     if (createNewsPaperArticleDTO.getPageNumber() < 1) {
       throw new MissingParamsException("Following parameters are missing: pageNumber");

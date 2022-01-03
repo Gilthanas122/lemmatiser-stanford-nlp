@@ -14,7 +14,6 @@ public class TextToken {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  @Column(columnDefinition = "varchar(50)")
   private String text;
   @Column(columnDefinition = "varchar(8)")
   private String phraseType;

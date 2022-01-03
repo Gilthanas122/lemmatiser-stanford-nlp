@@ -9,6 +9,6 @@ import java.util.Set;
 
 @Service
 public interface NewsArticleAsyncService {
-  void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO);
+  void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception;
 
 }

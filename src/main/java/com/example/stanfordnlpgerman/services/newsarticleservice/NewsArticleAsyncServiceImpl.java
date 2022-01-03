@@ -37,7 +37,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
   }
 
   @Async
-  public void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) {
+  public void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception {
     NewsArticle newsArticle = NewsArticle
             .builder()
             .newsPaperName(createNewsPaperArticleDTO.getNewsPaperName())
@@ -60,7 +60,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     return lemmaTypes;
   }
 
-  private List<Sentence> createSentencesFromNewsPaperArticle(String text, NewsArticle newsArticle) {
+  private List<Sentence> createSentencesFromNewsPaperArticle(String text, NewsArticle newsArticle) throws Exception {
     CoreDocument coreDocument = new CoreDocument(text);
     pipeline.annotate(coreDocument);
     List<CoreSentence> coreSentences = coreDocument.sentences();
@@ -88,6 +88,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     List<LemmaType> lemmaTypes = new ArrayList<>();
     short position = 0;
     short coreLabelPosition = 0;
+
     for (String word : coreSentence.tokensAsStrings()) {
       word = word.replaceAll(
               "[^a-zA-Z0-9]", "");
@@ -112,7 +113,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
         } else {
           textToken.setInvalid(true);
           invalidTextTokens.add(textToken);
-          //textTokenService.saveTextTokenWithoutLemmaType(textToken);
         }
         position++;
       }
@@ -122,11 +122,12 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
   }
 
   private LemmaType getLemmaTypeFromSet(String word, Set<LemmaType> lemmaTypesReturned) {
+    LemmaType toReturn = null;
     for (LemmaType lemmaType : lemmaTypesReturned) {
       if (lemmaType.getText().equalsIgnoreCase(word)) {
-        return lemmaType;
+        toReturn = lemmaType;
       } else {
-        return lemmaType.getLemmaTokens()
+        toReturn =  lemmaType.getLemmaTokens()
                 .stream()
                 .filter(lemmaToken -> lemmaToken.getText().equalsIgnoreCase(word))
                 .findFirst()
@@ -134,6 +135,14 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                 .orElse(null);
       }
     }
-    return null;
+    if (toReturn == null){
+      LemmaToken lemmaTokenToGetPhraseType = new LemmaToken();
+      for (LemmaType lt: lemmaTypesReturned) {
+        toReturn = lt;
+        lemmaTokenToGetPhraseType = (LemmaToken) lt.getLemmaTokens().stream().toArray()[0];
+      }
+      toReturn.addOneLemmaToken(LemmaToken.builder().text(word).lemmaType(toReturn).phraseType(lemmaTokenToGetPhraseType.getPhraseType()).build());
+    }
+    return toReturn;
   }
 }
