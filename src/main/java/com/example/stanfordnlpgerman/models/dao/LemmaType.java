@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.models.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import org.hibernate.annotations.Where;
 
@@ -20,15 +21,19 @@ public class LemmaType implements Comparable<LemmaType> {
   private String text;
   private boolean deleted;
 
+  @JsonIgnore
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private Set<Sentence> sentences = new HashSet<>();
 
+  @JsonIgnore
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
   private Set<NewsArticle> newsArticles = new HashSet<>();
 
+  @JsonIgnore
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
   private Set<LemmaToken> lemmaTokens = new HashSet<>();
 
+  @JsonIgnore
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
   private Set<TextToken> textTokens = new HashSet<>();
 

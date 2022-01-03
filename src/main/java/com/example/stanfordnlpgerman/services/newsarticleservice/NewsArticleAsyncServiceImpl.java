@@ -38,7 +38,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
 
   @Async
   public void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) {
-    long startTime = System.currentTimeMillis();
     NewsArticle newsArticle = NewsArticle
             .builder()
             .newsPaperName(createNewsPaperArticleDTO.getNewsPaperName())
@@ -51,8 +50,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     newsArticle.setLemmaTypes(createLemmaTypesFromSentencesForNewsArticle(newsArticle.getSentences()));
     newsArticleRepository.save(newsArticle);
     textTokenService.saveAllInvalidTextTokens(invalidTextTokens);
-    long endTime = System.currentTimeMillis();
-    System.out.println("Time elapsed: " + (endTime - startTime));
   }
 
   private List<LemmaType> createLemmaTypesFromSentencesForNewsArticle(List<Sentence> sentences) {

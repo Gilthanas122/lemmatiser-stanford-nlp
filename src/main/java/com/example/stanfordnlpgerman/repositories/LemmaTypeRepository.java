@@ -17,9 +17,9 @@ import java.util.Set;
 @Repository
 public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, PagingAndSortingRepository<LemmaType, Long> {
 
-  @Query("SELECT lt FROM LemmaToken lto JOIN LemmaType lt ON lto.lemmaType.id = lt.id " +
-          "WHERE lto.text = ?1 OR lt.text = ?1")
-  Set<LemmaType> findAllByText(String originalText);
+  @Query("SELECT lt FROM LemmaType lt JOIN lt.lemmaTokens lto " +
+          "WHERE lt.text = ?1 OR lto.text = ?1")
+  Set<LemmaType> findAllByLemmaText(String originalText);
 
   @Query("SELECT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
           "FROM LemmaType lt JOIN lt.newsArticles na WHERE size(lt.textTokens) > 0 ORDER BY size(lt.textTokens) desc")
@@ -39,4 +39,6 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
   @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
           "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest of);
+
+  Set<LemmaType> findAllByTextOrLemmaTokensText(String familie, String fm);
 }

@@ -45,6 +45,6 @@ public class TextTokenController {
     }catch (Exception e){
       model.addAttribute("error", e.getMessage());
     }
-    return "index";
+    return "redirect:/text-token/invalid";
   }
 }

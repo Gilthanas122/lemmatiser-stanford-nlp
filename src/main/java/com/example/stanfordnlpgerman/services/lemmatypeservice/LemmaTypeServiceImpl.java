@@ -37,7 +37,8 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
   @Override
   @Transactional
   public Set<LemmaType> findByText(String originalText) {
-    return lemmaTypeRepository.findAllByText(originalText);
+    Set<LemmaType> lemmaTypes =  lemmaTypeRepository.findAllByTextOrLemmaTokensText(originalText, originalText);
+    return lemmaTypes;
   }
 
   @Override
