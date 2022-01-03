@@ -90,8 +90,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     short coreLabelPosition = 0;
 
     for (String word : coreSentence.tokensAsStrings()) {
-      word = word.replaceAll(
-              "[^a-zA-Z0-9]", "");
+      word = word.replaceAll("[^0-9\\p{L}\\s]", "");
       if (!word.isEmpty()) {
         String phraseType = coreLabels.get(coreLabelPosition).get(CoreAnnotations.PartOfSpeechAnnotation.class);
         Set<LemmaType> lemmaTypesReturned = lemmaTypeService.findByText(word);
