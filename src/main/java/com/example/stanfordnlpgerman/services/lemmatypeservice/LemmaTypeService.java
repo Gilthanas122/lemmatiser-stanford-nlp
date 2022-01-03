@@ -8,7 +8,6 @@ import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSenten
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +16,7 @@ import java.util.Set;
 public interface LemmaTypeService {
   Set<LemmaType> findByText(String originalText);
 
-  List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber);
+  List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber, boolean keyword);
 
   List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
 

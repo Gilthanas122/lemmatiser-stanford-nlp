@@ -2,6 +2,7 @@ package com.example.stanfordnlpgerman.services.lemmatypeservice;
 
 import com.example.stanfordnlpgerman.exceptions.lemmatypes.LemmaTokenNotFoundByIdException;
 import com.example.stanfordnlpgerman.exceptions.validations.NountFoundByIdException;
+import com.example.stanfordnlpgerman.models.KeyWordsSingleton;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dao.NewsArticle;
 import com.example.stanfordnlpgerman.models.dao.Sentence;
@@ -16,8 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
-import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,8 +41,11 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
   }
 
   @Override
-  public List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber) {
-    return lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
+  public List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber, boolean keyword) {
+    if (keyword) {
+      return lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
+    }
+    return lemmaTypeRepository.findMostCommonLemmasInNewsArticlesByKeyWords(KeyWordsSingleton.getKeyWords(), PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
   }
 
   @Override
@@ -83,8 +85,8 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
 
   @Override
   public LemmaType findById(long lemmaTypeId) throws LemmaTokenNotFoundByIdException {
-    Optional<LemmaType> lemmaTypeOptional =  lemmaTypeRepository.findById(lemmaTypeId);
-    if (lemmaTypeOptional.get() == null){
+    Optional<LemmaType> lemmaTypeOptional = lemmaTypeRepository.findById(lemmaTypeId);
+    if (lemmaTypeOptional.get() == null) {
       throw new LemmaTokenNotFoundByIdException("Couldn't find lemmaType with given id");
     }
     return lemmaTypeOptional.get();

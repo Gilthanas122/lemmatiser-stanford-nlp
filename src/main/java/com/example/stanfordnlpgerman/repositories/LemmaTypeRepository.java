@@ -3,6 +3,7 @@ package com.example.stanfordnlpgerman.repositories;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -34,4 +35,8 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
   void updateIfLemmaTypeHasMatchingTextTokens(String lemmaTypeText, long lemmaTypeId);
 
   boolean existsLemmaTypeByText(String lemmaTypeIdOrText);
+
+  @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
+          "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 ORDER BY size(lt.textTokens) desc")
+  List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest of);
 }

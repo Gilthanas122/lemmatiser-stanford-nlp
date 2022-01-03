@@ -23,6 +23,7 @@ public class NewsArticle {
   private Date publicationDate;
   private short pageNumber;
   private boolean deleted;
+  private int relevance;
 
   @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<Sentence> sentences = new ArrayList<>();
@@ -33,7 +34,7 @@ public class NewsArticle {
   public NewsArticle() {
   }
 
-  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, short pageNumber, boolean deleted, List<Sentence> sentences, List<LemmaType> lemmaTypes) {
+  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, short pageNumber, boolean deleted, int relevance, List<Sentence> sentences, List<LemmaType> lemmaTypes) {
     this.id = id;
     this.newsPaperName = newsPaperName;
     this.title = title;
@@ -41,6 +42,7 @@ public class NewsArticle {
     this.publicationDate = publicationDate;
     this.pageNumber = pageNumber;
     this.deleted = deleted;
+    this.relevance = relevance;
     this.sentences = sentences;
     this.lemmaTypes = lemmaTypes;
   }
@@ -119,6 +121,14 @@ public class NewsArticle {
 
   public void setLemmaTypes(List<LemmaType> lemmaTypes) {
     this.lemmaTypes = lemmaTypes;
+  }
+
+  public int getRelevance() {
+    return relevance;
+  }
+
+  public void setRelevance(int relevance) {
+    this.relevance = relevance;
   }
 
   public void addOneLemmaType(LemmaType lemmaType) {

@@ -14,10 +14,10 @@ public class LemmaTypeController {
     this.lemmaTypeService = lemmaTypeService;
   }
 
-  @GetMapping("most-common/{pageNumber}")
-  public String getMostCommonLemmas(@PathVariable short pageNumber, Model model) {
+  @GetMapping("most-common/{pageNumber}/{keyword}")
+  public String getMostCommonLemmas(@PathVariable short pageNumber, @PathVariable boolean keyword,  Model model) {
     try {
-      model.addAttribute("mostCommonLemmas", lemmaTypeService.findMostCommonLemmas(pageNumber));
+      model.addAttribute("mostCommonLemmas", lemmaTypeService.findMostCommonLemmas(pageNumber, keyword));
       return "lemmatypes/most-common";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
