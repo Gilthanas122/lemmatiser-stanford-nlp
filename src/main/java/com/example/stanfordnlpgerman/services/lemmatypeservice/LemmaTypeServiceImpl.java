@@ -103,15 +103,17 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
 
   private Set<LemmaToken> createLemmaTokens(String lemmaToken, LemmaType lemmaType, String phraseTypeIn) {
     Set<LemmaToken> lemmaTokens = new HashSet<>();
-    String[] words = lemmaToken.replaceAll("// ", "").split(";");
+    String[] words = lemmaToken
+            .split(";");
 
     for (String word : words) {
-      CoreLabel tempCoreLabel = CoreLabel.wordFromString(word);
+      String wordTrimmed = word.trim();
+      CoreLabel tempCoreLabel = CoreLabel.wordFromString(wordTrimmed);
       String phraseType = tempCoreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
       if (phraseType == null || phraseType.isEmpty()) {
         phraseType = phraseTypeIn;
       }
-      lemmaTokens.add(LemmaToken.builder().lemmaType(lemmaType).text(word).phraseType(phraseType).build());
+      lemmaTokens.add(LemmaToken.builder().lemmaType(lemmaType).text(wordTrimmed).phraseType(phraseType).build());
     }
 
     return lemmaTokens;
