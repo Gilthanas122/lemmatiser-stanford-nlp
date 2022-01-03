@@ -16,6 +16,9 @@
 
   <div th:if="*{lemmaTypeTextsAndIds.isEmpty()}">
     <input name="lemmaTypeId" placeholder="Add your word stem matching the text token">
+    <input name="lemmaToken" placeholder="Add other forms of given token, if more, separate them with ';'">
+    <input name="phraseType" placeholder="phrasetype">
+
   </div>
   <div th:unless="*{lemmaTypeTextsAndIds.isEmpty()}">
     <p>Choose the right word stem!</p>

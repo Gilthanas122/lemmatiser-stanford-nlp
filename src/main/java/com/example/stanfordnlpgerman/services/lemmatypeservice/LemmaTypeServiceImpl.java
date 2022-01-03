@@ -3,20 +3,19 @@ package com.example.stanfordnlpgerman.services.lemmatypeservice;
 import com.example.stanfordnlpgerman.exceptions.lemmatypes.LemmaTokenNotFoundByIdException;
 import com.example.stanfordnlpgerman.exceptions.validations.NountFoundByIdException;
 import com.example.stanfordnlpgerman.models.KeyWordsSingleton;
-import com.example.stanfordnlpgerman.models.dao.LemmaType;
-import com.example.stanfordnlpgerman.models.dao.NewsArticle;
-import com.example.stanfordnlpgerman.models.dao.Sentence;
-import com.example.stanfordnlpgerman.models.dao.TextToken;
+import com.example.stanfordnlpgerman.models.dao.*;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.repositories.LemmaTypeRepository;
 import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
-import com.example.stanfordnlpgerman.services.lemmatokenservice.LemmaTokenService;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,19 +24,17 @@ import java.util.Set;
 @Transactional
 public class LemmaTypeServiceImpl implements LemmaTypeService {
   private final LemmaTypeRepository lemmaTypeRepository;
-  private final LemmaTokenService lemmaTokenService;
   private final TextTokenRepository textTokenRepository;
 
-  public LemmaTypeServiceImpl(LemmaTypeRepository lemmaTypeRepository, LemmaTokenService lemmaTokenService, TextTokenRepository textTokenRepository) {
+  public LemmaTypeServiceImpl(LemmaTypeRepository lemmaTypeRepository, TextTokenRepository textTokenRepository) {
     this.lemmaTypeRepository = lemmaTypeRepository;
-    this.lemmaTokenService = lemmaTokenService;
     this.textTokenRepository = textTokenRepository;
   }
 
   @Override
   @Transactional
   public Set<LemmaType> findByText(String originalText) {
-    Set<LemmaType> lemmaTypes =  lemmaTypeRepository.findAllByTextOrLemmaTokensText(originalText, originalText);
+    Set<LemmaType> lemmaTypes = lemmaTypeRepository.findAllByTextOrLemmaTokensText(originalText, originalText);
     return lemmaTypes;
   }
 
@@ -55,7 +52,7 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
   }
 
   @Override
-  public void addTextTokenToLemmaType(long textTokenId, String lemmaTypeIdOrText) throws NountFoundByIdException {
+  public void addTextTokenToLemmaType(long textTokenId, String lemmaTypeIdOrText, String lemmaToken, String phraseType) throws NountFoundByIdException {
     TextToken textToken = textTokenRepository.findById(textTokenId);
     try {
       textToken.setInvalid(false);
@@ -68,19 +65,26 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
     } catch (NullPointerException e) {
       throw new NountFoundByIdException("Could find given object by id, cause: " + e.getCause());
     } catch (NumberFormatException e) {
-      if (!lemmaTypeRepository.existsLemmaTypeByText(lemmaTypeIdOrText)) {
-        LemmaType lemmaType = new LemmaType(textToken.getText());
-        lemmaType.addOneTextToken(textToken);
-        textToken.setLemmaType(lemmaType);
-        Sentence sentence = textToken.getSentence();
-        NewsArticle newsArticle = sentence.getNewsArticle();
-        lemmaType.addOneSentence(sentence);
-        lemmaType.addOneNewsArticle(newsArticle);
-        textToken.setLemmaType(lemmaType);
-        lemmaTypeRepository.save(lemmaType);
-        textTokenRepository.save(textToken);
-        checkIfNewLemmaTypeHasMatchingTextTokensSetValidByText(lemmaTypeIdOrText, lemmaType.getId());
+      addNewTextTokenToLemmaType(lemmaTypeIdOrText, lemmaToken, textToken, phraseType);
+    }
+  }
+
+  private void addNewTextTokenToLemmaType(String lemmaTypeIdOrText, String lemmaToken, TextToken textToken, String phraseType) {
+    if (!lemmaTypeRepository.existsLemmaTypeByText(lemmaTypeIdOrText)) {
+      LemmaType lemmaType = new LemmaType(textToken.getText());
+      lemmaType.addOneTextToken(textToken);
+      textToken.setLemmaType(lemmaType);
+      Sentence sentence = textToken.getSentence();
+      NewsArticle newsArticle = sentence.getNewsArticle();
+      lemmaType.addOneSentence(sentence);
+      lemmaType.addOneNewsArticle(newsArticle);
+      textToken.setLemmaType(lemmaType);
+      if (lemmaToken != null || !lemmaToken.isEmpty()) {
+        lemmaType.setLemmaTokens(createLemmaTokens(lemmaToken, lemmaType, phraseType));
       }
+      lemmaTypeRepository.save(lemmaType);
+      textTokenRepository.save(textToken);
+      checkIfNewLemmaTypeHasMatchingTextTokensSetValidByText(lemmaTypeIdOrText, lemmaType.getId());
     }
   }
 
@@ -95,6 +99,22 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
 
   private void checkIfNewLemmaTypeHasMatchingTextTokensSetValidByText(String lemmaText, long lemmaTypeId) {
     lemmaTypeRepository.updateIfLemmaTypeHasMatchingTextTokens(lemmaText, lemmaTypeId);
+  }
+
+  private Set<LemmaToken> createLemmaTokens(String lemmaToken, LemmaType lemmaType, String phraseTypeIn) {
+    Set<LemmaToken> lemmaTokens = new HashSet<>();
+    String[] words = lemmaToken.replaceAll("// ", "").split(";");
+
+    for (String word : words) {
+      CoreLabel tempCoreLabel = CoreLabel.wordFromString(word);
+      String phraseType = tempCoreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+      if (phraseType == null || phraseType.isEmpty()) {
+        phraseType = phraseTypeIn;
+      }
+      lemmaTokens.add(LemmaToken.builder().lemmaType(lemmaType).text(word).phraseType(phraseType).build());
+    }
+
+    return lemmaTokens;
   }
 
 }

@@ -82,7 +82,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     return sentences;
   }
 
-
   @Transactional
   protected List<LemmaType> createLemmaTypesFromSentences(CoreSentence coreSentence, Sentence sentence, NewsArticle newsArticle) {
     List<CoreLabel> coreLabels = coreSentence.tokens();

@@ -20,7 +20,7 @@ public interface LemmaTypeService {
 
   List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
 
-  void addTextTokenToLemmaType(long textTokenId, String lemmaTypeId) throws NountFoundByIdException;
+  void addTextTokenToLemmaType(long textTokenId, String lemmaTypeId, String lemmaToken, String phraseType) throws NountFoundByIdException;
 
   LemmaType findById(long lemmaTypeId) throws LemmaTokenNotFoundByIdException;
 }

@@ -26,9 +26,9 @@ public class LemmaTypeController {
   }
 
   @PostMapping("update/{textTokenId}")
-  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @RequestParam(required = false) String lemmaTypeId, Model model) {
+  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @RequestParam(required = false) String lemmaTypeId, @RequestParam(required = false) String lemmaToken, @RequestParam (required = false) String phraseType, Model model) {
     try {
-      lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeId);
+      lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeId, lemmaToken, phraseType);
       return "redirect:/text-token/invalid";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
