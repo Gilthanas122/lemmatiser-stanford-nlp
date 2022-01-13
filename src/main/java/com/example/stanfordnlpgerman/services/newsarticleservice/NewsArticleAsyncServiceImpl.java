@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.services.newsarticleservice;
 
+import com.example.stanfordnlpgerman.models.KeyWordsSingleton;
 import com.example.stanfordnlpgerman.models.dao.*;
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
 import com.example.stanfordnlpgerman.repositories.NewsArticleRepository;
@@ -47,9 +48,24 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
             .publicationDate(createNewsPaperArticleDTO.getPublicationDate())
             .build();
     newsArticle.setSentences(createSentencesFromNewsPaperArticle(createNewsPaperArticleDTO.getText(), newsArticle));
-    newsArticle.setLemmaTypes(createLemmaTypesFromSentencesForNewsArticle(newsArticle.getSentences()));
+    List<LemmaType> lemmaTypes = createLemmaTypesFromSentencesForNewsArticle(newsArticle.getSentences());
+    newsArticle.setLemmaTypes(lemmaTypes);
+    newsArticle.setRelevance(setRelevanceForNewsArticleByLemmaTypes(lemmaTypes));
     newsArticleRepository.save(newsArticle);
     textTokenService.saveAllInvalidTextTokens(invalidTextTokens);
+  }
+
+  private int setRelevanceForNewsArticleByLemmaTypes(List<LemmaType> lemmaTypes) {
+    int relevance = 0;
+    Set<String> keyWords = KeyWordsSingleton.getKeyWords();
+    for (String keyword : keyWords) {
+      for (LemmaType lemmaType : lemmaTypes) {
+        if (lemmaType.getText().equals(keyword)){
+          relevance++;
+        }
+      }
+    }
+    return relevance;
   }
 
   private List<LemmaType> createLemmaTypesFromSentencesForNewsArticle(List<Sentence> sentences) {
