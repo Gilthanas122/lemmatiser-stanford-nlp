@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Most relevant newspaper articles</title>
+  <link th:replace="fragments/links.html :: bootstrap-link">
+
+</head>
+<body>
+
+<div th:replace="fragments/navbar.html :: navbar" ></div>
+
+<div th:replace="fragments/messages.html :: error" ></div>
+<h1>Insert data for newspaper</h1>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Newspaper name</th>
+    <th>PublicationDate</th>
+    <th>TEXT</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="relevantNewsArticleText : ${relevantNewsArticleTexts}" th:object="${relevantNewsArticleText}">
+    <td th:text="*{id}"></td>
+    <td th:text="*{newsPaperName}"></td>
+    <td th:text="*{publicationDate}"></td>
+    <td th:text="*{text}"></td>
+
+  </tr>
+  </tbody>
+</table>
+
+<script th:replace="fragments/links.html :: jquery"></script>
+<script th:replace="fragments/links.html :: cloudflare"></script>
+<script th:replace="fragments/links.html :: bootstrap"></script>
+</body>
+</html>

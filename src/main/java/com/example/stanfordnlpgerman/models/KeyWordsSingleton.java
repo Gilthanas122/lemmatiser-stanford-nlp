@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class KeyWordsSingleton {
   private static Set<String> keyWords =
-          new HashSet<>(Arrays.asList("Ungarndeutsch", "Wir", "Familie"));;
+          new HashSet<>(Arrays.asList("Ungarndeutsch", "Wir", "Familie"));
 
   public static Set<String> getKeyWords() {
     return keyWords;
