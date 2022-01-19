@@ -19,4 +19,6 @@ public interface SentenceService {
   List<InvalidSentencesDTO> getInvalidSentences();
 
   AdjacentSentencesToInvalidDTO getAdjacentSentences(long id, String text);
+
+  void fixInvalidSentences(int operation, long id) throws Exception;
 }

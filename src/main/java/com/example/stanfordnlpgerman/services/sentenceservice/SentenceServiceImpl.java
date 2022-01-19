@@ -69,6 +69,112 @@ public class SentenceServiceImpl implements SentenceService {
     return adjacentSentencesToInvalidDTO;
   }
 
+  @Override
+  public void fixInvalidSentences(int operation, long id) throws Exception {
+    switch (operation){
+      case 1:
+        makeSentenceValidWithoutMerging(id);
+        break;
+      case 2:
+          mergeWithOneSentence(id, true);
+          break;
+      case 3:
+        mergeWithOneSentence(id, false);
+        break;
+      case 4:
+        mergeWithAllAdjacentSentence(id);
+        break;
+      default:
+        throw new Exception("Invalid operation");
+    }
+  }
+
+  private void mergeWithAllAdjacentSentence(long id) {
+  }
+
+  private void mergeWithLatterSentence(long id) {
+  }
+
+  private void mergeWithOneSentence(long id, boolean isItPreviousToMergeWith) {
+    NewsArticle newsArticle = sentenceRepository.findNewsArticleBySentenceId(id);
+    Collections.sort(newsArticle.getSentences());
+    short actualPosition = 0;
+    boolean changeAfterThis = false;
+
+    for (int i = 0; i <newsArticle.getSentences().size(); i++) {
+      Sentence sentence = newsArticle.getSentences().get(i);
+      if (sentence.getId() == id){
+        Sentence sentenceToDelete = new Sentence();
+        if(isItPreviousToMergeWith){
+          actualPosition = (short) (sentence.getTextPosition() -1);
+          sentenceToDelete = newsArticle.getSentences().get(i -1);
+          sentenceToDelete.setDeleted(true);
+        }else{
+          sentenceToDelete = newsArticle.getSentences().get(i + 1);
+          sentenceToDelete.setDeleted(true);
+          actualPosition = (short) (sentence.getTextPosition());
+          i++;
+        }
+        sentence = inheritDataFromDeletedSentence(sentence, sentenceToDelete, isItPreviousToMergeWith);
+        sentence.setInvalid(false);
+        changeAfterThis = true;
+      }
+      if (changeAfterThis){
+        sentence.setTextPosition(actualPosition);
+        actualPosition++;
+        sentenceRepository.save(sentence);
+      }
+    }
+  }
+
+  private Sentence inheritDataFromDeletedSentence(Sentence sentence, Sentence sentenceToDelete, boolean isItFirst) {
+    List<LemmaType> lemmaTypesFromToDelete = updateLemmaTypes(sentence, sentenceToDelete.getLemmaTypes(), sentenceToDelete);
+    List<TextToken> textTokensFromToDelete = updateTextTokens(sentence, sentenceToDelete.getTextTokens());
+    String sentenceText = sentenceToDelete.getText();
+    sentenceToDelete.setLemmaTypes(new ArrayList<>());
+
+    List<LemmaType> sentenceLemmaTypes = sentence.getLemmaTypes();
+    List<TextToken> sentenceTextTokens = sentence.getTextTokens();
+    String concatString = "";
+    if (isItFirst){
+      concatString = sentenceText.concat(" " + sentence.getText());
+    }else{
+      concatString = sentence.getText().concat(" " + sentenceText);
+    }
+    sentenceLemmaTypes.addAll(lemmaTypesFromToDelete);
+    sentenceTextTokens.addAll(textTokensFromToDelete);
+
+    sentence.setLemmaTypes(sentenceLemmaTypes);
+    sentence.setTextTokens(sentenceTextTokens);
+    sentence.setText(concatString);
+    return sentence;
+  }
+
+  private List<TextToken> updateTextTokens(Sentence sentence, List<TextToken> textTokens) {
+    return textTokens
+            .stream()
+            .map(s-> {
+              s.setSentence(sentence);
+              return s;
+            })
+            .collect(Collectors.toList());
+  }
+
+  private List<LemmaType> updateLemmaTypes(Sentence sentence, List<LemmaType> lemmaTypesFromToDelete, Sentence sentenceToDelete) {
+    return lemmaTypesFromToDelete
+            .stream()
+            .map(s-> {
+              s.addOneSentence(sentence);
+              s.removeOneSentence(sentenceToDelete);
+              return s;
+            })
+            .collect(Collectors.toList());
+  }
+
+  private void makeSentenceValidWithoutMerging(long id) {
+    sentenceRepository.makeSentenceValidById(id);
+  }
+
   private List<LemmaOccurenceInSentencesDTO> createFromMapListLemmaOccurenceInSentencesDTO(Map<String, Long> textTokensAndOccurences, String lemmaTypeText) {
     List<LemmaOccurenceInSentencesDTO> lemmaOccurenceInSentencesDTOS = new LinkedList<>();
     for (Map.Entry<String, Long> entry : textTokensAndOccurences.entrySet()) {

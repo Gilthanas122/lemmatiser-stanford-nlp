@@ -6,8 +6,10 @@ import com.example.stanfordnlpgerman.models.dao.TextToken;
 import com.example.stanfordnlpgerman.models.dtos.sentence.InvalidSentencesDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.SentenceTextAndNewsPaperIdDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,4 +30,10 @@ public interface SentenceRepository extends JpaRepository<Sentence, Long> {
 
   @Query("SELECT n FROM NewsArticle n JOIN n.sentences s WHERE s.id = ?1")
   NewsArticle findNewsArticleBySentenceId(long id);
+
+  @Transactional
+  @Modifying
+  @Query("UPDATE Sentence s SET s.invalid = false WHERE s.id = ?1")
+  void makeSentenceValidById(long id);
+
 }

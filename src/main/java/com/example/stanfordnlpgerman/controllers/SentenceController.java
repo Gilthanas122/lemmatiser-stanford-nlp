@@ -48,14 +48,32 @@ public class SentenceController {
 
   @GetMapping("invalid")
   public String getInvalidSentences(Model model){
-    model.addAttribute("invalidSentences", sentenceService.getInvalidSentences());
+    try {
+      model.addAttribute("invalidSentences", sentenceService.getInvalidSentences());
+    }catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
+    }
     return "sentence/invalid";
   }
 
   @PostMapping("fix-invalid/{id}")
   public String fixInvalidSentences(@RequestParam String text, Model model, @PathVariable long id){
-    model.addAttribute("adjacentSentencesToInvalidDTO", sentenceService.getAdjacentSentences(id, text));
+    try {
+      model.addAttribute("adjacentSentencesToInvalidDTO", sentenceService.getAdjacentSentences(id, text));
+    }catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
+    }
     return "sentence/fix-invalid";
+  }
+
+  @GetMapping("fix-invalid/{operation}/{id}")
+  public String fixSentencesByMergingThem(@PathVariable int operation, @PathVariable long id, Model model){
+    try {
+      sentenceService.fixInvalidSentences(operation, id);
+    }catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "redirect:/sentence/invalid";
   }
 
 }

@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 @Entity
 @Table(name = "lemmatypes")
@@ -124,5 +125,9 @@ public class LemmaType implements Comparable<LemmaType> {
 
   public void addOneLemmaToken(LemmaToken lemmaToken) {
     this.lemmaTokens.add(lemmaToken);
+  }
+
+  public void removeOneSentence(Sentence sentenceToDelete) {
+    this.sentences.removeIf(s -> s.getId() == sentenceToDelete.getId());
   }
 }

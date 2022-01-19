@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -21,4 +22,9 @@ public interface TextTokenRepository extends JpaRepository<TextToken, Long> {
   @Modifying
   @Query("UPDATE TextToken tt SET tt.deleted = true WHERE tt.id = ?1")
   void setToBeDeleted(long textTokenId);
+
+  @Transactional
+  @Modifying
+  @Query("DELETE FROM TextToken tt where tt in (?1)")
+  void deleteMultipleTextTokens(List<TextToken> textTokens);
 }

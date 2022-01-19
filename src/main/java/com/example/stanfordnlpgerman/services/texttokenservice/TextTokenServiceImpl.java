@@ -8,10 +8,7 @@ import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
 import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class TextTokenServiceImpl implements TextTokenService {
@@ -76,4 +73,5 @@ public class TextTokenServiceImpl implements TextTokenService {
   public void deleteById(long textTokenId) {
     textTokenRepository.setToBeDeleted(textTokenId);
   }
+
 }
