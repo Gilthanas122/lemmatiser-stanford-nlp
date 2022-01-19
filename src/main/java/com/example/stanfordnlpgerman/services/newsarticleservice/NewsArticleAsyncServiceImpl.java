@@ -6,6 +6,7 @@ import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArti
 import com.example.stanfordnlpgerman.repositories.NewsArticleRepository;
 import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import com.example.stanfordnlpgerman.services.texttokenservice.TextTokenService;
+import com.example.stanfordnlpgerman.services.validations.ErrorServiceImpl;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
@@ -89,6 +90,9 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
               .text(sent.text())
               .textPosition(position)
               .build();
+      if (ErrorServiceImpl.invalidSentence(sentence.getText())){
+        sentence.setInvalid(true);
+      }
       sentence.setLemmaTypes(createLemmaTypesFromSentences(sent, sentence, newsArticle));
       sentence.setTextTokens(filteredTextTokens);
       filteredTextTokens.clear();

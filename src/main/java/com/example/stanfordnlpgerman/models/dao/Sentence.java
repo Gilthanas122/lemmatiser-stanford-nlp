@@ -21,6 +21,7 @@ public class Sentence {
   @Column(columnDefinition = "smallint")
   private short textPosition;
   private boolean deleted;
+  private boolean invalid;
 
   @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
   private NewsArticle newsArticle;
@@ -34,11 +35,12 @@ public class Sentence {
   public Sentence() {
   }
 
-  public Sentence(long id, String text, short textPosition, boolean deleted, NewsArticle newsArticle, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
+  public Sentence(long id, String text, short textPosition, boolean deleted, boolean invalid, NewsArticle newsArticle, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
     this.id = id;
     this.text = text;
     this.textPosition = textPosition;
     this.deleted = deleted;
+    this.invalid = invalid;
     this.newsArticle = newsArticle;
     this.lemmaTypes = lemmaTypes;
     this.textTokens = textTokens;
@@ -98,6 +100,14 @@ public class Sentence {
 
   public void setTextTokens(List<TextToken> textTokens) {
     this.textTokens = textTokens;
+  }
+
+  public boolean isInvalid() {
+    return invalid;
+  }
+
+  public void setInvalid(boolean invalid) {
+    this.invalid = invalid;
   }
 
   public void addOneLemmaType(LemmaType lemmaType) {

@@ -3,6 +3,7 @@ package com.example.stanfordnlpgerman.services.sentenceservice;
 import com.example.stanfordnlpgerman.exceptions.lemmatypes.LemmaTokenNotFoundByIdException;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dao.TextToken;
+import com.example.stanfordnlpgerman.models.dtos.sentence.InvalidSentencesDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.SentenceTextAndNewsPaperIdDTO;
 import com.example.stanfordnlpgerman.repositories.SentenceRepository;
@@ -43,6 +44,11 @@ public class SentenceServiceImpl implements SentenceService {
 
     return createFromMapListLemmaOccurenceInSentencesDTO(textTokensAndOccurences, researchLemmaType.getText());
 
+  }
+
+  @Override
+  public List<InvalidSentencesDTO> getInvalidSentences() {
+    return sentenceRepository.getInvalidSentences();
   }
 
   private List<LemmaOccurenceInSentencesDTO> createFromMapListLemmaOccurenceInSentencesDTO(Map<String, Long> textTokensAndOccurences, String lemmaTypeText) {
