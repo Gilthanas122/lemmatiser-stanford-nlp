@@ -2,7 +2,10 @@ package com.example.stanfordnlpgerman.services.sentenceservice;
 
 import com.example.stanfordnlpgerman.exceptions.lemmatypes.LemmaTokenNotFoundByIdException;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
+import com.example.stanfordnlpgerman.models.dao.NewsArticle;
+import com.example.stanfordnlpgerman.models.dao.Sentence;
 import com.example.stanfordnlpgerman.models.dao.TextToken;
+import com.example.stanfordnlpgerman.models.dtos.sentence.AdjacentSentencesToInvalidDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.InvalidSentencesDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.SentenceTextAndNewsPaperIdDTO;
@@ -49,6 +52,21 @@ public class SentenceServiceImpl implements SentenceService {
   @Override
   public List<InvalidSentencesDTO> getInvalidSentences() {
     return sentenceRepository.getInvalidSentences();
+  }
+
+  @Override
+  public AdjacentSentencesToInvalidDTO getAdjacentSentences(long id, String text) {
+    NewsArticle newsArticle = sentenceRepository.findNewsArticleBySentenceId(id);
+
+    AdjacentSentencesToInvalidDTO adjacentSentencesToInvalidDTO = new AdjacentSentencesToInvalidDTO();
+    StringBuilder sentenceText = new StringBuilder();
+    Collections.sort(newsArticle.getSentences());
+    newsArticle.getSentences().stream().sorted().map(Sentence::getText).forEach(sentenceText::append);
+
+    adjacentSentencesToInvalidDTO.setSentencesText(sentenceText.toString());
+    adjacentSentencesToInvalidDTO.setOriginalSentenceId(id);
+    adjacentSentencesToInvalidDTO.setOriginalSentenceText(text);
+    return adjacentSentencesToInvalidDTO;
   }
 
   private List<LemmaOccurenceInSentencesDTO> createFromMapListLemmaOccurenceInSentencesDTO(Map<String, Long> textTokensAndOccurences, String lemmaTypeText) {

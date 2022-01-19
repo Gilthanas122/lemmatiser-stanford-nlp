@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Show sentences</title>
+  <link th:replace="fragments/links.html :: bootstrap-link">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="fragments/navbar.html :: navbar" ></div>
+
+<div th:replace="fragments/messages.html :: error" ></div>
+
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>Text</th>
+    <th>Fix</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr  th:each="invalidSentence: ${invalidSentences}" th:object="${invalidSentence}">
+    <td th:text="*{text}"> </td>
+    <td>
+      <form method="post" th:action="@{|/sentence/fix-invalid/*{id}|}">
+        <input type="text" hidden name="text" th:value="*{text}" id="">
+        <button type="submit"> FIX</button>
+      </form>
+  </tr>
+  </tbody>
+</table>
+
+<script th:replace="fragments/links.html :: jquery"></script>
+<script th:replace="fragments/links.html :: cloudflare"></script>
+<script th:replace="fragments/links.html :: bootstrap"></script>
+</body>
+</html>

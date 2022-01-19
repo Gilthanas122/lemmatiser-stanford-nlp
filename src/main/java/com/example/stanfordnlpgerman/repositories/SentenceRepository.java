@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.repositories;
 
+import com.example.stanfordnlpgerman.models.dao.NewsArticle;
 import com.example.stanfordnlpgerman.models.dao.Sentence;
 import com.example.stanfordnlpgerman.models.dao.TextToken;
 import com.example.stanfordnlpgerman.models.dtos.sentence.InvalidSentencesDTO;
@@ -24,4 +25,7 @@ public interface SentenceRepository extends JpaRepository<Sentence, Long> {
 
   @Query("SELECT s.text AS text, s.id AS id FROM Sentence s WHERE s.invalid = true")
   List<InvalidSentencesDTO> getInvalidSentences();
+
+  @Query("SELECT n FROM NewsArticle n JOIN n.sentences s WHERE s.id = ?1")
+  NewsArticle findNewsArticleBySentenceId(long id);
 }

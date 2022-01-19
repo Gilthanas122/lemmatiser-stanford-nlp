@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "sentences")
 @Where(clause = "deleted=0")
 @Builder
-public class Sentence {
+public class Sentence implements Comparable<Sentence>{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -116,5 +116,10 @@ public class Sentence {
 
   public void addOneTexttoken(TextToken textToken) {
     this.textTokens.add(textToken);
+  }
+
+  @Override
+  public int compareTo(Sentence o) {
+    return Short.compare(this.getTextPosition(), o.getTextPosition());
   }
 }

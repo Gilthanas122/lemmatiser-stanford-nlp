@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.controllers;
 
+import com.example.stanfordnlpgerman.models.dtos.sentence.AdjacentSentencesToInvalidDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.InvalidSentencesDTO;
 import com.example.stanfordnlpgerman.services.sentenceservice.SentenceService;
 import org.springframework.stereotype.Controller;
@@ -46,9 +47,15 @@ public class SentenceController {
   }
 
   @GetMapping("invalid")
-  @ResponseBody
-  public List<InvalidSentencesDTO> getInvalidSentences(Model model){
-    return sentenceService.getInvalidSentences();
+  public String getInvalidSentences(Model model){
+    model.addAttribute("invalidSentences", sentenceService.getInvalidSentences());
+    return "sentence/invalid";
+  }
+
+  @PostMapping("fix-invalid/{id}")
+  public String fixInvalidSentences(@RequestParam String text, Model model, @PathVariable long id){
+    model.addAttribute("adjacentSentencesToInvalidDTO", sentenceService.getAdjacentSentences(id, text));
+    return "sentence/fix-invalid";
   }
 
 }

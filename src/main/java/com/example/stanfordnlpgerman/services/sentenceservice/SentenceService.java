@@ -1,6 +1,7 @@
 package com.example.stanfordnlpgerman.services.sentenceservice;
 
 import com.example.stanfordnlpgerman.exceptions.lemmatypes.LemmaTokenNotFoundByIdException;
+import com.example.stanfordnlpgerman.models.dtos.sentence.AdjacentSentencesToInvalidDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.InvalidSentencesDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.models.dtos.sentence.SentenceTextAndNewsPaperIdDTO;
@@ -16,4 +17,6 @@ public interface SentenceService {
   List<LemmaOccurenceInSentencesDTO> showWordsInContext(long lemmaTypeId, int distance) throws LemmaTokenNotFoundByIdException;
 
   List<InvalidSentencesDTO> getInvalidSentences();
+
+  AdjacentSentencesToInvalidDTO getAdjacentSentences(long id, String text);
 }
