@@ -18,29 +18,24 @@ public class NewsArticle {
   private long id;
   private String newsPaperName;
   private String title;
-  private String author;
-  @Temporal(TemporalType.DATE)
-  private Date publicationDate;
-  private short pageNumber;
+  private int publicationYear;
   private boolean deleted;
   private int relevance;
 
   @OneToMany(mappedBy = "newsArticle", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<Sentence> sentences = new ArrayList<>();
 
-  @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
+  @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<LemmaType> lemmaTypes = new ArrayList<>();
 
   public NewsArticle() {
   }
 
-  public NewsArticle(long id, String newsPaperName, String title, String author, Date publicationDate, short pageNumber, boolean deleted, int relevance, List<Sentence> sentences, List<LemmaType> lemmaTypes) {
+  public NewsArticle(long id, String newsPaperName, String title, int publicationYear, boolean deleted, int relevance, List<Sentence> sentences, List<LemmaType> lemmaTypes) {
     this.id = id;
     this.newsPaperName = newsPaperName;
     this.title = title;
-    this.author = author;
-    this.publicationDate = publicationDate;
-    this.pageNumber = pageNumber;
+    this.publicationYear = publicationYear;
     this.deleted = deleted;
     this.relevance = relevance;
     this.sentences = sentences;
@@ -69,30 +64,6 @@ public class NewsArticle {
 
   public void setTitle(String title) {
     this.title = title;
-  }
-
-  public String getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-
-  public Date getPublicationDate() {
-    return publicationDate;
-  }
-
-  public void setPublicationDate(Date publicationDate) {
-    this.publicationDate = publicationDate;
-  }
-
-  public short getPageNumber() {
-    return pageNumber;
-  }
-
-  public void setPageNumber(short pageNumber) {
-    this.pageNumber = pageNumber;
   }
 
   public boolean isDeleted() {
@@ -129,6 +100,14 @@ public class NewsArticle {
 
   public void setRelevance(int relevance) {
     this.relevance = relevance;
+  }
+
+  public int getPublicationYear() {
+    return publicationYear;
+  }
+
+  public void setPublicationYear(int publicationYear) {
+    this.publicationYear = publicationYear;
   }
 
   public void addOneLemmaType(LemmaType lemmaType) {

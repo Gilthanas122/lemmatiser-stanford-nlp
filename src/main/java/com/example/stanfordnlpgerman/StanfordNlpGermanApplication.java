@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.util.*;
-
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableAsync
 public class StanfordNlpGermanApplication  /* implements CommandLineRunner */ {

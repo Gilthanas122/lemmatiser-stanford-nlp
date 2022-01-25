@@ -7,9 +7,9 @@
 
 </head>
 <body>
-<div th:replace="fragments/navbar.html :: navbar" ></div>
+<div th:replace="fragments/navbar.html :: navbar"></div>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 
 <table class="table table-hover">
   <thead>
@@ -19,7 +19,8 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="sentenceTextAndNewsPaperIdDTO: ${sentenceTextAndNewsPaperIdDTOs}" th:object="${sentenceTextAndNewsPaperIdDTO}">
+  <tr th:each="sentenceTextAndNewsPaperIdDTO: ${sentenceTextAndNewsPaperIdDTOs}"
+      th:object="${sentenceTextAndNewsPaperIdDTO}">
     <td th:text="*{sentenceText}"></td>
     <td><a th:href="@{|/news-article/get/*{newsArticleId}|}">Show article</a></td>
   </tr>

@@ -8,7 +8,10 @@ import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
 import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class TextTokenServiceImpl implements TextTokenService {
@@ -66,7 +69,7 @@ public class TextTokenServiceImpl implements TextTokenService {
 
   @Override
   public void saveAllInvalidTextTokens(Set<TextToken> invalidTextTokens) {
-      textTokenRepository.saveAll(invalidTextTokens);
+    textTokenRepository.saveAll(invalidTextTokens);
   }
 
   @Override

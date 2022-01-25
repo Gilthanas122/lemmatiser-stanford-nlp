@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <title>Show sentences</title>
   <link th:replace="fragments/links.html :: bootstrap-link">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<div th:replace="fragments/navbar.html :: navbar" ></div>
+<div th:replace="fragments/navbar.html :: navbar"></div>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 
 <table class="table table-hover">
   <thead>
@@ -19,8 +20,8 @@
   </tr>
   </thead>
   <tbody>
-  <tr  th:each="invalidSentence: ${invalidSentences}" th:object="${invalidSentence}">
-    <td th:text="*{text}"> </td>
+  <tr th:each="invalidSentence: ${invalidSentences}" th:object="${invalidSentence}">
+    <td th:text="*{text}"></td>
     <td>
       <form method="post" th:action="@{|/sentence/fix-invalid/*{id}|}">
         <input type="text" hidden name="text" th:value="*{text}" id="">

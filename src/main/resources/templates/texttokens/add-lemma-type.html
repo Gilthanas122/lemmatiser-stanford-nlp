@@ -7,11 +7,11 @@
 
 </head>
 <body>
-<div th:replace="fragments/navbar.html :: navbar" ></div>
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/navbar.html :: navbar"></div>
+<div th:replace="fragments/messages.html :: error"></div>
 
 <form th:object="${addLemmaTypeToTextTokenDTO}" method="POST" th:action="@{|/lemma-type/update/*{textTokenId}|}">
-  <h1 th:utext="|The researched text token is : <strong> *{textTokenText}</strong>|"> </h1>
+  <h1 th:utext="|The researched text token is : <strong> *{textTokenText}</strong>|"></h1>
   <h3 th:utext="|Sentence is :<strong> *{sentenceText} </strong>|"></h3>
 
   <div th:if="*{lemmaTypeTextsAndIds.isEmpty()}">
@@ -22,8 +22,9 @@
   </div>
   <div th:unless="*{lemmaTypeTextsAndIds.isEmpty()}">
     <p>Choose the right word stem!</p>
-    <select name="lemmaTypeId" >
-     <option th:each="lemmaTypeTextsAndId: *{lemmaTypeTextsAndIds}" th:text="${lemmaTypeTextsAndId.value}" th:value="${lemmaTypeTextsAndId.key}"></option>
+    <select name="lemmaTypeId">
+      <option th:each="lemmaTypeTextsAndId: *{lemmaTypeTextsAndIds}" th:text="${lemmaTypeTextsAndId.value}"
+              th:value="${lemmaTypeTextsAndId.key}"></option>
     </select>
   </div>
   <button type="submit">SUBMIT</button>

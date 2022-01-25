@@ -6,24 +6,18 @@ import java.util.Date;
 
 public class CreateNewsPaperArticleDTO {
   private String title;
-  private String author;
-  private short pageNumber;
   private String newsPaperName;
   private String text;
-
-  @Temporal(TemporalType.DATE)
-  private Date publicationDate;
+  private int publicationYear;
 
   public CreateNewsPaperArticleDTO() {
   }
 
-  public CreateNewsPaperArticleDTO(String title, String author, short pageNumber, String newsPaperName, String text, Date publicationDate) {
+  public CreateNewsPaperArticleDTO(String title, String newsPaperName, String text, int publicationYear) {
     this.title = title;
-    this.author = author;
-    this.pageNumber = pageNumber;
     this.newsPaperName = newsPaperName;
     this.text = text;
-    this.publicationDate = publicationDate;
+    this.publicationYear = publicationYear;
   }
 
   public String getTitle() {
@@ -34,22 +28,6 @@ public class CreateNewsPaperArticleDTO {
     this.title = title;
   }
 
-  public String getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-
-  public short getPageNumber() {
-    return pageNumber;
-  }
-
-  public void setPageNumber(short pageNumber) {
-    this.pageNumber = pageNumber;
-  }
-
   public String getText() {
     return text;
   }
@@ -58,19 +36,19 @@ public class CreateNewsPaperArticleDTO {
     this.text = text;
   }
 
-  public Date getPublicationDate() {
-    return publicationDate;
-  }
-
-  public void setPublicationDate(Date publicationDate) {
-    this.publicationDate = publicationDate;
-  }
-
   public String getNewsPaperName() {
     return newsPaperName;
   }
 
   public void setNewsPaperName(String newsPaperName) {
     this.newsPaperName = newsPaperName;
+  }
+
+  public int getPublicationYear() {
+    return publicationYear;
+  }
+
+  public void setPublicationYear(int publicationYear) {
+    this.publicationYear = publicationYear;
   }
 }

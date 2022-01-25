@@ -4,20 +4,25 @@
   <meta charset="UTF-8">
   <title>Show sentences</title>
   <link th:replace="fragments/links.html :: bootstrap-link">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<div th:replace="fragments/navbar.html :: navbar" ></div>
+<div th:replace="fragments/navbar.html :: navbar"></div>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 
 <h1 th:utext="|Original sentence text <b>${adjacentSentencesToInvalidDTO.originalSentenceText}</b>|"></h1>
 <p th:text="${adjacentSentencesToInvalidDTO.sentencesText}"></p>
 
-<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/1/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Leave alone</a>
-<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/2/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Merge with previous</a>
-<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/3/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Merge with latter</a>
-<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/4/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Merge with both previous and latter</a>
+<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/1/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Leave
+  alone</a>
+<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/2/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Merge
+  with previous</a>
+<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/3/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Merge
+  with latter</a>
+<a class="btn btn-info" th:href="@{|/sentence/fix-invalid/4/${adjacentSentencesToInvalidDTO.originalSentenceId}|}">Merge
+  with both previous and latter</a>
 
 
 <script th:replace="fragments/links.html :: jquery"></script>

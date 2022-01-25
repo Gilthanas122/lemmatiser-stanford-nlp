@@ -5,7 +5,6 @@ import com.example.stanfordnlpgerman.models.dtos.lemmatype.InvalidLemmasDTO;
 import com.example.stanfordnlpgerman.models.dtos.texttoken.AddLemmaTypeToTextTokenDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Service

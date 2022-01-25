@@ -8,29 +8,39 @@
 </head>
 <body>
 
-<div th:replace="fragments/navbar.html :: navbar" ></div>
+<div th:replace="fragments/navbar.html :: navbar"></div>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 <h1>Insert data for newspaper</h1>
 
-<form th:action="@{/news-article/create}" th:method="POST" th:object="${createNewsPapeArticleDTO}">
+<form th:action="@{/news-article/create}" th:method="POST" th:object="${createNewsPaperArticleDTO}">
   <label for="title">Title</label>
   <input th:field=*{title} name="title" id="title" type="text" autofocus placeholder="enter title">
 
-  <label for="author"></label>
-  <input th:field=*{author} name="author" id="author" type="text" placeholder="enter author name">
+  <label for="publicationYear">Publication Year</label>
+  <select name="publicationYear" id="publicationYear">
+    <option th:field=*{publicationYear}
+            th:value="2014" th:text="2014"></option>
+    <option th:field=*{publicationYear}
+            th:value="2015" th:text="2015"></option>
+    <option th:field=*{publicationYear}
+            th:value="2016" th:text="2016"></option>
+    <option th:field=*{publicationYear}
+            th:value="2017" th:text="2017"></option>
+    <option th:field=*{publicationYear}
+            th:value="2018" th:text="2018"></option>
+    <option th:field=*{publicationYear}
+            th:value="2019" th:text="2019"></option>
+    <option th:field=*{publicationYear}
+            th:value="2020" th:text="2020"></option>
+  </select>
 
-  <label for="pageNumber">Page number</label>
-  <input th:field=*{pageNumber} name="pageNumber" id="pageNumber" type="number" placeholder="enter pagenumber">
-
-  <label for="publicationDate">Date</label>
-  <input th:field=*{publicationDate} name="publicationDate" id="publicationDate" type="date" placeholder="enter publicationDate">
-
-  <label for="text">Date</label>
+  <label for="text">Article text</label>
   <textarea th:field=*{text} name="text" id="text" placeholder="enter article text"></textarea>
 
   <select name="newsPaperName">
-    <option th:field=*{newsPaperName} th:each="newspaper : ${T(com.example.stanfordnlpgerman.models.dao.NewsPaperEnum).values()}"
+    <option th:field=*{newsPaperName}
+            th:each="newspaper : ${T(com.example.stanfordnlpgerman.models.dao.NewsPaperEnum).values()}"
             th:value="${newspaper}" th:text="${newspaper}"></option>
   </select>
   <button type="submit">SUBMIT</button>

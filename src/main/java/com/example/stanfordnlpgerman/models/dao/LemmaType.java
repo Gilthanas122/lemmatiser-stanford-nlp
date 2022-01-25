@@ -1,13 +1,11 @@
 package com.example.stanfordnlpgerman.models.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 @Entity
 @Table(name = "lemmatypes")
@@ -24,13 +22,13 @@ public class LemmaType implements Comparable<LemmaType> {
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private Set<Sentence> sentences = new HashSet<>();
 
-  @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
+  @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private Set<NewsArticle> newsArticles = new HashSet<>();
 
-  @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private Set<LemmaToken> lemmaTokens = new HashSet<>();
 
-  @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST},  fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private Set<TextToken> textTokens = new HashSet<>();
 
   public LemmaType() {

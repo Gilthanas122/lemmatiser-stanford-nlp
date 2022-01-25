@@ -1,13 +1,9 @@
 package com.example.stanfordnlpgerman.controllers;
 
-import com.example.stanfordnlpgerman.models.dtos.sentence.AdjacentSentencesToInvalidDTO;
-import com.example.stanfordnlpgerman.models.dtos.sentence.InvalidSentencesDTO;
 import com.example.stanfordnlpgerman.services.sentenceservice.SentenceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("sentence")
@@ -30,7 +26,7 @@ public class SentenceController {
   }
 
   @GetMapping("context/{lemmaTypeId}")
-  public String searchLemmaTypeIdAndContext(@PathVariable long lemmaTypeId, Model model){
+  public String searchLemmaTypeIdAndContext(@PathVariable long lemmaTypeId, Model model) {
     model.addAttribute("lemmaTypeId", lemmaTypeId);
     return "lemmatypes/context";
   }
@@ -47,30 +43,30 @@ public class SentenceController {
   }
 
   @GetMapping("invalid")
-  public String getInvalidSentences(Model model){
+  public String getInvalidSentences(Model model) {
     try {
       model.addAttribute("invalidSentences", sentenceService.getInvalidSentences());
-    }catch (Exception e) {
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "sentence/invalid";
   }
 
   @PostMapping("fix-invalid/{id}")
-  public String fixInvalidSentences(@RequestParam String text, Model model, @PathVariable long id){
+  public String fixInvalidSentences(@RequestParam String text, Model model, @PathVariable long id) {
     try {
       model.addAttribute("adjacentSentencesToInvalidDTO", sentenceService.getAdjacentSentences(id, text));
-    }catch (Exception e) {
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "sentence/fix-invalid";
   }
 
   @GetMapping("fix-invalid/{operation}/{id}")
-  public String fixSentencesByMergingThem(@PathVariable int operation, @PathVariable long id, Model model){
+  public String fixSentencesByMergingThem(@PathVariable int operation, @PathVariable long id, Model model) {
     try {
       sentenceService.fixInvalidSentences(operation, id);
-    }catch (Exception e) {
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "redirect:/sentence/invalid";

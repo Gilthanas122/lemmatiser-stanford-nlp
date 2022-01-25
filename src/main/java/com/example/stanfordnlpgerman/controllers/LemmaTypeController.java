@@ -15,7 +15,7 @@ public class LemmaTypeController {
   }
 
   @GetMapping("most-common/{pageNumber}/{keyword}")
-  public String getMostCommonLemmas(@PathVariable short pageNumber, @PathVariable boolean keyword,  Model model) {
+  public String getMostCommonLemmas(@PathVariable short pageNumber, @PathVariable boolean keyword, Model model) {
     try {
       model.addAttribute("mostCommonLemmas", lemmaTypeService.findMostCommonLemmas(pageNumber, keyword));
       return "lemmatypes/most-common";
@@ -26,7 +26,7 @@ public class LemmaTypeController {
   }
 
   @PostMapping("update/{textTokenId}")
-  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @RequestParam(required = false) String lemmaTypeId, @RequestParam(required = false) String lemmaToken, @RequestParam (required = false) String phraseType, Model model) {
+  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @RequestParam(required = false) String lemmaTypeId, @RequestParam(required = false) String lemmaToken, @RequestParam(required = false) String phraseType, Model model) {
     try {
       lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeId, lemmaToken, phraseType);
       return "redirect:/text-token/invalid";

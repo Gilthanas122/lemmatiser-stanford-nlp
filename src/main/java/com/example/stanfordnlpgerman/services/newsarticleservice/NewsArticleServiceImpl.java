@@ -30,9 +30,6 @@ public class NewsArticleServiceImpl implements NewsArticleService {
   @Override
   public void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception {
     ErrorServiceImpl.buildMissingFieldErrorMessage(createNewsPaperArticleDTO);
-    if (createNewsPaperArticleDTO.getPageNumber() < 1) {
-      throw new MissingParamsException("Following parameters are missing: pageNumber");
-    }
     newsArticleAsyncService.createNewsPaperArticle(createNewsPaperArticleDTO);
   }
 
@@ -42,10 +39,8 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     if (newsArticle != null) {
       return NewsArticleDataDTO.builder()
               .newsPaperName(newsArticle.getNewsPaperName())
-              .author(newsArticle.getAuthor())
-              .pageNumber(newsArticle.getPageNumber())
               .title(newsArticle.getTitle())
-              .date(newsArticle.getPublicationDate())
+              .publicationYear(newsArticle.getPublicationYear())
               .text(newsArticle.getSentences().stream().map(Sentence::getText).collect(Collectors.joining()))
               .build();
     }
@@ -59,8 +54,8 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     mostRelevantNewsArticleDTOAGGS.add(new MostRelevantNewsArticleDTOAGG(mostRelevantNewsArticlesDTOS.get(0)));
     int position = 0;
-    for (MostRelevantNewsArticlesDTO m: mostRelevantNewsArticlesDTOS) {
-      if (m.getId() != mostRelevantNewsArticleDTOAGGS.get(position).getId()){
+    for (MostRelevantNewsArticlesDTO m : mostRelevantNewsArticlesDTOS) {
+      if (m.getId() != mostRelevantNewsArticleDTOAGGS.get(position).getId()) {
         mostRelevantNewsArticleDTOAGGS.add(new MostRelevantNewsArticleDTOAGG(m));
         position++;
       }

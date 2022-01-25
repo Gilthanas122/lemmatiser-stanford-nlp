@@ -33,7 +33,7 @@ public class SentenceServiceImpl implements SentenceService {
 
   @Override
   public List<LemmaOccurenceInSentencesDTO> showWordsInContext(long lemmaTypeId, int distance) throws LemmaTokenNotFoundByIdException {
-    if (distance < 1){
+    if (distance < 1) {
       return getContextFromFullSentence(lemmaTypeId);
     }
 
@@ -71,13 +71,13 @@ public class SentenceServiceImpl implements SentenceService {
 
   @Override
   public void fixInvalidSentences(int operation, long id) throws Exception {
-    switch (operation){
+    switch (operation) {
       case 1:
         makeSentenceValidWithoutMerging(id);
         break;
       case 2:
-          mergeWithOneSentence(id, true);
-          break;
+        mergeWithOneSentence(id, true);
+        break;
       case 3:
         mergeWithOneSentence(id, false);
         break;
@@ -90,10 +90,38 @@ public class SentenceServiceImpl implements SentenceService {
   }
 
   private void mergeWithAllAdjacentSentence(long id) {
+    NewsArticle newsArticle = sentenceRepository.findNewsArticleBySentenceId(id);
+    Collections.sort(newsArticle.getSentences());
+    short actualPosition = 0;
+    boolean changeAfterThis = false;
+
+    for (int i = 0; i < newsArticle.getSentences().size(); i++) {
+      Sentence sentence = newsArticle.getSentences().get(i);
+      if (sentence.isDeleted()) {
+        continue;
+      }
+      if (sentence.getId() == id && i > 0 && i < newsArticle.getSentences().size() - 1) {
+        for (int j = i; j < i + 3; j += 2) {
+          Sentence sentenceToDelete = newsArticle.getSentences().get(j - 1);
+          if (j == i) {
+            sentence = inheritDataFromDeletedSentence(sentence, sentenceToDelete, true);
+            actualPosition = (short) (sentence.getTextPosition() - 1);
+          } else {
+            sentence = inheritDataFromDeletedSentence(sentence, sentenceToDelete, false);
+          }
+          sentenceToDelete.setDeleted(true);
+          sentence.setInvalid(false);
+          changeAfterThis = true;
+        }
+      }
+      if (changeAfterThis) {
+        sentence.setTextPosition(actualPosition);
+        sentenceRepository.save(sentence);
+        actualPosition++;
+      }
+    }
   }
 
-  private void mergeWithLatterSentence(long id) {
-  }
 
   private void mergeWithOneSentence(long id, boolean isItPreviousToMergeWith) {
     NewsArticle newsArticle = sentenceRepository.findNewsArticleBySentenceId(id);
@@ -101,25 +129,25 @@ public class SentenceServiceImpl implements SentenceService {
     short actualPosition = 0;
     boolean changeAfterThis = false;
 
-    for (int i = 0; i <newsArticle.getSentences().size(); i++) {
+    for (int i = 0; i < newsArticle.getSentences().size(); i++) {
       Sentence sentence = newsArticle.getSentences().get(i);
-      if (sentence.getId() == id){
+      if (sentence.getId() == id) {
         Sentence sentenceToDelete = new Sentence();
-        if(isItPreviousToMergeWith){
-          actualPosition = (short) (sentence.getTextPosition() -1);
-          sentenceToDelete = newsArticle.getSentences().get(i -1);
+        if (isItPreviousToMergeWith) {
+          actualPosition = (short) (sentence.getTextPosition() - 1);
+          sentenceToDelete = newsArticle.getSentences().get(i - 1);
           sentenceToDelete.setDeleted(true);
-        }else{
+        } else {
           sentenceToDelete = newsArticle.getSentences().get(i + 1);
           sentenceToDelete.setDeleted(true);
-          actualPosition = (short) (sentence.getTextPosition());
+          actualPosition = sentence.getTextPosition();
           i++;
         }
         sentence = inheritDataFromDeletedSentence(sentence, sentenceToDelete, isItPreviousToMergeWith);
         sentence.setInvalid(false);
         changeAfterThis = true;
       }
-      if (changeAfterThis){
+      if (changeAfterThis) {
         sentence.setTextPosition(actualPosition);
         actualPosition++;
         sentenceRepository.save(sentence);
@@ -136,9 +164,9 @@ public class SentenceServiceImpl implements SentenceService {
     List<LemmaType> sentenceLemmaTypes = sentence.getLemmaTypes();
     List<TextToken> sentenceTextTokens = sentence.getTextTokens();
     String concatString = "";
-    if (isItFirst){
+    if (isItFirst) {
       concatString = sentenceText.concat(" " + sentence.getText());
-    }else{
+    } else {
       concatString = sentence.getText().concat(" " + sentenceText);
     }
     sentenceLemmaTypes.addAll(lemmaTypesFromToDelete);
@@ -153,7 +181,7 @@ public class SentenceServiceImpl implements SentenceService {
   private List<TextToken> updateTextTokens(Sentence sentence, List<TextToken> textTokens) {
     return textTokens
             .stream()
-            .map(s-> {
+            .map(s -> {
               s.setSentence(sentence);
               return s;
             })
@@ -163,7 +191,7 @@ public class SentenceServiceImpl implements SentenceService {
   private List<LemmaType> updateLemmaTypes(Sentence sentence, List<LemmaType> lemmaTypesFromToDelete, Sentence sentenceToDelete) {
     return lemmaTypesFromToDelete
             .stream()
-            .map(s-> {
+            .map(s -> {
               s.addOneSentence(sentence);
               s.removeOneSentence(sentenceToDelete);
               return s;
@@ -205,7 +233,7 @@ public class SentenceServiceImpl implements SentenceService {
   }
 
   private Map<String, Long> filterTextTokensBasedOnDistance(List<TextToken> textTokens, List<Long> textTokenIds, int distance, String lemmaTypeText) {
-   List<String> ll = new ArrayList<>();
+    List<String> ll = new ArrayList<>();
     int textTokenCounter = 0;
     Map<String, Long> textTokensAndOccurences = new HashMap<>();
     for (int i = 0; i < textTokens.size(); i++) {
@@ -222,9 +250,9 @@ public class SentenceServiceImpl implements SentenceService {
             continue;
           } else {
             TextToken currentTextToken = textTokens.get(i - distance + j);
-            if (currentTextToken.getLemmaType() == null || currentTextToken.getLemmaType().getText().equals(lemmaTypeText)){
+            if (currentTextToken.getLemmaType() == null || currentTextToken.getLemmaType().getText().equals(lemmaTypeText)) {
               continue;
-            }else if (textTokensAndOccurences.containsKey(currentTextToken.getLemmaType().getText())) {
+            } else if (textTokensAndOccurences.containsKey(currentTextToken.getLemmaType().getText())) {
               textTokensAndOccurences.put(currentTextToken.getLemmaType().getText(), textTokensAndOccurences.get(currentTextToken.getLemmaType().getText()) + 1);
             } else {
               textTokensAndOccurences.put(currentTextToken.getLemmaType().getText(), 1l);
@@ -238,7 +266,7 @@ public class SentenceServiceImpl implements SentenceService {
   }
 
   private List<Long> getTextTokenIdsFromSentences(List<TextToken> textTokens, long lemmaTypeId) {
-   return textTokens
+    return textTokens
             .stream()
             .filter(tt -> tt.getLemmaType() != null)
             .filter(tt -> tt.getLemmaType().getId() == lemmaTypeId)

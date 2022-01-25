@@ -11,18 +11,18 @@ public class NewsArticleDataDTO {
   private short pageNumber;
   private String newsPaperName;
   private String text;
-  private Date date;
+  private int publicationYear;
 
   public NewsArticleDataDTO() {
   }
 
-  public NewsArticleDataDTO(String title, String author, short pageNumber, String newsPaperName, String text, Date date) {
+  public NewsArticleDataDTO(String title, String author, short pageNumber, String newsPaperName, String text, int publicationYear) {
     this.title = title;
     this.author = author;
     this.pageNumber = pageNumber;
     this.newsPaperName = newsPaperName;
     this.text = text;
-    this.date = date;
+    this.publicationYear = publicationYear;
   }
 
   public String getTitle() {
@@ -65,11 +65,11 @@ public class NewsArticleDataDTO {
     this.text = text;
   }
 
-  public Date getDate() {
-    return date;
+  public int getPublicationYear() {
+    return publicationYear;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public void setPublicationYear(int publicationYear) {
+    this.publicationYear = publicationYear;
   }
 }

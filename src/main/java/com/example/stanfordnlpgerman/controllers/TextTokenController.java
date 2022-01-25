@@ -39,10 +39,10 @@ public class TextTokenController {
   }
 
   @GetMapping("delete/{textTokenId}")
-  public String deleteInvalidTextToken(@PathVariable long textTokenId, Model model){
+  public String deleteInvalidTextToken(@PathVariable long textTokenId, Model model) {
     try {
       textTokenService.deleteById(textTokenId);
-    }catch (Exception e){
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "redirect:/text-token/invalid";

@@ -51,7 +51,7 @@ public class ErrorServiceImpl {
     return error;
   }
 
-  public static boolean invalidSentence(String sentence){
-   return sentence.length() < 8 || sentence.matches("^[a-z].*");
+  public static boolean invalidSentence(String sentence) {
+    return sentence.length() < 8 || sentence.matches("^[a-z].*");
   }
 }

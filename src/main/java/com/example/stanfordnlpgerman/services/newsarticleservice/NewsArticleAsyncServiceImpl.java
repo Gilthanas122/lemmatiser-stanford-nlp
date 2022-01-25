@@ -44,9 +44,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
             .builder()
             .newsPaperName(createNewsPaperArticleDTO.getNewsPaperName())
             .title(createNewsPaperArticleDTO.getTitle())
-            .pageNumber(createNewsPaperArticleDTO.getPageNumber())
-            .author(createNewsPaperArticleDTO.getAuthor())
-            .publicationDate(createNewsPaperArticleDTO.getPublicationDate())
+            .publicationYear(createNewsPaperArticleDTO.getPublicationYear())
             .build();
     newsArticle.setSentences(createSentencesFromNewsPaperArticle(createNewsPaperArticleDTO.getText(), newsArticle));
     List<LemmaType> lemmaTypes = createLemmaTypesFromSentencesForNewsArticle(newsArticle.getSentences());
@@ -61,7 +59,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     Set<String> keyWords = KeyWordsSingleton.getKeyWords();
     for (String keyword : keyWords) {
       for (LemmaType lemmaType : lemmaTypes) {
-        if (lemmaType.getText().equals(keyword)){
+        if (lemmaType.getText().equals(keyword)) {
           relevance++;
         }
       }
@@ -90,7 +88,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
               .text(sent.text())
               .textPosition(position)
               .build();
-      if (ErrorServiceImpl.invalidSentence(sentence.getText())){
+      if (ErrorServiceImpl.invalidSentence(sentence.getText())) {
         sentence.setInvalid(true);
       }
       sentence.setLemmaTypes(createLemmaTypesFromSentences(sent, sentence, newsArticle));
@@ -146,7 +144,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
       if (lemmaType.getText().equalsIgnoreCase(word)) {
         toReturn = lemmaType;
       } else {
-        toReturn =  lemmaType.getLemmaTokens()
+        toReturn = lemmaType.getLemmaTokens()
                 .stream()
                 .filter(lemmaToken -> lemmaToken.getText().equalsIgnoreCase(word))
                 .findFirst()
@@ -154,9 +152,9 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                 .orElse(null);
       }
     }
-    if (toReturn == null){
+    if (toReturn == null) {
       LemmaToken lemmaTokenToGetPhraseType = new LemmaToken();
-      for (LemmaType lt: lemmaTypesReturned) {
+      for (LemmaType lt : lemmaTypesReturned) {
         toReturn = lt;
         lemmaTokenToGetPhraseType = (LemmaToken) lt.getLemmaTokens().stream().toArray()[0];
       }

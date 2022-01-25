@@ -18,7 +18,7 @@ public class NewsArticleController {
 
   @GetMapping("create")
   public String generateFormForNewsArticle(Model model) {
-    model.addAttribute("createNewsPapeArticleDTO", new CreateNewsPaperArticleDTO());
+    model.addAttribute("createNewsPaperArticleDTO", new CreateNewsPaperArticleDTO());
     return "newspaper/create";
   }
 
@@ -49,7 +49,7 @@ public class NewsArticleController {
   }
 
   @GetMapping("get/most-relevant/{pageNumber}")
-  public String getMostRelevantNewsArticle(Model model, @PathVariable int pageNumber){
+  public String getMostRelevantNewsArticle(Model model, @PathVariable int pageNumber) {
     model.addAttribute("relevantNewsArticleTexts", newsArticleService.getMostRelevantNewsArticles(pageNumber));
     return "newspaper/most-relevant";
   }

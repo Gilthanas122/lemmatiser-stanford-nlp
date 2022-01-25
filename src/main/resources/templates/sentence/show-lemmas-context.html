@@ -7,9 +7,9 @@
 
 </head>
 <body>
-<div th:replace="fragments/navbar.html :: navbar" ></div>
+<div th:replace="fragments/navbar.html :: navbar"></div>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 
 <h2 th:utext="|researched lemma text: <strong>${lemmaOccurenceInSentencesDTOs[0].originalLemmaText}</strong>|"></h2>
 <table class="table table-hover">
@@ -20,7 +20,8 @@
   </tr>
   </thead>
   <tbody>
-  <th:block th:each="lemmaOccurenceInSentencesDTO : ${lemmaOccurenceInSentencesDTOs}" th:object="${lemmaOccurenceInSentencesDTO}" th:if="${lemmaOccurenceInSentencesDTO.lemmaOccurence != 0}">
+  <th:block th:each="lemmaOccurenceInSentencesDTO : ${lemmaOccurenceInSentencesDTOs}"
+            th:object="${lemmaOccurenceInSentencesDTO}" th:if="${lemmaOccurenceInSentencesDTO.lemmaOccurence != 0}">
     <tr>
       <td th:text="*{lemmaText}"></td>
       <td th:text="*{lemmaOccurence}"></td>

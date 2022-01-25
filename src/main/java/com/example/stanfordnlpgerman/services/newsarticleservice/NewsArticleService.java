@@ -2,7 +2,6 @@ package com.example.stanfordnlpgerman.services.newsarticleservice;
 
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.MostRelevantNewsArticleDTOAGG;
-import com.example.stanfordnlpgerman.models.dtos.newsarticle.MostRelevantNewsArticlesDTO;
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.NewsArticleDataDTO;
 import org.springframework.stereotype.Service;
 

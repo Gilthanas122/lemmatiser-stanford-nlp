@@ -15,12 +15,12 @@ public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long> 
   @Query("SELECT na from NewsArticle na where na.id = ?1")
   NewsArticle findNewsArticleBySentenceId(long newsArticleId);
 
-  @Query("SELECT DISTINCT na.newsPaperName AS newsPaperName, na.publicationDate AS publicationDate, na.id AS id, s.text as text FROM NewsArticle na JOIN na.sentences s ORDER BY na.relevance, na.publicationDate")
+  @Query("SELECT DISTINCT na.newsPaperName AS newsPaperName, na.publicationYear AS publicationYear, na.id AS id, s.text as text FROM NewsArticle na JOIN na.sentences s ORDER BY na.relevance, na.publicationYear")
   List<MostRelevantNewsArticlesDTO> findMostRelevantNewsArticles(PageRequest relevance);
 
   @Query(value = "select " +
           " temp.news_paper_name as newspapername " +
-          ",temp.publication_date as publicationdate " +
+          ",temp.publication_year as publicationyear " +
           ",temp.id as id " +
           ",group_concat(distinct temp.text " +
           "     order by temp.text_position " +
@@ -29,7 +29,7 @@ public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long> 
           "(" +
           " select" +
           " newsarticles.news_paper_name " +
-          ", newsarticles.publication_date" +
+          ", newsarticles.publication_year" +
           ", newsarticles.id" +
           ", sentences.text" +
           ", sentences.text_position" +
