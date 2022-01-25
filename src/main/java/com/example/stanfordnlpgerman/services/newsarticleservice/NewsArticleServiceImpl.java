@@ -1,6 +1,5 @@
 package com.example.stanfordnlpgerman.services.newsarticleservice;
 
-import com.example.stanfordnlpgerman.exceptions.validations.MissingParamsException;
 import com.example.stanfordnlpgerman.models.dao.NewsArticle;
 import com.example.stanfordnlpgerman.models.dao.Sentence;
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
@@ -51,11 +50,10 @@ public class NewsArticleServiceImpl implements NewsArticleService {
   public List<MostRelevantNewsArticleDTOAGG> getMostRelevantNewsArticles(int pageNumber) {
     List<MostRelevantNewsArticlesDTO> mostRelevantNewsArticlesDTOS = newsArticleRepository.findMostRelevantNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("relevance")));
     List<MostRelevantNewsArticleDTOAGG> mostRelevantNewsArticleDTOAGGS = new ArrayList<>();
-
     mostRelevantNewsArticleDTOAGGS.add(new MostRelevantNewsArticleDTOAGG(mostRelevantNewsArticlesDTOS.get(0)));
     int position = 0;
-    for (MostRelevantNewsArticlesDTO m : mostRelevantNewsArticlesDTOS) {
-      if (m.getId() != mostRelevantNewsArticleDTOAGGS.get(position).getId()) {
+    for (MostRelevantNewsArticlesDTO m: mostRelevantNewsArticlesDTOS) {
+      if (m.getId() != mostRelevantNewsArticleDTOAGGS.get(position).getId()){
         mostRelevantNewsArticleDTOAGGS.add(new MostRelevantNewsArticleDTOAGG(m));
         position++;
       }

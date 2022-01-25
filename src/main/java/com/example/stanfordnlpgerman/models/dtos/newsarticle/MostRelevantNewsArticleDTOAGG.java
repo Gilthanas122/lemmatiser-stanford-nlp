@@ -18,7 +18,8 @@ public class MostRelevantNewsArticleDTOAGG {
     this.publicationDate = publicationDate;
   }
 
-  public MostRelevantNewsArticleDTOAGG(MostRelevantNewsArticlesDTO mostRelevantNewsArticlesDTO) {
+
+  public MostRelevantNewsArticleDTOAGG(MostRelevantNewsArticlesDTO mostRelevantNewsArticlesDTO){
     this.id = mostRelevantNewsArticlesDTO.getId();
     this.newsPaperName = mostRelevantNewsArticlesDTO.getNewsPaperName();
     this.text = mostRelevantNewsArticlesDTO.getText();

@@ -59,7 +59,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     Set<String> keyWords = KeyWordsSingleton.getKeyWords();
     for (String keyword : keyWords) {
       for (LemmaType lemmaType : lemmaTypes) {
-        if (lemmaType.getText().equals(keyword)) {
+        if (lemmaType.getText().equals(keyword)){
           relevance++;
         }
       }
