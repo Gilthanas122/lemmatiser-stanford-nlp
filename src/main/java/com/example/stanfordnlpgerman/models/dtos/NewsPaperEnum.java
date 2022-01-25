@@ -1,4 +1,4 @@
-package com.example.stanfordnlpgerman.models.dao;
+package com.example.stanfordnlpgerman.models.dtos;
 
 public enum NewsPaperEnum {
   NEUE_ZEITUNG("Neue Zeitung"),
@@ -11,7 +11,6 @@ public enum NewsPaperEnum {
   }
 
   public boolean equalsName(String otherName) {
-    // (otherName == null) check is not needed because name.equals(null) returns false
     return name.equals(otherName);
   }
 
