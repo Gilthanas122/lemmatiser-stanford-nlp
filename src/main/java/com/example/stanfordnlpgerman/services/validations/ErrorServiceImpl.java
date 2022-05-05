@@ -15,9 +15,10 @@ import java.util.List;
 @Slf4j
 public class ErrorServiceImpl {
 
-  public static void buildMissingFieldErrorMessage(Object object) throws MissingParamsException {
+  public static void buildMissingFieldErrorMessage(Object object) {
     if (object == null) {
-      throw new NullPointerException("Object to be verified for null or empty fields is null");
+      log.error("Object to be verified for null or empty fields is null");
+      throw new MissingParamsException("Object to be verified for null or empty fields is null");
     }
     StringBuilder result = new StringBuilder();
     List<String> missingFields = checkInputNullFields(object);
