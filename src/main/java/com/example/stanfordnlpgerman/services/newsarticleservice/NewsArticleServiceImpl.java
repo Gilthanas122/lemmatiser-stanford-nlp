@@ -12,6 +12,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,5 +65,26 @@ public class NewsArticleServiceImpl implements NewsArticleService {
       mostRelevantNewsArticleDTOAGGS.get(position).setText(newText);
     }
     return mostRelevantNewsArticleDTOAGGS;
+  }
+
+  @Override
+  public void startReading() throws Exception {
+    File folder = new File("articles");
+    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = new CreateNewsPaperArticleDTO();
+    for (File file: folder.listFiles()) {
+      List<String> lines = Files.readAllLines(Paths.get(file.getPath()));
+      createNewsPaperArticleDTO.setNewsPaperName(lines.get(0));
+      createNewsPaperArticleDTO.setPublicationYear(Integer.parseInt(lines.get(1).trim()));
+      createNewsPaperArticleDTO.setTitle(lines.get(2));
+      StringBuilder temp = new StringBuilder();
+      for (int i = 3; i <lines.size(); i++) {
+        if (lines.get(i) != null && !lines.get(i).isEmpty()){
+          temp.append(lines.get(i));
+        }
+      }
+      createNewsPaperArticleDTO.setText(temp.toString());
+    }
+
+    newsArticleAsyncService.createNewsPaperArticle(createNewsPaperArticleDTO);
   }
 }

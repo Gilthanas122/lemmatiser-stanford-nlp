@@ -3,8 +3,9 @@ package com.example.stanfordnlpgerman.services.newsarticleservice;
 import com.example.stanfordnlpgerman.models.KeyWordsSingleton;
 import com.example.stanfordnlpgerman.models.dao.*;
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
+import com.example.stanfordnlpgerman.repositories.LemmaTokenRepository;
+import com.example.stanfordnlpgerman.repositories.LemmaTypeRepository;
 import com.example.stanfordnlpgerman.repositories.NewsArticleRepository;
-import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import com.example.stanfordnlpgerman.services.texttokenservice.TextTokenService;
 import com.example.stanfordnlpgerman.services.validations.ErrorServiceImpl;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -12,33 +13,61 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
-@Transactional
-public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
+public class ReadServiceImpl implements ReadService {
+  private final LemmaTypeRepository lemmaTypeRepository;
+  private final LemmaTokenRepository lemmaTokenRepository;
+  private final NewsArticleRepository newsArticleRepository;
   private final List<TextToken> filteredTextTokens = new ArrayList<>();
   private final Set<TextToken> invalidTextTokens = new HashSet<>();
-  private final NewsArticleRepository newsArticleRepository;
-  private final LemmaTypeService lemmaTypeService;
   private final StanfordCoreNLP pipeline;
   private final TextTokenService textTokenService;
+  private List<LemmaType> allLemmaTypes = new ArrayList<>();
+  private List<LemmaToken> allLemmaTokens = new ArrayList<>();
 
-  public NewsArticleAsyncServiceImpl(NewsArticleRepository newsArticleRepository, LemmaTypeService lemmaTypeService, StanfordCoreNLP pipeline, TextTokenService textTokenService) {
+  public ReadServiceImpl(LemmaTypeRepository lemmaTypeRepository, LemmaTokenRepository lemmaTokenRepository, NewsArticleRepository newsArticleRepository, StanfordCoreNLP pipeline, TextTokenService textTokenService) {
+    this.lemmaTypeRepository = lemmaTypeRepository;
+    this.lemmaTokenRepository = lemmaTokenRepository;
     this.newsArticleRepository = newsArticleRepository;
-    this.lemmaTypeService = lemmaTypeService;
     this.pipeline = pipeline;
     this.textTokenService = textTokenService;
   }
 
-  @Async
+  @Override
+  public void startReading() throws Exception {
+    File folder = new File("articles");
+    allLemmaTokens = lemmaTokenRepository.findAll();
+    allLemmaTypes = lemmaTypeRepository.findAll();
+
+    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = new CreateNewsPaperArticleDTO();
+    for (File file: folder.listFiles()) {
+      List<String> lines = Files.readAllLines(Paths.get(file.getPath()));
+      createNewsPaperArticleDTO.setNewsPaperName(lines.get(0));
+      createNewsPaperArticleDTO.setPublicationYear(Integer.parseInt(lines.get(1).trim()));
+      createNewsPaperArticleDTO.setTitle(lines.get(2));
+      StringBuilder temp = new StringBuilder();
+      for (int i = 3; i <lines.size(); i++) {
+        if (lines.get(i) != null && !lines.get(i).isEmpty()){
+          temp.append(lines.get(i));
+        }
+      }
+      createNewsPaperArticleDTO.setText(temp.toString());
+    }
+
+    createNewsPaperArticle(createNewsPaperArticleDTO);
+  }
+
   public void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception {
     long startTime = System.currentTimeMillis();
     NewsArticle newsArticle = NewsArticle
@@ -107,14 +136,15 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
   protected List<LemmaType> createLemmaTypesFromSentences(CoreSentence coreSentence, Sentence sentence, NewsArticle newsArticle) {
     List<CoreLabel> coreLabels = coreSentence.tokens();
     List<LemmaType> lemmaTypes = new ArrayList<>();
+
     short position = 0;
     short coreLabelPosition = 0;
 
     for (String word : coreSentence.tokensAsStrings()) {
-      //word = word.replaceAll("[^0-9\\p{L}\\s]", "");
+      word = word.replaceAll("[^0-9\\p{L}\\s]", "");
       if (!word.isEmpty()) {
         String phraseType = coreLabels.get(coreLabelPosition).get(CoreAnnotations.PartOfSpeechAnnotation.class);
-        Set<LemmaType> lemmaTypesReturned = lemmaTypeService.findByText(word);
+        Set<LemmaType> lemmaTypesReturned = findByText(word);
         TextToken textToken = TextToken
                 .builder()
                 .text(word)
@@ -139,6 +169,21 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
       coreLabelPosition++;
     }
     return lemmaTypes;
+  }
+
+  private Set<LemmaType> findByText(String word) {
+    Set<LemmaType> lemmaTypesFound = new HashSet<>();
+    for (int i = 0; i <allLemmaTokens.size(); i++) {
+      if (allLemmaTokens.get(i).getText().equalsIgnoreCase(word)){
+        lemmaTypesFound.add(allLemmaTokens.get(i).getLemmaType());
+      }
+    }
+    for (int i = 0; i <allLemmaTypes.size(); i++) {
+      if (allLemmaTypes.get(i).getText().equalsIgnoreCase(word)){
+        lemmaTypesFound.add(allLemmaTypes.get(i));
+      }
+    }
+    return lemmaTypesFound;
   }
 
   private LemmaType getLemmaTypeFromSet(String word, Set<LemmaType> lemmaTypesReturned) {

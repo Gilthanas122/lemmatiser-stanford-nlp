@@ -53,4 +53,14 @@ public class NewsArticleController {
     model.addAttribute("relevantNewsArticleTexts", newsArticleService.getMostRelevantNewsArticles(pageNumber));
     return "newspaper/most-relevant";
   }
+
+  @GetMapping("start-reading")
+  public String startReading(Model model){
+    try {
+      newsArticleService.startReading();
+    }catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "index";
+  }
 }
