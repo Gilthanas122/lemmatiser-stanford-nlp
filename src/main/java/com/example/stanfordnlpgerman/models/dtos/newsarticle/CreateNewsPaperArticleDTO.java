@@ -1,24 +1,18 @@
 package com.example.stanfordnlpgerman.models.dtos.newsarticle;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateNewsPaperArticleDTO {
   private String title;
   private String newsPaperName;
   private String text;
   private int publicationYear;
-
-  public CreateNewsPaperArticleDTO() {
-  }
-
-  public CreateNewsPaperArticleDTO(String title, String newsPaperName, String text, int publicationYear) {
-    this.title = title;
-    this.newsPaperName = newsPaperName;
-    this.text = text;
-    this.publicationYear = publicationYear;
-  }
 
   public String getTitle() {
     return title;
