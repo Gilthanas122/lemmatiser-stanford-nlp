@@ -11,8 +11,7 @@ import java.util.List;
 @Table(name = "sentences")
 @Where(clause = "deleted=0")
 @Builder
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Sentence implements Comparable<Sentence> {

@@ -9,7 +9,6 @@ import java.util.Set;
 
 public class LemmaTypeCreator {
   private static final String LEMMA_TYPE_TEXt = "Lemma type text";
-  private static final boolean DELETED = false;
 
   public static List<LemmaType> createLemmaTypes(int amount){
     List<LemmaType> lemmaTypes = new ArrayList<>();
@@ -21,9 +20,8 @@ public class LemmaTypeCreator {
 
   public static LemmaType createLemmaType(int index) {
     return LemmaType.builder()
-            .text(LEMMA_TYPE_TEXt + index)
+            .text("Lemma type text" + index)
             .id(index)
-            .deleted(DELETED)
             .sentences(new ArrayList<>())
             .lemmaTokens(new ArrayList<>())
             .newsArticles(new ArrayList<>())

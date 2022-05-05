@@ -1,6 +1,6 @@
 package com.example.stanfordnlpgerman.models.dtos.newsarticle;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public interface MostRelevantNewsArticlesDTO {
   long getId();
@@ -9,6 +9,6 @@ public interface MostRelevantNewsArticlesDTO {
 
   String getText();
 
-  Date getPublicationDate();
+  LocalDate getPublicationDate();
 
 }

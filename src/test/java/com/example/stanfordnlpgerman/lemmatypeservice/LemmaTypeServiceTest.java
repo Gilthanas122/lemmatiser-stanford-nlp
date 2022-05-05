@@ -131,9 +131,8 @@ public class LemmaTypeServiceTest {
   void findMostCommonLemma_withPageNumberBelow0_shouldThrowLemmaTypeException(){
     short pageNumber = -1;
 
-    LemmaTypeException exception = assertThrows(LemmaTypeException.class, () -> lemmaTypeService.findMostCommonLemmas(pageNumber, true));
-
     List<ILoggingEvent> logsList = listAppender.list;
+    LemmaTypeException exception = assertThrows(LemmaTypeException.class, () -> lemmaTypeService.findMostCommonLemmas(pageNumber, true));
 
     assertEquals(1, logsList.size());
     assertEquals("PageNumber can not be under 0", logsList.get(0).getFormattedMessage());

@@ -27,7 +27,7 @@ public class NewsArticleController {
   @PostMapping("create")
   public String saveSubmittedNewsArticle(@ModelAttribute CreateNewsPaperArticleDTO createNewsPaperArticleDTO, Model model) {
     try {
-      newsArticleService.saveArticle(createNewsPaperArticleDTO);
+      newsArticleService.saveNewsArticle(createNewsPaperArticleDTO);
       return "index";
     } catch (MissingParamsException e) {
       model.addAttribute("error", e.getMessage());
@@ -42,7 +42,7 @@ public class NewsArticleController {
   @GetMapping("/get/{newsArticleId}")
   public String getNewsArticleBelongingToSentence(@PathVariable long newsArticleId, Model model) {
     try {
-      model.addAttribute("newsArticleDataDTO", newsArticleService.findByNewsArticleId(newsArticleId));
+      model.addAttribute("newsArticleDataDTO", newsArticleService.findNewsArticleById(newsArticleId));
       return "newspaper/list";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
@@ -59,7 +59,7 @@ public class NewsArticleController {
   @GetMapping("start-reading")
   public String startReading(Model model){
     try {
-      newsArticleService.startReading();
+      newsArticleService.startReading("resources");
     }catch (Exception e){
       model.addAttribute("error", e.getMessage());
     }

@@ -16,10 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -38,8 +35,14 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     this.textTokenService = textTokenService;
   }
 
+  @Override
+  public void saveNewsPaperArticles(List <CreateNewsPaperArticleDTO>  createNewsPaperArticleDTOS){
+    createNewsPaperArticleDTOS
+            .forEach(this::saveNewsPaperArticle);
+  }
+
   @Async
-  public void createNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception {
+  public void saveNewsPaperArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO)  {
     long startTime = System.currentTimeMillis();
     NewsArticle newsArticle = NewsArticle
             .builder()
@@ -78,7 +81,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     return lemmaTypes;
   }
 
-  private List<Sentence> createSentencesFromNewsPaperArticle(String text, NewsArticle newsArticle) throws Exception {
+  private List<Sentence> createSentencesFromNewsPaperArticle(String text, NewsArticle newsArticle) {
     CoreDocument coreDocument = new CoreDocument(text);
     pipeline.annotate(coreDocument);
     List<CoreSentence> coreSentences = coreDocument.sentences();
@@ -111,7 +114,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     short coreLabelPosition = 0;
 
     for (String word : coreSentence.tokensAsStrings()) {
-      //word = word.replaceAll("[^0-9\\p{L}\\s]", "");
+      word = word.replaceAll("[^0-9\\p{L}\\s]", "");
       if (!word.isEmpty()) {
         String phraseType = coreLabels.get(coreLabelPosition).get(CoreAnnotations.PartOfSpeechAnnotation.class);
         List<LemmaType> lemmaTypesReturned = lemmaTypeService.findByText(word);

@@ -10,9 +10,9 @@ import javax.persistence.*;
 @Table(name = "texttokens")
 @Where(clause = "deleted=0")
 @Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class TextToken {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class TextToken {
   @Column(columnDefinition = "varchar(8)")
   private String phraseType;
   @Column(columnDefinition = "smallint default 0")
-  private short sentencePosition;
+  private short sentencePosition = 1;
   private boolean deleted;
   private boolean invalid;
 
@@ -32,8 +32,4 @@ public class TextToken {
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
   @JsonIgnore
   private Sentence sentence;
-
-  public TextToken() {
-    sentencePosition = 1;
-  }
 }
