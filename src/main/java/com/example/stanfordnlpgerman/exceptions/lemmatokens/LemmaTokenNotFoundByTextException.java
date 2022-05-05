@@ -1,6 +1,6 @@
 package com.example.stanfordnlpgerman.exceptions.lemmatokens;
 
-public class LemmaTokenNotFoundByTextException extends Exception {
+public class LemmaTokenNotFoundByTextException extends RuntimeException {
   public LemmaTokenNotFoundByTextException() {
   }
 

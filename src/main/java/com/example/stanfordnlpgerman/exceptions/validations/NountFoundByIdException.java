@@ -1,6 +1,6 @@
 package com.example.stanfordnlpgerman.exceptions.validations;
 
-public class NountFoundByIdException extends Exception {
+public class NountFoundByIdException extends RuntimeException {
   public NountFoundByIdException() {
   }
 

@@ -1,6 +1,6 @@
 package com.example.stanfordnlpgerman.exceptions.lemmatypes;
 
-public class LemmaTokenNotFoundByIdException extends Exception {
+public class LemmaTokenNotFoundByIdException extends RuntimeException {
   public LemmaTokenNotFoundByIdException() {
   }
 
