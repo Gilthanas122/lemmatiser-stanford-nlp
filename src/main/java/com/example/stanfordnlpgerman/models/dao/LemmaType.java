@@ -1,16 +1,22 @@
 package com.example.stanfordnlpgerman.models.dao;
 
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "lemmatypes")
 @Where(clause = "deleted=0")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class LemmaType implements Comparable<LemmaType> {
 
   @Id
@@ -20,88 +26,19 @@ public class LemmaType implements Comparable<LemmaType> {
   private boolean deleted;
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private Set<Sentence> sentences = new HashSet<>();
+  private List<Sentence> sentences = new ArrayList<>();
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private Set<NewsArticle> newsArticles = new HashSet<>();
+  private List<NewsArticle> newsArticles = new ArrayList<>();
 
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private Set<LemmaToken> lemmaTokens = new HashSet<>();
+  private List<LemmaToken> lemmaTokens = new ArrayList<>();
 
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private Set<TextToken> textTokens = new HashSet<>();
-
-  public LemmaType() {
-  }
-
-  public LemmaType(long id, String text, boolean deleted, Set<Sentence> sentences, Set<NewsArticle> newsArticles, Set<LemmaToken> lemmaTokens, Set<TextToken> textTokens) {
-    this.id = id;
-    this.text = text;
-    this.deleted = deleted;
-    this.sentences = sentences;
-    this.newsArticles = newsArticles;
-    this.lemmaTokens = lemmaTokens;
-    this.textTokens = textTokens;
-  }
+  private List<TextToken> textTokens = new ArrayList<>();
 
   public LemmaType(String text) {
     this.text = text;
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
-  }
-
-  public boolean isDeleted() {
-    return deleted;
-  }
-
-  public void setDeleted(boolean deleted) {
-    this.deleted = deleted;
-  }
-
-  public Set<LemmaToken> getLemmaTokens() {
-    return lemmaTokens;
-  }
-
-  public void setLemmaTokens(Set<LemmaToken> lemmaTokens) {
-    this.lemmaTokens = lemmaTokens;
-  }
-
-  public Set<Sentence> getSentences() {
-    return sentences;
-  }
-
-  public void setSentences(Set<Sentence> sentences) {
-    this.sentences = sentences;
-  }
-
-  public Set<NewsArticle> getNewsArticles() {
-    return newsArticles;
-  }
-
-  public void setNewsArticles(Set<NewsArticle> newsArticles) {
-    this.newsArticles = newsArticles;
-  }
-
-  public Set<TextToken> getTextTokens() {
-    return textTokens;
-  }
-
-  public void setTextTokens(Set<TextToken> textTokens) {
-    this.textTokens = textTokens;
   }
 
   @Override

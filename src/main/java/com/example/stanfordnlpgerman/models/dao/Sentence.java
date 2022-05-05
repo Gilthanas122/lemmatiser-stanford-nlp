@@ -1,6 +1,6 @@
 package com.example.stanfordnlpgerman.models.dao;
 
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -11,6 +11,10 @@ import java.util.List;
 @Table(name = "sentences")
 @Where(clause = "deleted=0")
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Sentence implements Comparable<Sentence> {
 
   @Id
@@ -31,92 +35,6 @@ public class Sentence implements Comparable<Sentence> {
 
   @OneToMany(mappedBy = "sentence", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<TextToken> textTokens;
-
-  public Sentence() {
-  }
-
-  public Sentence(long id, String text, short textPosition, boolean deleted, boolean invalid, NewsArticle newsArticle, List<LemmaType> lemmaTypes, List<TextToken> textTokens) {
-    this.id = id;
-    this.text = text;
-    this.textPosition = textPosition;
-    this.deleted = deleted;
-    this.invalid = invalid;
-    this.newsArticle = newsArticle;
-    this.lemmaTypes = lemmaTypes;
-    this.textTokens = textTokens;
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
-  }
-
-  public short getTextPosition() {
-    return textPosition;
-  }
-
-  public void setTextPosition(short textPosition) {
-    this.textPosition = textPosition;
-  }
-
-  public NewsArticle getNewsArticle() {
-    return newsArticle;
-  }
-
-  public void setNewsArticle(NewsArticle newsArticle) {
-    this.newsArticle = newsArticle;
-  }
-
-  public boolean isDeleted() {
-    return deleted;
-  }
-
-  public void setDeleted(boolean deleted) {
-    this.deleted = deleted;
-  }
-
-  public List<LemmaType> getLemmaTypes() {
-    return lemmaTypes;
-  }
-
-  public void setLemmaTypes(List<LemmaType> lemmaTypes) {
-    this.lemmaTypes = lemmaTypes;
-  }
-
-  public List<TextToken> getTextTokens() {
-    return textTokens;
-  }
-
-  public void setTextTokens(List<TextToken> textTokens) {
-    this.textTokens = textTokens;
-  }
-
-  public boolean isInvalid() {
-    return invalid;
-  }
-
-  public void setInvalid(boolean invalid) {
-    this.invalid = invalid;
-  }
-
-  public void addOneLemmaType(LemmaType lemmaType) {
-    this.lemmaTypes.add(lemmaType);
-  }
-
-  public void addOneTexttoken(TextToken textToken) {
-    this.textTokens.add(textToken);
-  }
 
   @Override
   public int compareTo(Sentence o) {
