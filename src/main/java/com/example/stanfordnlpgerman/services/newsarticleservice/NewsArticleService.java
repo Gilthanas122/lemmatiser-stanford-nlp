@@ -5,17 +5,16 @@ import com.example.stanfordnlpgerman.models.dtos.newsarticle.MostRelevantNewsArt
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.NewsArticleDataDTO;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
 public interface NewsArticleService {
 
-  void saveArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception;
+  void saveNewsArticle(CreateNewsPaperArticleDTO createNewsPaperArticleDTO) throws Exception;
 
-  NewsArticleDataDTO findByNewsArticleId(long newsArticleId);
+  NewsArticleDataDTO findNewsArticleById(long newsArticleId);
 
   List<MostRelevantNewsArticleDTOAGG> getMostRelevantNewsArticles(int pageNumber);
 
-  void startReading() throws Exception;
+  void readFiles(String dir) throws Exception;
 }

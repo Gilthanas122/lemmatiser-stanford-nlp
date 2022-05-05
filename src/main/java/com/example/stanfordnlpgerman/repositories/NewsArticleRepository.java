@@ -12,8 +12,6 @@ import java.util.List;
 @Repository
 public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long> {
 
-  @Query("SELECT na from NewsArticle na where na.id = ?1")
-  NewsArticle findNewsArticleBySentenceId(long newsArticleId);
 
 
   @Query("SELECT DISTINCT na.newsPaperName AS newsPaperName, na.publicationYear AS publicationYear, na.id AS id, s.text as text FROM NewsArticle na JOIN na.sentences s ORDER BY na.relevance, na.publicationYear")

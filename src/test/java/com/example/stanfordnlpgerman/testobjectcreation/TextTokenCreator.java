@@ -24,8 +24,6 @@ public class TextTokenCreator {
             .text("text token text " + index)
             .phraseType("VERB")
             .sentencePosition((short) index)
-            .deleted(false)
-            .invalid(true)
             .lemmaType(new LemmaType())
             .sentence(new Sentence())
             .build();

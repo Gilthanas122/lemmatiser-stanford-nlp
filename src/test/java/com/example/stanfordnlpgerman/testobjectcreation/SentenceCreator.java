@@ -7,8 +7,7 @@ import java.util.List;
 
 public class SentenceCreator {
   public static final String TEXT = "Sentence text";
-  public static final boolean DELETED = false;
-  public static final boolean INVALID = false;
+
 
   public static List<Sentence> createSentences(int amount){
     List<Sentence> sentences = new ArrayList<>();
@@ -21,9 +20,7 @@ public class SentenceCreator {
   private static Sentence createSentence(int index) {
     return Sentence.builder()
             .id(index)
-            .deleted(DELETED)
-            .invalid(INVALID)
-            .text(TEXT + index)
+            .text("Sentence text" + index)
             .textPosition((short) index)
             .lemmaTypes(new ArrayList<>())
             .textTokens(new ArrayList<>())

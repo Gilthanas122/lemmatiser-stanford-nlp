@@ -59,7 +59,7 @@ public class NewsArticleController {
   @GetMapping("start-reading")
   public String startReading(Model model){
     try {
-      newsArticleService.startReading("resources");
+      newsArticleService.readFiles("resources");
     }catch (Exception e){
       model.addAttribute("error", e.getMessage());
     }
