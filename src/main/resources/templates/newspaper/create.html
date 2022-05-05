@@ -40,7 +40,7 @@
 
   <select name="newsPaperName">
     <option th:field=*{newsPaperName}
-            th:each="newspaper : ${T(com.example.stanfordnlpgerman.models.dao.NewsPaperEnum).values()}"
+            th:each="newspaper : ${newsPaperNameEnums}"
             th:value="${newspaper}" th:text="${newspaper}"></option>
   </select>
   <button type="submit">SUBMIT</button>

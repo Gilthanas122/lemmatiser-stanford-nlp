@@ -1,6 +1,7 @@
 package com.example.stanfordnlpgerman.controllers;
 
 import com.example.stanfordnlpgerman.exceptions.validations.MissingParamsException;
+import com.example.stanfordnlpgerman.models.dtos.NewsPaperEnum;
 import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArticleDTO;
 import com.example.stanfordnlpgerman.services.newsarticleservice.NewsArticleService;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ public class NewsArticleController {
   @GetMapping("create")
   public String generateFormForNewsArticle(Model model) {
     model.addAttribute("createNewsPaperArticleDTO", new CreateNewsPaperArticleDTO());
+    model.addAttribute("newsPaperNameEnums", NewsPaperEnum.values());
     return "newspaper/create";
   }
 
