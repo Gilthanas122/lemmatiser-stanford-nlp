@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 @Transactional
 public interface LemmaTypeService {
-  Set<LemmaType> findByText(String originalText);
+  List<LemmaType> findByText(String originalText);
 
   List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber, boolean keyword);
 

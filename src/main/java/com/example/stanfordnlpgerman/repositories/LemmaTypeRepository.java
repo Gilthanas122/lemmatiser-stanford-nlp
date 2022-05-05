@@ -40,5 +40,7 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
           "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest of);
 
-  Set<LemmaType> findAllByTextOrLemmaTokensText(String familie, String fm);
+  List<LemmaType> findAllByTextOrLemmaTokensText(String familie, String fm);
+
+  LemmaType findByText(String lemmaTypeText);
 }

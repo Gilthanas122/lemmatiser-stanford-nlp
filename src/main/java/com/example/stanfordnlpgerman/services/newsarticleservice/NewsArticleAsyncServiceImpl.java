@@ -114,7 +114,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
       //word = word.replaceAll("[^0-9\\p{L}\\s]", "");
       if (!word.isEmpty()) {
         String phraseType = coreLabels.get(coreLabelPosition).get(CoreAnnotations.PartOfSpeechAnnotation.class);
-        Set<LemmaType> lemmaTypesReturned = lemmaTypeService.findByText(word);
+        List<LemmaType> lemmaTypesReturned = lemmaTypeService.findByText(word);
         TextToken textToken = TextToken
                 .builder()
                 .text(word)
@@ -124,7 +124,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                 .build();
         filteredTextTokens.add(textToken);
         if (lemmaTypesReturned.size() == 1) {
-          LemmaType lemmaType = getLemmaTypeFromSet(word, lemmaTypesReturned);
+          LemmaType lemmaType = getLemmaTypeFromList(word, lemmaTypesReturned);
           lemmaType.addOneTextToken(textToken);
           lemmaType.addOneSentence(sentence);
           lemmaType.addOneNewsArticle(newsArticle);
@@ -141,7 +141,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     return lemmaTypes;
   }
 
-  private LemmaType getLemmaTypeFromSet(String word, Set<LemmaType> lemmaTypesReturned) {
+  private LemmaType getLemmaTypeFromList(String word, List<LemmaType> lemmaTypesReturned) {
     LemmaType toReturn = null;
     for (LemmaType lemmaType : lemmaTypesReturned) {
       if (lemmaType.getText().equalsIgnoreCase(word)) {
