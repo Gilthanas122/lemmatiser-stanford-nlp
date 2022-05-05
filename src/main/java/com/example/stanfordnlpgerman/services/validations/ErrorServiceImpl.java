@@ -3,6 +3,8 @@ package com.example.stanfordnlpgerman.services.validations;
 
 import com.example.stanfordnlpgerman.exceptions.validations.MissingParamsException;
 import com.example.stanfordnlpgerman.models.dtos.validations.ErrorMessageDTO;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -10,23 +12,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ErrorServiceImpl {
 
-  public static String buildMissingFieldErrorMessage(Object object) throws MissingParamsException {
+  public static void buildMissingFieldErrorMessage(Object object) throws MissingParamsException {
     if (object == null) {
       throw new NullPointerException("Object to be verified for null or empty fields is null");
     }
-    String result = "";
+    StringBuilder result = new StringBuilder();
     List<String> missingFields = checkInputNullFields(object);
-    String errorMessage = "";
+    StringBuilder errorMessage = new StringBuilder();
     for (String word : missingFields) {
-      result += word + ", ";
+      result.append(word)
+              .append(", ");
     }
     if (result.length() != 0) {
-      errorMessage = result.substring(0, 1).toUpperCase() + result.substring(1, result.length() - 2).concat(" ") + "is required.";
-      throw new MissingParamsException(errorMessage);
+      errorMessage.
+              append(result.substring(0, 1).toUpperCase())
+              .append(result.substring(1, result.length() - 2))
+              .append(" ")
+              .append( "is required.");
+      log.error(errorMessage.toString());
+      throw new MissingParamsException(errorMessage.toString());
     }
-    return errorMessage;
   }
 
   private static List<String> checkInputNullFields(Object object) {
@@ -42,13 +50,6 @@ public class ErrorServiceImpl {
       }
     }
     return missingFields;
-  }
-
-  public static ErrorMessageDTO defaultExceptionResponse(Exception exception) {
-    ErrorMessageDTO error = new ErrorMessageDTO();
-    error.setStatus("error");
-    error.setMessage(exception.getMessage());
-    return error;
   }
 
   public static boolean invalidSentence(String sentence) {
