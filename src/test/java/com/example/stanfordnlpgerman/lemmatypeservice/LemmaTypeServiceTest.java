@@ -25,12 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,35 +55,37 @@ public class LemmaTypeServiceTest {
   @Test
   void findByText_success_shouldReturnListLemmaType(){
     String lemmaText = "lemmaText";
-    List<LemmaType> expectedLemmaTypes = LemmaTypeCreator.createLemmaTypes(2);
+    Set<LemmaType> expectedLemmaTypes = LemmaTypeCreator.createLemmaTypes(2);
 
-    when(lemmaTypeRepository.findAllByTextOrLemmaTokensText(lemmaText, lemmaText)).thenReturn(expectedLemmaTypes);
+    when(lemmaTypeRepository.findAllByLemmaText(lemmaText)).thenReturn(expectedLemmaTypes);
 
     List<ILoggingEvent> logsList = listAppender.list;
 
-    List<LemmaType> actuals = lemmaTypeService.findByText(lemmaText);
+    Set<LemmaType> actualLemmaTypes = lemmaTypeService.findAllByText(lemmaText);
 
     assertEquals(1, logsList.size());
-    assertEquals("LemmaTypes returned: Lemma type text1, Lemma type text2", logsList.get(0).getFormattedMessage());
-    assertEquals(expectedLemmaTypes.size(), actuals.size());
-    assertLemmaType(expectedLemmaTypes.get(0), actuals.get(0));
-    assertLemmaType(expectedLemmaTypes.get(1), actuals.get(1));
+    assertTrue(logsList.get(0).getFormattedMessage().contains("LemmaTypes returned"));
+    assertTrue(logsList.get(0).getFormattedMessage().contains("Lemma type text2"));
+    assertTrue(logsList.get(0).getFormattedMessage().contains("Lemma type text1"));
+    assertEquals(expectedLemmaTypes.size(), actualLemmaTypes.size());
+    assertEquals(expectedLemmaTypes, actualLemmaTypes);
   }
 
   @Test
   void findByText_NoLemmaTypesFound_shouldLogNoLemmaTypesFound(){
     String lemmaText = "lemmaText";
-    List<LemmaType> expectedLemmaTypes = new ArrayList<>();
+    Set<LemmaType> expectedLemmaTypes = new HashSet<>();
 
-    when(lemmaTypeRepository.findAllByTextOrLemmaTokensText(lemmaText, lemmaText)).thenReturn(expectedLemmaTypes);
+    when(lemmaTypeRepository.findAllByLemmaText(lemmaText)).thenReturn(expectedLemmaTypes);
 
     List<ILoggingEvent> logsList = listAppender.list;
 
-    List<LemmaType> actuals = lemmaTypeService.findByText(lemmaText);
+    Set<LemmaType> actualLemmaTypes = lemmaTypeService.findAllByText(lemmaText);
 
     assertEquals(1, logsList.size());
     assertEquals("No LemmaTypes find by " + lemmaText, logsList.get(0).getFormattedMessage());
-    assertEquals(expectedLemmaTypes.size(), actuals.size());
+    assertEquals(expectedLemmaTypes.size(), actualLemmaTypes.size());
+    assertEquals(expectedLemmaTypes, actualLemmaTypes);
   }
 
   @Test

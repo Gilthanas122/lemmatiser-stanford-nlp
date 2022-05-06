@@ -34,13 +34,10 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
   @Query("UPDATE TextToken tt SET tt.invalid = false, tt.lemmaType.id = ?2 WHERE tt.text = ?1")
   void updateIfLemmaTypeHasMatchingTextTokens(String lemmaTypeText, long lemmaTypeId);
 
-  boolean existsLemmaTypeByText(String lemmaTypeIdOrText);
 
   @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
           "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest of);
-
-  List<LemmaType> findAllByTextOrLemmaTokensText(String familie, String fm);
 
   LemmaType findByText(String lemmaTypeText);
 }
