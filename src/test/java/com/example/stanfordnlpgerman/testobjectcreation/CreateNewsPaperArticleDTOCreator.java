@@ -5,7 +5,7 @@ import com.example.stanfordnlpgerman.models.dtos.newsarticle.CreateNewsPaperArti
 public class CreateNewsPaperArticleDTOCreator {
   public static final String NEWS_PAPER_NAME = "my news paper name";
   public static final Integer PUBLICATION_YEAR = 1999;
-  public static final String TEXT = "my text";
+  public static final String TEXT = "my text sentence 1. Sentence 2?";
   public static final String TITLE = "my title";
 
   public static CreateNewsPaperArticleDTO createCreateNewsPaperArticleDTO(){

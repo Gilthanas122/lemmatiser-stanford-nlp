@@ -191,7 +191,7 @@ public class LemmaTypeServiceTest {
     lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeIdOrText, lemmaToken, phraseType);
 
     assertEquals(1, logsList.size());
-    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType ID or Text: 2", logsList.get(0).getFormattedMessage());
+    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType ID: 2", logsList.get(0).getFormattedMessage());
     verify(lemmaTypeRepository, times(1)).save(expectedLemmaType);
   }
 
@@ -210,9 +210,10 @@ public class LemmaTypeServiceTest {
 
     lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeIdOrText, lemmaToken, phraseType);
 
-    assertEquals(2, logsList.size());
+    assertEquals(3, logsList.size());
     assertEquals("Provided LemmaType ID or Text was Text", logsList.get(0).getFormattedMessage());
-    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType ID or Text: text", logsList.get(1).getFormattedMessage());
+    assertEquals(String.format("No Lemma Type found by %s text", lemmaTypeIdOrText), logsList.get(1).getFormattedMessage());
+    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType Text: " + lemmaTypeIdOrText, logsList.get(2).getFormattedMessage());
     verify(lemmaTypeRepository, times(1)).save(any());
     verify(textTokenRepository, times(1)).save(textToken);
   }
@@ -235,7 +236,7 @@ public class LemmaTypeServiceTest {
 
     assertEquals(2, logsList.size());
     assertEquals("Provided LemmaType ID or Text was Text", logsList.get(0).getFormattedMessage());
-    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType ID or Text: text", logsList.get(1).getFormattedMessage());
+    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType Text: text", logsList.get(1).getFormattedMessage());
     verify(lemmaTypeRepository, times(1)).save(expectedLemmaType);
     verify(textTokenRepository, times(1)).save(textToken);
   }
