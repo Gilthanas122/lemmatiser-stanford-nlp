@@ -117,7 +117,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     });
 
     log.info("{} file(s) was/were read from folder {}", createNewsPaperArticleDTOs.size(), dir);
-    newsArticleAsyncService.saveNewsPaperArticles(createNewsPaperArticleDTOs);
+    createNewsPaperArticleDTOs.forEach(newsArticleAsyncService::saveNewsPaperArticle);
   }
 
   private List<File> readFilesFromDirectory(String dir) {
