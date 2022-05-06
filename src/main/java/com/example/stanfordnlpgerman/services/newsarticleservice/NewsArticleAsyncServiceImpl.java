@@ -50,11 +50,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
         newsArticleRepository.save(newsArticle);
     }
 
-    @Override
-    public void saveNewsPaperArticles(List<CreateNewsPaperArticleDTO> createNewsPaperArticleDTOS) {
-        createNewsPaperArticleDTOS.forEach(this::saveNewsPaperArticle);
-    }
-
     private int setRelevanceForNewsArticleByLemmaTypes(Set<LemmaType> lemmaTypes) {
         final int[] relevance = {0};
         Set<String> keyWords = KeyWordsSingleton.getKeyWords();
