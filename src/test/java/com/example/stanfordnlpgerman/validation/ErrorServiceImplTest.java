@@ -38,7 +38,7 @@ public class ErrorServiceImplTest {
   @Test
   void buildMissingFieldErrorMessage_noError_shouldLogNothing() {
     List<ILoggingEvent> logsList = listAppender.list;
-    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = CreateNewsPaperArticleDTOCreator.createCreateNewsPaperArticleDTO();
+    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = CreateNewsPaperArticleDTOCreator.createCreateNewsPaperArticleDTO(1);
 
     ErrorServiceImpl.buildMissingFieldErrorMessage(createNewsPaperArticleDTO);
 
@@ -47,7 +47,7 @@ public class ErrorServiceImplTest {
 
   @Test
   void buildMissingFieldErrorMessage_withTwoMissingFields_shouldLogAndThrowMissingParamsException() {
-    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = CreateNewsPaperArticleDTOCreator.createCreateNewsPaperArticleDTO();
+    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = CreateNewsPaperArticleDTOCreator.createCreateNewsPaperArticleDTO(1);
     createNewsPaperArticleDTO.setNewsPaperName(null);
     createNewsPaperArticleDTO.setTitle(null);
 

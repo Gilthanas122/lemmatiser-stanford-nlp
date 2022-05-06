@@ -61,13 +61,13 @@ public class NewsArticleServiceTest {
 
   @Test
   void saveNewsArticle_success(){
-    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = CreateNewsPaperArticleDTOCreator.createCreateNewsPaperArticleDTO();
+    CreateNewsPaperArticleDTO createNewsPaperArticleDTO = CreateNewsPaperArticleDTOCreator.createCreateNewsPaperArticleDTO(1);
     List<ILoggingEvent> logsList = listAppender.list;
 
     newsArticleService.saveNewsArticle(createNewsPaperArticleDTO);
 
     assertEquals(1, logsList.size());
-    assertEquals("NewsArticle save with title: my title", logsList.get(0).getFormattedMessage());
+    assertEquals("NewsArticle save with title: my title1", logsList.get(0).getFormattedMessage());
     verify(newsArticleAsyncService, times(1)).saveNewsPaperArticle(createNewsPaperArticleDTO);
   }
 
