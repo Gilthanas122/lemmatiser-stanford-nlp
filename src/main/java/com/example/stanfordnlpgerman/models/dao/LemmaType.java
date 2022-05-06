@@ -5,7 +5,9 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "lemmatypes")
@@ -13,7 +15,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class LemmaType implements Comparable<LemmaType> {
 
   @Id
@@ -26,13 +29,13 @@ public class LemmaType implements Comparable<LemmaType> {
   private List<Sentence> sentences = new ArrayList<>();
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private List<NewsArticle> newsArticles = new ArrayList<>();
+  private Set<NewsArticle> newsArticles = new HashSet<>();
 
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<LemmaToken> lemmaTokens = new ArrayList<>();
 
   @OneToMany(mappedBy = "lemmaType", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private List<TextToken> textTokens = new ArrayList<>();
+  private Set<TextToken> textTokens = new HashSet<>();
 
   public LemmaType(String text) {
     this.text = text;

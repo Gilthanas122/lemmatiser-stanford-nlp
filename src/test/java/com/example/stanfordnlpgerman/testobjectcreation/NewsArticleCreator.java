@@ -3,6 +3,7 @@ package com.example.stanfordnlpgerman.testobjectcreation;
 import com.example.stanfordnlpgerman.models.dao.NewsArticle;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class NewsArticleCreator {
@@ -24,7 +25,7 @@ public class NewsArticleCreator {
             .publicationYear(index + 1999)
             .relevance(index)
             .sentences(new ArrayList<>())
-            .lemmaTypes(new ArrayList<>())
+            .lemmaTypes(new HashSet<>())
             .build();
   }
 }

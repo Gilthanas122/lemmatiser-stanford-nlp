@@ -4,17 +4,16 @@ import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "newsarticles")
 @Builder
 @Where(clause = "deleted=0")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class NewsArticle {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +28,5 @@ public class NewsArticle {
   private List<Sentence> sentences = new ArrayList<>();
 
   @ManyToMany(mappedBy = "newsArticles", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private List<LemmaType> lemmaTypes = new ArrayList<>();
-
+  private Set<LemmaType> lemmaTypes = new HashSet<>();
 }

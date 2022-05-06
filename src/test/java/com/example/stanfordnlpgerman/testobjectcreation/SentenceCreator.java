@@ -3,6 +3,7 @@ package com.example.stanfordnlpgerman.testobjectcreation;
 import com.example.stanfordnlpgerman.models.dao.Sentence;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class SentenceCreator {
@@ -22,8 +23,7 @@ public class SentenceCreator {
             .id(index)
             .text("Sentence text" + index)
             .textPosition((short) index)
-            .lemmaTypes(new ArrayList<>())
-            .textTokens(new ArrayList<>())
+            .lemmaTypes(new HashSet<>())
             .textTokens(new ArrayList<>())
             .build();
   }

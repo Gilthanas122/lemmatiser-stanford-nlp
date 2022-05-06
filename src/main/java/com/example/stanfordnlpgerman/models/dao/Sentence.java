@@ -5,15 +5,18 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "sentences")
 @Where(clause = "deleted=0")
 @Builder
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Sentence implements Comparable<Sentence> {
 
   @Id
@@ -30,7 +33,7 @@ public class Sentence implements Comparable<Sentence> {
   private NewsArticle newsArticle;
 
   @ManyToMany(mappedBy = "sentences", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-  private List<LemmaType> lemmaTypes = new ArrayList<>();
+  private Set<LemmaType> lemmaTypes = new HashSet<>();
 
   @OneToMany(mappedBy = "sentence", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<TextToken> textTokens;
