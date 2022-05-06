@@ -9,16 +9,10 @@ import java.util.Set;
 
 @Service
 public interface TextTokenService {
-  void saveTextTokenWithoutLemmaType(TextToken textToken);
 
   Set<InvalidLemmasDTO> getInvalidLemmas();
 
   AddLemmaTypeToTextTokenDTO findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(long textTokenId, String textTokenText);
 
-  TextToken findById(long textTokenId);
-
-  void saveAllInvalidTextTokens(Set<TextToken> invalidTextTokens);
-
   void deleteById(long textTokenId);
-
 }

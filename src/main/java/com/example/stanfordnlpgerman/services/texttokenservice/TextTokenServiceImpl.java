@@ -22,11 +22,6 @@ public class TextTokenServiceImpl implements TextTokenService {
 
 
   @Override
-  public void saveTextTokenWithoutLemmaType(TextToken textToken) {
-    textTokenRepository.save(textToken);
-  }
-
-  @Override
   public Set<InvalidLemmasDTO> getInvalidLemmas() {
     Set<TextToken> textTokens = textTokenRepository.getTextTokensInvalid();
     Set<InvalidLemmasDTO> invalidLemmasDTOS = new HashSet<>();
@@ -43,7 +38,7 @@ public class TextTokenServiceImpl implements TextTokenService {
   @Override
   public AddLemmaTypeToTextTokenDTO findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(long textTokenId, String textTokenText) {
     TextToken textToken = textTokenRepository.findById(textTokenId);
-    List<LemmaType> lemmaTypes = lemmaTypeService.findByText(textTokenText);
+    Set<LemmaType> lemmaTypes = lemmaTypeService.findAllByText(textTokenText);
     Map<Long, String> lemmaTypeTextAndToken = new HashMap<>();
     for (LemmaType lt : lemmaTypes) {
       lemmaTypeTextAndToken.put(lt.getId(), lt.getText());
@@ -57,16 +52,6 @@ public class TextTokenServiceImpl implements TextTokenService {
             .textTokenText(textTokenText)
             .build();
     return addLemmaTypeToTextTokenDTO;
-  }
-
-  @Override
-  public TextToken findById(long textTokenId) {
-    return textTokenRepository.findById(textTokenId);
-  }
-
-  @Override
-  public void saveAllInvalidTextTokens(Set<TextToken> invalidTextTokens) {
-    textTokenRepository.saveAll(invalidTextTokens);
   }
 
   @Override
