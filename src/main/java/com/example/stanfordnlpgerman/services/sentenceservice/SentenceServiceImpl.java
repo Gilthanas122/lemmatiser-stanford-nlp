@@ -47,12 +47,11 @@ public class SentenceServiceImpl implements SentenceService {
         }
 
         LemmaType researchLemmaType = lemmaTypeService.findById(lemmaTypeId);
-        List<TextToken> textTokens = sentenceRepository.sentencesContainingLemma(lemmaTypeId);
-        List<Long> textTokenIds = getTextTokenIdsFromSentences(textTokens, lemmaTypeId);
-        Map<String, Long> textTokensAndOccurences = filterTextTokensBasedOnDistance(textTokens, textTokenIds, distance, researchLemmaType.getText());
+        List<TextToken> textTokens = sentenceRepository.findAllTextTokensInSentencesContainingLemma(lemmaTypeId);
+        List<Short> textTokenSentencePositions = getTextTokenIdsFromSentences(textTokens, lemmaTypeId);
+        Map<String, Integer> textTokensAndOccurences = filterTextTokensBasedOnDistance(textTokens, textTokenSentencePositions, distance, researchLemmaType.getText());
 
         return createFromMapListLemmaOccurenceInSentencesDTO(textTokensAndOccurences, researchLemmaType.getText());
-
     }
 
     @Override
@@ -197,17 +196,17 @@ public class SentenceServiceImpl implements SentenceService {
     }
 
 
-    private List<LemmaOccurenceInSentencesDTO> createFromMapListLemmaOccurenceInSentencesDTO(Map<String, Long> textTokensAndOccurences, String lemmaTypeText) {
+    private List<LemmaOccurenceInSentencesDTO> createFromMapListLemmaOccurenceInSentencesDTO(Map<String, Integer> textTokensAndOccurences, String lemmaTypeText) {
         List<LemmaOccurenceInSentencesDTO> lemmaOccurenceInSentencesDTOS = new LinkedList<>();
-        for (Map.Entry<String, Long> entry : textTokensAndOccurences.entrySet()) {
-            lemmaOccurenceInSentencesDTOS.add(createLemmaOccurenceInSentenceDTO(entry.getKey(), entry.getValue()));
-        }
+        textTokensAndOccurences.forEach((lemmaText, occurence) -> {
+            lemmaOccurenceInSentencesDTOS.add(createLemmaOccurenceInSentenceDTO(lemmaText, occurence));
+        });
 
-        lemmaOccurenceInSentencesDTOS.add(0, createLemmaOccurenceInSentenceDTO(lemmaTypeText, 0L));
+        lemmaOccurenceInSentencesDTOS.add(0, createLemmaOccurenceInSentenceDTO(lemmaTypeText, 0));
         return lemmaOccurenceInSentencesDTOS;
     }
 
-    private LemmaOccurenceInSentencesDTO createLemmaOccurenceInSentenceDTO(String key, Long value) {
+    private LemmaOccurenceInSentencesDTO createLemmaOccurenceInSentenceDTO(String key, Integer value) {
         return new LemmaOccurenceInSentencesDTO() {
             @Override
             public String getOriginalLemmaText() {
@@ -220,51 +219,45 @@ public class SentenceServiceImpl implements SentenceService {
             }
 
             @Override
-            public Long getLemmaOccurence() {
+            public Integer getLemmaOccurence() {
                 return value;
             }
         };
     }
 
-    private Map<String, Long> filterTextTokensBasedOnDistance(List<TextToken> textTokens, List<Long> textTokenIds, int distance, String lemmaTypeText) {
-        List<String> ll = new ArrayList<>();
-        int textTokenCounter = 0;
-        Map<String, Long> textTokensAndOccurences = new HashMap<>();
-        for (int i = 0; i < textTokens.size(); i++) {
-            if (textTokenCounter >= textTokenIds.size()) {
-                break;
-            } else if (textTokens.get(i).getId() == textTokenIds.get(textTokenCounter)) {
-                for (int j = 0; j <= distance * 2; j++) {
-                    if (i - distance + j < 0) {
-                        continue;
-                    } else if (textTokens.get(i).getSentence().getId() != textTokens.get(i - distance + j).getSentence().getId() || i - distance + j >= textTokens.size()) {
-                        if (j > distance) {
-                            break;
-                        }
-                        continue;
-                    } else {
-                        TextToken currentTextToken = textTokens.get(i - distance + j);
-                        if (currentTextToken.getLemmaType() == null || currentTextToken.getLemmaType().getText().equals(lemmaTypeText)) {
-                            continue;
-                        } else if (textTokensAndOccurences.containsKey(currentTextToken.getLemmaType().getText())) {
-                            textTokensAndOccurences.put(currentTextToken.getLemmaType().getText(), textTokensAndOccurences.get(currentTextToken.getLemmaType().getText()) + 1);
-                        } else {
-                            textTokensAndOccurences.put(currentTextToken.getLemmaType().getText(), 1L);
-                        }
-                    }
+    private Map<String, Integer> filterTextTokensBasedOnDistance(List<TextToken> textTokens, List<Short> textTokenSentencePositions, int distance, String lemmaTypeText) {
+        AtomicInteger tokenCounter = new AtomicInteger(0);
+        Map<String, Integer> textTokensAndOccurences = new HashMap<>();
+
+        textTokens.forEach(textToken -> {
+            if (checkIfValidDistance(textToken.getSentencePosition(), textTokenSentencePositions, distance)) {
+                if (textTokensAndOccurences.containsKey(textToken.getText())) {
+                    textTokensAndOccurences.put(textToken.getText(), textTokensAndOccurences.get(textToken.getText()) + 1);
+                } else {
+                    textTokensAndOccurences.put(textToken.getText(), 1);
                 }
-                textTokenCounter++;
             }
-        }
+        });
+
         return textTokensAndOccurences;
     }
 
-    private List<Long> getTextTokenIdsFromSentences(List<TextToken> textTokens, long lemmaTypeId) {
+    private boolean checkIfValidDistance(short textTokenPosition, List<Short> textTokenSentencePositions, int distance) {
+        boolean[] valid = {false};
+        textTokenSentencePositions.forEach(position -> {
+            if (textTokenPosition + distance >= position || textTokenPosition - distance <= position) {
+                valid[0] = true;
+            }
+        });
+        return valid[0];
+    }
+
+    private List<Short> getTextTokenIdsFromSentences(List<TextToken> textTokens, long lemmaTypeId) {
         return textTokens
                 .stream()
                 .filter(tt -> tt.getLemmaType() != null && tt.getLemmaType().getId() == lemmaTypeId)
-                .map(TextToken::getId)
-                .collect(Collectors.toList());
+                .map(TextToken::getSentencePosition)
+                .toList();
     }
 
     private List<LemmaOccurenceInSentencesDTO> getContextFromFullSentence(long lemmaTypeId) {

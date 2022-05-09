@@ -343,8 +343,8 @@ public class LemmaTypeServiceTest {
       }
 
       @Override
-      public Long getLemmaOccurence() {
-        return (long) index;
+      public Integer getLemmaOccurence() {
+        return index;
       }
     };
   }

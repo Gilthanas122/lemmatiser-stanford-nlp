@@ -20,7 +20,7 @@ public interface SentenceRepository extends JpaRepository<Sentence, Long> {
   List<SentenceTextAndNewsPaperIdDTO> findAllByLemmaTypeId(long lemmaTypeId);
 
   @Query("SELECT tt FROM Sentence s JOIN s.lemmaTypes lt JOIN s.textTokens tt WHERE lt.id = ?1")
-  List<TextToken> sentencesContainingLemma(long lemmaTypeId);
+  List<TextToken> findAllTextTokensInSentencesContainingLemma(long lemmaTypeId);
 
   @Query("SELECT s.id FROM Sentence s JOIN s.lemmaTypes lt JOIN s.textTokens tt WHERE lt.id = ?1")
   List<Long> sentenceIdsContainingLemma(long lemmaTypeId);
