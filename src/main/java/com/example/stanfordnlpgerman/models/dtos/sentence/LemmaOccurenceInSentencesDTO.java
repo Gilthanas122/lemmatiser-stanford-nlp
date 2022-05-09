@@ -6,5 +6,5 @@ public interface LemmaOccurenceInSentencesDTO {
 
   String getLemmaText();
 
-  Long getLemmaOccurence();
+  Integer getLemmaOccurence();
 }
