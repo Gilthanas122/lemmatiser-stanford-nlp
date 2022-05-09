@@ -31,7 +31,7 @@ public class GermanCoreLabel extends CoreLabel {
 
   @Override
   public String lemma() {
-    String returned =  lemmaFileContent
+    return lemmaFileContent
             .stream()
             .filter(lemma ->
                     lemma.split("\\s+")[1].equalsIgnoreCase(this.originalText())
@@ -39,7 +39,6 @@ public class GermanCoreLabel extends CoreLabel {
             .map(lemma -> lemma.split("\\s+")[0])
             .findFirst()
             .orElse(null);
-    return returned;
   }
 
   public static List<String> getFileContent() {
