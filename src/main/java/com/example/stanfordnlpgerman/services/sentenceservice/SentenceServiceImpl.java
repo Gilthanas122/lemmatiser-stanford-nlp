@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,11 +79,21 @@ public class SentenceServiceImpl implements SentenceService {
 
     @Override
     public void fixInvalidSentences(int operation, long sentenceId) {
+        Sentence sentenceToBeMergedWith = sentenceRepository.findById(sentenceId).orElse(null);
+        if (sentenceToBeMergedWith == null) {
+            log.error("Could not find sentence by id {}", sentenceId);
+            throw new SentenceServiceException(String.format("Could not find sentence by id %s", sentenceId));
+        }
+
+        Function<Sentence, Boolean> mergeWithPreviousSentence = sentence -> sentence.getTextPosition() == sentenceToBeMergedWith.getTextPosition() - 1;
+        Function<Sentence, Boolean> mergeWithNextSentence = sentence -> sentence.getTextPosition() == sentenceToBeMergedWith.getTextPosition() + 1;
+        Function<Sentence, Boolean> mergeBothAdjacentSentences = sentence -> sentence.getTextPosition() == sentenceToBeMergedWith.getTextPosition() + 1
+                || sentence.getTextPosition() == sentenceToBeMergedWith.getTextPosition() - 1;
         switch (operation) {
-            case 1 -> sentenceRepository.makeSentenceValidById(sentenceId);
-            case 2 -> mergeWithOneSentence(sentenceId, true);
-            case 3 -> mergeWithOneSentence(sentenceId, false);
-            case 4 -> mergeWithAllAdjacentSentence(sentenceId);
+            case 1 -> sentenceRepository.makeSentenceValidById(sentenceId); // do not merge
+            case 2 -> mergeSentences(sentenceId, (short) 1, (short) 1, mergeWithPreviousSentence, sentenceToBeMergedWith);
+            case 3 -> mergeSentences(sentenceId, (short) 1, (short) 0, mergeWithNextSentence, sentenceToBeMergedWith);
+            case 4 -> mergeSentences(sentenceId, (short) 2, (short) 1, mergeBothAdjacentSentences, sentenceToBeMergedWith);
             default -> {
                 log.error("Invalid operation to merge sentences");
                 throw new SentenceServiceException("Invalid operation to merge sentences");
@@ -89,105 +101,89 @@ public class SentenceServiceImpl implements SentenceService {
         }
     }
 
-    private void mergeWithAllAdjacentSentence(long sentenceId) {
+    private void mergeSentences(long sentenceId, short textPositionDecrease, short textPositionDecreaseForMergeSentence,
+                                Function<Sentence, Boolean> sentenceComparisonByTextPosition, Sentence sentenceToBeMergedWith) {
         NewsArticle newsArticle = sentenceRepository.findNewsArticleBySentenceId(sentenceId);
-        Sentence sentencetoBeMergedWith = newsArticle.getSentences().stream()
-                .filter(sentence -> sentence.getId() == sentenceId)
-                .findFirst()
-                .orElse(null);
-        if (sentencetoBeMergedWith == null) {
-            log.error("Could not find sentence by id {}", sentenceId);
-            throw new SentenceServiceException(String.format("Could not find sentence by id %s", sentenceId));
-        }
 
         Set<Sentence> adjacentSentences = new HashSet<>();
 
         Set<Sentence> sentences =
                 newsArticle.getSentences().stream()
                         .peek(sentence -> {
-                            if (sentence.getTextPosition()  == sentencetoBeMergedWith.getTextPosition() + 1 || sentence.getTextPosition() == sentencetoBeMergedWith.getTextPosition() - 1) {
+                            if (sentenceComparisonByTextPosition.apply(sentence)) {
                                 sentence.setDeleted(true);
                                 adjacentSentences.add(sentence);
-                            } else if (sentence.getId() != sentencetoBeMergedWith.getId()){
-                                sentence.setTextPosition((short) (sentence.getTextPosition() - 2));
+                            } else if (sentence.getId() != sentenceToBeMergedWith.getId()
+                                    && sentence.getTextPosition() > sentenceToBeMergedWith.getTextPosition()) {
+                                sentence.setTextPosition((short) (sentence.getTextPosition() - textPositionDecrease));
                             }
                         })
                         .collect(Collectors.toSet());
-        sentences.add(mergeSentences(adjacentSentences, sentencetoBeMergedWith));
+        sentences.add(mergeSentenceData(adjacentSentences, sentenceToBeMergedWith, textPositionDecreaseForMergeSentence));
 
         newsArticle.setSentences(new ArrayList<>(sentences));
         newsArticleRepository.save(newsArticle);
     }
 
-    private Sentence mergeSentences(Set<Sentence> adjacentSentences, Sentence sentenceToBeMergedWith) {
+    private Sentence mergeSentenceData(Set<Sentence> adjacentSentences, Sentence sentenceToBeMergedWith, short textPositionDecreaseForMergeSentence) {
         StringBuilder sentenceText = new StringBuilder(sentenceToBeMergedWith.getText());
-        sentenceToBeMergedWith.setTextPosition((short) (sentenceToBeMergedWith.getTextPosition() - 1));
         adjacentSentences
                 .forEach(sentence -> {
                     if (sentence.getTextPosition() < sentenceToBeMergedWith.getTextPosition()) {
                         sentenceText.insert(0, sentence.getText());
-                        inheritDataFromDeletedSentence(sentenceToBeMergedWith, sentence);
+                        inheritDataFromDeletedSentence(sentenceToBeMergedWith, sentence, true);
                     } else {
                         sentenceText.append(sentence.getText());
-                        inheritDataFromDeletedSentence(sentenceToBeMergedWith, sentence);
+                        inheritDataFromDeletedSentence(sentenceToBeMergedWith, sentence, false);
                     }
                 });
+        sentenceToBeMergedWith.setTextPosition((short) (sentenceToBeMergedWith.getTextPosition() - textPositionDecreaseForMergeSentence));
         sentenceToBeMergedWith.setText(sentenceText.toString());
         return sentenceToBeMergedWith;
     }
 
-    private void mergeWithOneSentence(long sentenceId, boolean isItPreviousToMergeWith) {
-        NewsArticle newsArticle = sentenceRepository.findNewsArticleBySentenceId(sentenceId);
-        short actualPosition = 0;
-        boolean changeAfterThis = false;
-
-        for (int i = 0; i < newsArticle.getSentences().size(); i++) {
-            Sentence sentence = newsArticle.getSentences().get(i);
-            if (sentence.getId() == sentenceId) {
-                Sentence sentenceToDelete = new Sentence();
-                if (isItPreviousToMergeWith) {
-                    actualPosition = (short) (sentence.getTextPosition() - 1);
-                    sentenceToDelete = newsArticle.getSentences().get(i - 1);
-                    sentenceToDelete.setDeleted(true);
-                } else {
-                    sentenceToDelete = newsArticle.getSentences().get(i + 1);
-                    sentenceToDelete.setDeleted(true);
-                    actualPosition = sentence.getTextPosition();
-                    i++;
-                }
-                sentence = inheritDataFromDeletedSentence(sentence, sentenceToDelete);
-                sentence.setInvalid(false);
-                changeAfterThis = true;
-            }
-            if (changeAfterThis) {
-                sentence.setTextPosition(actualPosition);
-                actualPosition++;
-                sentenceRepository.save(sentence);
-            }
-        }
-    }
-
-    private Sentence inheritDataFromDeletedSentence(Sentence sentence, Sentence sentenceToDelete) {
+    private void inheritDataFromDeletedSentence(Sentence sentence, Sentence sentenceToDelete, boolean isItPreviousSentence) {
         List<LemmaType> lemmaTypesFromToDelete = updateLemmaTypes(sentence, sentenceToDelete.getLemmaTypes(), sentenceToDelete);
-        List<TextToken> textTokensFromToDelete = updateTextTokens(sentence, sentenceToDelete.getTextTokens());
+        List<TextToken> textTokensWithNewsSentencePosition = updateTextTokens(sentence, sentenceToDelete.getTextTokens(), isItPreviousSentence);
         sentenceToDelete.setLemmaTypes(new HashSet<>());
 
         Set<LemmaType> sentenceLemmaTypes = sentence.getLemmaTypes();
-        List<TextToken> sentenceTextTokens = sentence.getTextTokens();
         sentenceLemmaTypes.addAll(lemmaTypesFromToDelete);
-        sentenceTextTokens.addAll(textTokensFromToDelete);
 
         sentence.setLemmaTypes(sentenceLemmaTypes);
-        sentence.setTextTokens(sentenceTextTokens);
+        sentence.setTextTokens(textTokensWithNewsSentencePosition);
         sentence.setInvalid(false);
-        return sentence;
     }
 
-    private List<TextToken> updateTextTokens(Sentence sentence, List<TextToken> textTokens) {
-        return textTokens
+    private List<TextToken> updateTextTokens(Sentence sentence, List<TextToken> textTokens, boolean isItPreviousSentence) {
+        List<TextToken> textTokensWithSentenceSet = textTokens
                 .stream()
-                .peek(s -> s.setSentence(sentence))
+                .peek(textToken -> textToken.setSentence(sentence))
                 .collect(Collectors.toList());
+
+        return setNewPositionForTextTokens(sentence.getTextTokens(), textTokensWithSentenceSet, isItPreviousSentence);
+    }
+
+    private List<TextToken> setNewPositionForTextTokens(List<TextToken> sentenceTextTokens, List<TextToken> toBeDeletedSentenceTextToken, boolean isItPreviousSentence) {
+        short startPositionForSentencePosition = (short) (isItPreviousSentence ? toBeDeletedSentenceTextToken.size() : sentenceTextTokens.size());
+        AtomicInteger sentencePositionToStartFrom = new AtomicInteger(startPositionForSentencePosition);
+        List<TextToken> textTokensWithNewSentencePositionSet = new ArrayList<>();
+        if (isItPreviousSentence) {
+            textTokensWithNewSentencePositionSet.addAll(toBeDeletedSentenceTextToken);
+            sentenceTextTokens.forEach(textToken -> {
+                textToken.setSentencePosition((short) sentencePositionToStartFrom.get());
+                textTokensWithNewSentencePositionSet.add(textToken);
+                sentencePositionToStartFrom.incrementAndGet();
+            });
+        } else {
+            textTokensWithNewSentencePositionSet.addAll(sentenceTextTokens);
+            toBeDeletedSentenceTextToken.forEach(textToken -> {
+                textToken.setSentencePosition((short) sentencePositionToStartFrom.get());
+                textTokensWithNewSentencePositionSet.add(textToken);
+                sentencePositionToStartFrom.incrementAndGet();
+            });
+        }
+        return textTokensWithNewSentencePositionSet;
     }
 
     private List<LemmaType> updateLemmaTypes(Sentence sentence, Set<LemmaType> lemmaTypesFromToDelete, Sentence sentenceToDelete) {
