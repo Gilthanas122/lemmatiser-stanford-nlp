@@ -236,13 +236,13 @@ public class SentenceServiceImpl implements SentenceService {
     }
 
     private boolean checkIfValidDistance(short textTokenPosition, List<Short> textTokenSentencePositions, int distance) {
-        boolean[] valid = {false};
+        boolean[] validDistance = {false};
         textTokenSentencePositions.forEach(position -> {
             if (textTokenPosition + distance >= position || textTokenPosition - distance <= position) {
-                valid[0] = true;
+                validDistance[0] = true;
             }
         });
-        return valid[0];
+        return validDistance[0];
     }
 
     private List<Short> getTextTokenIdsFromSentences(List<TextToken> textTokens, long lemmaTypeId) {
