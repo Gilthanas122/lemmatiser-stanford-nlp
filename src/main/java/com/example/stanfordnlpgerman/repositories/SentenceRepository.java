@@ -17,7 +17,7 @@ import java.util.List;
 public interface SentenceRepository extends JpaRepository<Sentence, Long> {
   @Query("SELECT DISTINCT s.text as sentenceText, s.newsArticle.id as newsArticleId" +
           " FROM Sentence s JOIN s.lemmaTypes lt WHERE lt.id = ?1")
-  List<SentenceTextAndNewsPaperIdDTO> findByLemmaTypeId(long lemmaTypeId);
+  List<SentenceTextAndNewsPaperIdDTO> findAllByLemmaTypeId(long lemmaTypeId);
 
   @Query("SELECT tt FROM Sentence s JOIN s.lemmaTypes lt JOIN s.textTokens tt WHERE lt.id = ?1")
   List<TextToken> sentencesContainingLemma(long lemmaTypeId);
