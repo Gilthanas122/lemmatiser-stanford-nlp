@@ -51,7 +51,10 @@ public class SentenceServiceImpl implements SentenceService {
         List<Short> textTokenSentencePositions = getTextTokenIdsFromSentences(textTokens, lemmaTypeId);
         Map<String, Integer> textTokensAndOccurences = filterTextTokensBasedOnDistance(textTokens, textTokenSentencePositions, distance, researchLemmaType.getText());
 
-        return createFromMapListLemmaOccurenceInSentencesDTO(textTokensAndOccurences, researchLemmaType.getText());
+        List<LemmaOccurenceInSentencesDTO> lemmaOccurenceInSentencesDTOS = createFromMapListLemmaOccurenceInSentencesDTO(textTokensAndOccurences, researchLemmaType.getText());
+        log.info("{} lemmas found in context of distance {} for search term: {}", lemmaOccurenceInSentencesDTOS.size(), distance, researchLemmaType.getText());
+
+        return lemmaOccurenceInSentencesDTOS;
     }
 
     @Override
@@ -98,6 +101,7 @@ public class SentenceServiceImpl implements SentenceService {
                 throw new SentenceServiceException("Invalid operation to merge sentences");
             }
         }
+        log.info("Sentence with id: {} successfully merged", sentenceId);
     }
 
     private void mergeSentences(long sentenceId, short textPositionDecrease, short textPositionDecreaseForMergeSentence,
@@ -192,7 +196,7 @@ public class SentenceServiceImpl implements SentenceService {
                     lemmaType.addOneSentence(sentence);
                     lemmaType.removeOneSentence(sentenceToDelete);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -203,30 +207,19 @@ public class SentenceServiceImpl implements SentenceService {
         });
 
         lemmaOccurenceInSentencesDTOS.add(0, createLemmaOccurenceInSentenceDTO(lemmaTypeText, 0));
+        Collections.sort(lemmaOccurenceInSentencesDTOS);
         return lemmaOccurenceInSentencesDTOS;
     }
 
-    private LemmaOccurenceInSentencesDTO createLemmaOccurenceInSentenceDTO(String key, Integer value) {
-        return new LemmaOccurenceInSentencesDTO() {
-            @Override
-            public String getOriginalLemmaText() {
-                return key;
-            }
-
-            @Override
-            public String getLemmaText() {
-                return key;
-            }
-
-            @Override
-            public Integer getLemmaOccurence() {
-                return value;
-            }
-        };
+    private LemmaOccurenceInSentencesDTO createLemmaOccurenceInSentenceDTO(String lemmaText, Integer lemmaOccurence) {
+        return LemmaOccurenceInSentencesDTO.builder()
+                .originalLemmaText(lemmaText)
+                .lemmaText(lemmaText)
+                .lemmaOccurence(lemmaOccurence)
+                .build();
     }
 
     private Map<String, Integer> filterTextTokensBasedOnDistance(List<TextToken> textTokens, List<Short> textTokenSentencePositions, int distance, String lemmaTypeText) {
-        AtomicInteger tokenCounter = new AtomicInteger(0);
         Map<String, Integer> textTokensAndOccurences = new HashMap<>();
 
         textTokens.forEach(textToken -> {

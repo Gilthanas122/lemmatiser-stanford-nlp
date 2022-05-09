@@ -331,22 +331,11 @@ public class LemmaTypeServiceTest {
   }
 
   private LemmaOccurenceInSentencesDTO createLemmaOccurenceInSentencesDTO(int index) {
-    return new LemmaOccurenceInSentencesDTO() {
-      @Override
-      public String getOriginalLemmaText() {
-        return "original lemma text " + index;
-      }
-
-      @Override
-      public String getLemmaText() {
-        return "lemma text " + index;
-      }
-
-      @Override
-      public Integer getLemmaOccurence() {
-        return index;
-      }
-    };
+    return LemmaOccurenceInSentencesDTO.builder()
+            .originalLemmaText("original lemma text " + index)
+            .lemmaText("lemma text " + index)
+            .lemmaOccurence(index)
+            .build();
   }
 
   private void assertShowMostCommonLemmas(ShowMostCommonLemmasDTO expected, ShowMostCommonLemmasDTO actual) {

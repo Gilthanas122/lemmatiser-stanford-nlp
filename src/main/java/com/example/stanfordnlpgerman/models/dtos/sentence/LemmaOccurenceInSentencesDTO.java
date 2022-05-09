@@ -1,10 +1,19 @@
 package com.example.stanfordnlpgerman.models.dtos.sentence;
 
-public interface LemmaOccurenceInSentencesDTO {
+import lombok.*;
 
-  String getOriginalLemmaText();
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class LemmaOccurenceInSentencesDTO implements Comparable<LemmaOccurenceInSentencesDTO> {
+  private String originalLemmaText;
+  private String lemmaText;
+  private Integer lemmaOccurence;
 
-  String getLemmaText();
-
-  Integer getLemmaOccurence();
+  @Override
+  public int compareTo(LemmaOccurenceInSentencesDTO lemmaOccurenceInSentencesDTO) {
+    return lemmaOccurenceInSentencesDTO.getLemmaOccurence().compareTo(this.lemmaOccurence);
+  }
 }
