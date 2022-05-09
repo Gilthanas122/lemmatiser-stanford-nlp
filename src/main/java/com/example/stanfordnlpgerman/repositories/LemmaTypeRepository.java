@@ -21,9 +21,9 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
           "WHERE lt.text = ?1 OR lto.text = ?1")
   Set<LemmaType> findAllByLemmaText(String originalText);
 
-  @Query("SELECT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
+  @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
           "FROM LemmaType lt JOIN lt.newsArticles na WHERE size(lt.textTokens) > 0 ORDER BY size(lt.textTokens) desc")
-  List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(Pageable pageable);
+  List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(PageRequest pageable);
 
   @Query("SELECT lt.text AS lemmaText, COUNT(lt.id) AS lemmaOccurence, " +
           "(SELECT ltoriginal.text FROM LemmaType ltoriginal WHERE ltoriginal.id = ?2) AS originalLemmaText " +
@@ -37,7 +37,7 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
 
   @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
           "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 ORDER BY size(lt.textTokens) desc")
-  List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest of);
+  List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest pageRequest);
 
   LemmaType findByText(String lemmaTypeText);
 }

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.security.Key;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -93,7 +94,7 @@ public class LemmaTypeServiceTest {
     short pageNumber = 1;
     List<ShowMostCommonLemmasDTO> expectedShowMostCommonLemmasDTOS = createShowMostCommonLemmas();
 
-    when(lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size"))))
+    when(lemmaTypeRepository.findMostCommonLemmasInNewsArticlesByKeyWords(KeyWordsSingleton.getKeyWords(), PageRequest.of(pageNumber, 25, Sort.by("textTokens.size"))))
             .thenReturn(expectedShowMostCommonLemmasDTOS);
 
     List<ShowMostCommonLemmasDTO> actualShowMostCommonLemmasDTOS = lemmaTypeService.findMostCommonLemmas(pageNumber, true);
@@ -101,7 +102,7 @@ public class LemmaTypeServiceTest {
     List<ILoggingEvent> logsList = listAppender.list;
 
     assertEquals(1, logsList.size());
-    assertEquals("Keyword research by most common lemmas. Most common lemmas: show most common lemma text 1, show most common lemma text 2", logsList.get(0).getFormattedMessage());
+    assertEquals("Most common lemmas: show most common lemma text 1, show most common lemma text 2", logsList.get(0).getFormattedMessage());
     assertEquals(expectedShowMostCommonLemmasDTOS.size(), actualShowMostCommonLemmasDTOS.size());
     assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(0), actualShowMostCommonLemmasDTOS.get(0));
     assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(1), actualShowMostCommonLemmasDTOS.get(1));
@@ -112,7 +113,7 @@ public class LemmaTypeServiceTest {
     short pageNumber = 1;
     List<ShowMostCommonLemmasDTO> expectedShowMostCommonLemmasDTOS = createShowMostCommonLemmas();
 
-    when(lemmaTypeRepository.findMostCommonLemmasInNewsArticlesByKeyWords(KeyWordsSingleton.getKeyWords(), PageRequest.of(pageNumber, 25, Sort.by("textTokens.size"))))
+    when(lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size"))))
             .thenReturn(expectedShowMostCommonLemmasDTOS);
 
     List<ShowMostCommonLemmasDTO> actualShowMostCommonLemmasDTOS = lemmaTypeService.findMostCommonLemmas(pageNumber, false);
@@ -120,7 +121,7 @@ public class LemmaTypeServiceTest {
     List<ILoggingEvent> logsList = listAppender.list;
 
     assertEquals(1, logsList.size());
-    assertEquals("Most common lemmas. Most common lemmas: show most common lemma text 1, show most common lemma text 2", logsList.get(0).getFormattedMessage());
+    assertEquals("Most common lemmas: show most common lemma text 1, show most common lemma text 2", logsList.get(0).getFormattedMessage());
     assertEquals(expectedShowMostCommonLemmasDTOS.size(), actualShowMostCommonLemmasDTOS.size());
     assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(0), actualShowMostCommonLemmasDTOS.get(0));
     assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(1), actualShowMostCommonLemmasDTOS.get(1));

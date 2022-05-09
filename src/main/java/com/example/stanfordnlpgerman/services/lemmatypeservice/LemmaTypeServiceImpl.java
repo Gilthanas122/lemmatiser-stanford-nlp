@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.function.Function;
 
 @Service
 @Transactional
@@ -45,21 +46,22 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
     }
 
     @Override
-    public List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber, boolean searchKeyword) {
+    public List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber, boolean searchByKeyWords) {
         if (pageNumber < 0) {
             log.error("PageNumber can not be under 0");
             throw new LemmaTypeException("PageNumber can not be under 0");
         }
-        if (searchKeyword) {
-            List<ShowMostCommonLemmasDTO> showMostCommonLemmasDTOSByKeyWord = lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
-            log.info("Keyword research by most common lemmas. Most common lemmas: {}",
-                    String.join(", ", showMostCommonLemmasDTOSByKeyWord.stream()
-                            .map(ShowMostCommonLemmasDTO::getText)
-                            .toList()));
-            return showMostCommonLemmasDTOSByKeyWord;
+        if (searchByKeyWords) {
+            Function<Integer, List<ShowMostCommonLemmasDTO>> findByKeyword = x -> lemmaTypeRepository.findMostCommonLemmasInNewsArticlesByKeyWords(KeyWordsSingleton.getKeyWords(), PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
+          return findAllMostCommonLemmas(findByKeyword, pageNumber);
         }
-        List<ShowMostCommonLemmasDTO> showMostCommonLemmasDTOS = lemmaTypeRepository.findMostCommonLemmasInNewsArticlesByKeyWords(KeyWordsSingleton.getKeyWords(), PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
-        log.info("Most common lemmas. Most common lemmas: {}", String.join(", ", showMostCommonLemmasDTOS.stream()
+        Function<Integer, List<ShowMostCommonLemmasDTO>> findByNOKeyword = x -> lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size")));
+        return findAllMostCommonLemmas(findByNOKeyword, pageNumber);
+    }
+
+    private List<ShowMostCommonLemmasDTO> findAllMostCommonLemmas(Function<Integer, List<ShowMostCommonLemmasDTO>> findMostCommonLemmas, int pageNumber) {
+        List<ShowMostCommonLemmasDTO> showMostCommonLemmasDTOS = findMostCommonLemmas.apply(pageNumber);
+        log.info("Most common lemmas: {}", String.join(", ", showMostCommonLemmasDTOS.stream()
                 .map(ShowMostCommonLemmasDTO::getText)
                 .toList()));
         return showMostCommonLemmasDTOS;
@@ -150,21 +152,20 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
     }
 
     private List<LemmaToken> createLemmaTokens(String lemmaToken, LemmaType lemmaType, String phraseTypeIn) {
-        List<LemmaToken> lemmaTokens = new ArrayList<>();
         String[] words = lemmaToken
                 .split(";");
 
-        for (String word : words) {
-            String wordTrimmed = word.trim();
-            CoreLabel tempCoreLabel = CoreLabel.wordFromString(wordTrimmed);
-            String phraseType = tempCoreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-            if (phraseType == null || phraseType.isEmpty()) {
-                phraseType = phraseTypeIn;
-            }
-            lemmaTokens.add(LemmaToken.builder().lemmaType(lemmaType).text(wordTrimmed).phraseType(phraseType).build());
-        }
-
-        return lemmaTokens;
+        return Arrays.stream(words)
+                .map(word -> {
+                            word = word.trim();
+                            CoreLabel tempCoreLabel = CoreLabel.wordFromString(word);
+                            String phraseType = tempCoreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+                            if (phraseType == null || phraseType.isEmpty()) {
+                                phraseType = phraseTypeIn;
+                            }
+                            return LemmaToken.builder().lemmaType(lemmaType).text(word).phraseType(phraseType).build();
+                        }
+                )
+                .toList();
     }
-
 }
