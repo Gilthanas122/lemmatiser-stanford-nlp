@@ -10,7 +10,6 @@ import java.util.Date;
 @Data
 public class NewsArticleDataDTO {
   private String title;
-  private String author;
   private String newsPaperName;
   private String text;
   private int publicationYear;

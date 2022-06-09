@@ -235,10 +235,11 @@ public class SentenceServiceImpl implements SentenceService {
         return textTokensAndOccurences;
     }
 
+    // some problems here
     private boolean checkIfValidDistance(short textTokenPosition, List<Short> textTokenSentencePositions, int distance) {
         boolean[] validDistance = {false};
         textTokenSentencePositions.forEach(position -> {
-            if (textTokenPosition + distance >= position || textTokenPosition - distance <= position) {
+            if (textTokenPosition + distance <= position || textTokenPosition - distance >= position) {
                 validDistance[0] = true;
             }
         });

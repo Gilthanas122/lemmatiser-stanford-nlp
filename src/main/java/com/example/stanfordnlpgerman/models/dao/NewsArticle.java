@@ -12,8 +12,7 @@ import java.util.*;
 @Where(clause = "deleted=0")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class NewsArticle {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

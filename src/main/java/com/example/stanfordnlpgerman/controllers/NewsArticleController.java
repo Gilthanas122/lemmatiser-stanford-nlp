@@ -29,9 +29,6 @@ public class NewsArticleController {
     try {
       newsArticleService.saveNewsArticle(createNewsPaperArticleDTO);
       return "index";
-    } catch (MissingParamsException e) {
-      model.addAttribute("error", e.getMessage());
-      model.addAttribute("createNewsPapeArticleDTO", createNewsPaperArticleDTO);
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
       model.addAttribute("createNewsPapeArticleDTO", createNewsPaperArticleDTO);

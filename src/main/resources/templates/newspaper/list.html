@@ -12,10 +12,8 @@
 <div th:replace="fragments/messages.html :: error"></div>
 <div th:object="${newsArticleDataDTO}">
   <h1 th:text="|Article title: *{title}|"></h1>
-  <h2 th:text="|Article author: *{author}|"></h2>
-  <p th:text="|Page number is *{pageNumber}|"></p>
   <p th:text="|Newspaper name is *{newsPaperName}|"></p>
-  <p th:text="|Publication date: *{date}|"></p>
+  <p th:text="|Publication year: *{publicationYear}|"></p>
   <p th:text="*{text}"></p>
 
 </div>

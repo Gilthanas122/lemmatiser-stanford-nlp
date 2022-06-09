@@ -101,7 +101,6 @@ public class NewsArticleServiceTest {
 
         assertEquals(1, logsList.size());
         assertEquals("NewsArticle found by id : 1", logsList.get(0).getFormattedMessage());
-        assertEquals(expectedewsArticleDataDTO.getAuthor(), actualNewsArticleDataDTO.getAuthor());
         assertEquals(expectedewsArticleDataDTO.getNewsPaperName(), actualNewsArticleDataDTO.getNewsPaperName());
         assertEquals(expectedewsArticleDataDTO.getText(), actualNewsArticleDataDTO.getText());
         assertEquals(expectedewsArticleDataDTO.getPublicationYear(), actualNewsArticleDataDTO.getPublicationYear());
@@ -118,7 +117,6 @@ public class NewsArticleServiceTest {
 
         assertEquals(1, logsList.size());
         assertEquals("NewsArticle was not found by id : 1", logsList.get(0).getFormattedMessage());
-        assertNull(actualNewsArticleDataDTO.getAuthor());
         assertNull(actualNewsArticleDataDTO.getNewsPaperName());
         assertNull(actualNewsArticleDataDTO.getText());
         assertEquals(0, actualNewsArticleDataDTO.getPublicationYear());
@@ -166,7 +164,6 @@ public class NewsArticleServiceTest {
 
         NewsArticleException exception = assertThrows(NewsArticleException.class, () -> newsArticleService.getMostRelevantNewsArticles(pageNumber));
         List<ILoggingEvent> logsList = listAppender.list;
-
 
         assertEquals(1, logsList.size());
         assertEquals("Pagenumber can not be below 0", logsList.get(0).getFormattedMessage());

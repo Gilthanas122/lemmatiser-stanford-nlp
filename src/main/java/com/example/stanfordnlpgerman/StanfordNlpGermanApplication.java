@@ -19,8 +19,8 @@ import java.util.*;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableAsync
-public class StanfordNlpGermanApplication  /* implements CommandLineRunner */ {
- /* @Autowired
+public class StanfordNlpGermanApplication /*implements CommandLineRunner*/  {
+  /*@Autowired
   private LemmaTypeRepository lemmaTypeRepository;
   @Autowired
   private StanfordCoreNLP pipeline;*/
@@ -29,13 +29,13 @@ public class StanfordNlpGermanApplication  /* implements CommandLineRunner */ {
     SpringApplication.run(StanfordNlpGermanApplication.class, args);
   }
 
-  /*@Override
+ /* @Override
   public void run(String... args) throws Exception {
     List<String> fileContent = GermanCoreLabel.getFileContent();
     TreeMap<String, TreeSet<String>> typeTokens = splitFileContent(fileContent);
     Set<LemmaType> lemmaTypes = new TreeSet<>();
     for (Map.Entry<String, TreeSet<String>> entry : typeTokens.entrySet()) {
-      TreeSet<LemmaToken> lemmaTokens = new TreeSet<>();
+      List<LemmaToken> lemmaTokens = new ArrayList<>();
       LemmaType lemmaType = LemmaType
               .builder()
               .text(entry.getKey())
