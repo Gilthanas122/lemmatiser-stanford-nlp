@@ -1,9 +1,6 @@
 package com.example.stanfordnlpgerman.models.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -12,7 +9,8 @@ import javax.persistence.*;
 @Table(name = "lemmatokens")
 @Where(clause = "deleted=0")
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class LemmaToken implements Comparable<LemmaToken> {

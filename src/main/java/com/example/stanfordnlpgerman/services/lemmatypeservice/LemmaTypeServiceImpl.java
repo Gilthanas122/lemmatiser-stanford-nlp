@@ -111,23 +111,19 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
             log.info("No Lemma Type found by {} text", lemmaTypeText);
             lemmaType = new LemmaType(textToken.getText());
         }
-        if (lemmaToken != null) {
+        if (lemmaToken != null && !lemmaToken.isEmpty()) {
             lemmaType.setLemmaTokens(createLemmaTokens(lemmaToken, lemmaType, phraseType));
         }
-        lemmaType.addOneTextToken(textToken);
         textToken.setLemmaType(lemmaType);
         Sentence sentence = textToken.getSentence();
         NewsArticle newsArticle = sentence.getNewsArticle();
         lemmaType.addOneSentence(sentence);
         lemmaType.addOneNewsArticle(newsArticle);
         textToken.setLemmaType(lemmaType);
-        if (lemmaToken != null) {
-            lemmaType.setLemmaTokens(createLemmaTokens(lemmaToken, lemmaType, phraseType));
-        }
         log.info("LemmaToken: {}, PhraseType: {} added to LemmaType Text: {}", lemmaToken, phraseType, lemmaTypeText);
+        lemmaType.addOneTextToken(textToken);
         lemmaTypeRepository.save(lemmaType);
-        textTokenRepository.save(textToken);
-        checkIfNewLemmaTypeHasMatchingTextTokensSetValidByText(lemmaTypeText, lemmaType.getId());
+       // checkIfNewLemmaTypeHasMatchingTextTokensSetValidByText(lemmaTypeText, lemmaType.getId());
     }
 
     private void saveTextTokenBelongingToLemmaType(Long lemmaTypeIdParsed, String lemmaToken, TextToken textToken, String phraseType) {
@@ -142,6 +138,7 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
         lemmaType.addOneTextToken(textToken);
         textToken.setPhraseType(phraseType);
         textToken.setLemmaType(lemmaType);
+        lemmaType.addOneTextToken(textToken);
         log.info("LemmaToken: {}, PhraseType: {} added to LemmaType ID: {}", lemmaToken, phraseType, lemmaTypeIdParsed);
         lemmaTypeRepository.save(lemmaType);
         textTokenRepository.save(textToken);

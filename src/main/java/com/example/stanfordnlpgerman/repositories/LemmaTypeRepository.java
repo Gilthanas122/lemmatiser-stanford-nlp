@@ -21,8 +21,8 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
           "WHERE lt.text = ?1 OR lto.text = ?1")
   Set<LemmaType> findAllByLemmaText(String originalText);
 
-  @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
-          "FROM LemmaType lt JOIN lt.newsArticles na WHERE size(lt.textTokens) > 0 ORDER BY size(lt.textTokens) desc")
+  @Query("SELECT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
+          "FROM LemmaType lt JOIN lt.newsArticles na where size(lt.textTokens) > 0 ORDER BY size(lt.textTokens) desc")
   List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(PageRequest pageable);
 
   @Query("SELECT lt.text AS lemmaText, COUNT(lt.id) AS lemmaOccurence, " +
@@ -33,7 +33,6 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
   @Modifying
   @Query("UPDATE TextToken tt SET tt.invalid = false, tt.lemmaType.id = ?2 WHERE tt.text = ?1")
   void updateIfLemmaTypeHasMatchingTextTokens(String lemmaTypeText, long lemmaTypeId);
-
 
   @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
           "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 ORDER BY size(lt.textTokens) desc")

@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Table(name = "texttokens")
 @Where(clause = "deleted=0")
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class TextToken {
