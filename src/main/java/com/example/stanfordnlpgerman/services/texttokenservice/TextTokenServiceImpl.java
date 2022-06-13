@@ -9,6 +9,7 @@ import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TextTokenServiceImpl implements TextTokenService {
@@ -27,10 +28,10 @@ public class TextTokenServiceImpl implements TextTokenService {
     Set<InvalidLemmasDTO> invalidLemmasDTOS = new HashSet<>();
     for (TextToken tt : textTokens) {
       invalidLemmasDTOS.add(InvalidLemmasDTO
-              .builder()
-              .textTokenId(tt.getId())
-              .textTokenText(tt.getText())
-              .build());
+          .builder()
+          .textTokenId(tt.getId())
+          .textTokenText(tt.getText())
+          .build());
     }
     return invalidLemmasDTOS;
   }
@@ -39,19 +40,18 @@ public class TextTokenServiceImpl implements TextTokenService {
   public AddLemmaTypeToTextTokenDTO findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(long textTokenId, String textTokenText) {
     TextToken textToken = textTokenRepository.findById(textTokenId);
     Set<LemmaType> lemmaTypes = lemmaTypeService.findAllByText(textTokenText);
-    Map<Long, String> lemmaTypeTextAndToken = new HashMap<>();
-    for (LemmaType lt : lemmaTypes) {
-      lemmaTypeTextAndToken.put(lt.getId(), lt.getText());
-    }
+    Map<Long, String> lemmaTypeTextByLemmaTypeId =
+        lemmaTypes.stream()
+            .collect(Collectors.toMap(LemmaType::getId, LemmaType::getText));
 
-    AddLemmaTypeToTextTokenDTO addLemmaTypeToTextTokenDTO = AddLemmaTypeToTextTokenDTO
-            .builder()
-            .lemmaTypeTextsAndIds(lemmaTypeTextAndToken)
-            .sentenceText(textToken.getSentence().getText())
-            .textTokenId(textTokenId)
-            .textTokenText(textTokenText)
-            .build();
-    return addLemmaTypeToTextTokenDTO;
+    return AddLemmaTypeToTextTokenDTO
+        .builder()
+        .lemmaTypeTextsAndIds(lemmaTypeTextByLemmaTypeId)
+        .sentenceText(textToken.getSentence().getText())
+        .textTokenId(textTokenId)
+        .textTokenText(textTokenText)
+        .phraseType(textToken.getPhraseType())
+        .build();
   }
 
   @Override

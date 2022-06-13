@@ -1,5 +1,6 @@
 package com.example.stanfordnlpgerman.controllers;
 
+import com.example.stanfordnlpgerman.models.dtos.lemmatype.UpdateLemmaTypeRequest;
 import com.example.stanfordnlpgerman.services.lemmatypeservice.LemmaTypeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,9 +27,9 @@ public class LemmaTypeController {
   }
 
   @PostMapping("update/{textTokenId}")
-  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @RequestParam(required = false) String lemmaTypeId, @RequestParam(required = false) String lemmaToken, @RequestParam(required = false) String phraseType, Model model) {
+  public String addTextTokenToLemmaType(@PathVariable long textTokenId, @ModelAttribute UpdateLemmaTypeRequest updateLemmaTypeRequest, Model model) {
     try {
-      lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeId, lemmaToken, phraseType);
+      lemmaTypeService.addTextTokenToLemmaType(textTokenId, updateLemmaTypeRequest);
       return "redirect:/text-token/invalid";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());

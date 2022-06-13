@@ -1,15 +1,13 @@
 package com.example.stanfordnlpgerman.models.dtos.texttoken;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddLemmaTypeToTextTokenDTO {
@@ -17,4 +15,5 @@ public class AddLemmaTypeToTextTokenDTO {
   private String textTokenText;
   private String sentenceText;
   private Map<Long, String> lemmaTypeTextsAndIds = new HashMap();
+  private String phraseType;
 }

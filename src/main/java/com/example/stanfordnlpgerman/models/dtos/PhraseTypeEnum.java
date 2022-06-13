@@ -1,14 +1,23 @@
 package com.example.stanfordnlpgerman.models.dtos;
 
 public enum PhraseTypeEnum {
-
+  ADJ("ADJ"),
+  ADV("ADV"),
   NOUN("NOUN"),
   VERB("VERB"),
   PROPN("PROPN"),
-  ADJ("ADJ"),
-  DET("DET"),
+  INTJ("INTJ"),
+  ADP("ADP"),
+  AUX("AUX"),
   CCONJ("CCONJ"),
-  ADP("ADP");
+  DET("DET"),
+  NUM("NUM"),
+  PART("PART"),
+  PRON("PRON"),
+  SCONJ("SCONJ"),
+  PUNCT("PUNCT"),
+  SYM("SYM"),
+  X("OTHER");
 
   private final String name;
 

@@ -7,6 +7,7 @@ import com.example.stanfordnlpgerman.models.KeyWordsSingleton;
 import com.example.stanfordnlpgerman.models.dao.LemmaType;
 import com.example.stanfordnlpgerman.models.dao.TextToken;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
+import com.example.stanfordnlpgerman.models.dtos.lemmatype.UpdateLemmaTypeRequest;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.repositories.LemmaTypeRepository;
 import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
@@ -25,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.security.Key;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -177,18 +177,21 @@ public class LemmaTypeServiceTest {
   @Test
   void addTextTokenToLemmaType_successWithLemmaTypeIdOrTextAsId_shouldLogAddedToLemmaType(){
     long textTokenId = 1L;
-    String lemmaTypeIdOrText = "2";
-    String lemmaToken = "lemmaToken";
-    String phraseType = "VERB";
+    UpdateLemmaTypeRequest updateLemmaTypeRequest =
+        UpdateLemmaTypeRequest.builder()
+            .lemmaTypeId("2")
+            .phraseType("VERB")
+            .lemmaToken("lemmaToken")
+            .build();
     LemmaType expectedLemmaType = LemmaTypeCreator.createLemmaType(1);
     TextToken textToken = TextTokenCreator.createTextToken(1);
 
     when(textTokenRepository.findById(textTokenId)).thenReturn(textToken);
-    when(lemmaTypeRepository.findById(Long.parseLong(lemmaTypeIdOrText))).thenReturn(Optional.ofNullable(expectedLemmaType));
+    when(lemmaTypeRepository.findById(Long.parseLong(updateLemmaTypeRequest.getLemmaTypeId()))).thenReturn(Optional.ofNullable(expectedLemmaType));
 
     List<ILoggingEvent> logsList = listAppender.list;
 
-    lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeIdOrText, lemmaToken, phraseType);
+    lemmaTypeService.addTextTokenToLemmaType(textTokenId, updateLemmaTypeRequest);
 
     assertEquals(1, logsList.size());
     assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType ID: 2", logsList.get(0).getFormattedMessage());
@@ -198,89 +201,97 @@ public class LemmaTypeServiceTest {
   @Test
   void addTextTokenToLemmaType_successWithLemmaTypeIdOrTextAsTextAndLemmaTypeNotFoundInRepository_shouldLogAddedToLemmaType(){
     long textTokenId = 1L;
-    String lemmaTypeIdOrText = "text";
-    String lemmaToken = "lemmaToken";
-    String phraseType = "VERB";
-    LemmaType expectedLemmaType = LemmaTypeCreator.createLemmaType(1);
+    UpdateLemmaTypeRequest updateLemmaTypeRequest = UpdateLemmaTypeRequest.builder()
+        .lemmaTypeId("text")
+        .lemmaToken("lemmaToken")
+        .phraseType("VERB")
+        .build();
+
     TextToken textToken = TextTokenCreator.createTextToken(1);
 
     when(textTokenRepository.findById(textTokenId)).thenReturn(textToken);
 
     List<ILoggingEvent> logsList = listAppender.list;
 
-    lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeIdOrText, lemmaToken, phraseType);
+    lemmaTypeService.addTextTokenToLemmaType(textTokenId, updateLemmaTypeRequest);
 
     assertEquals(3, logsList.size());
     assertEquals("Provided LemmaType ID or Text was Text", logsList.get(0).getFormattedMessage());
-    assertEquals(String.format("No Lemma Type found by %s text", lemmaTypeIdOrText), logsList.get(1).getFormattedMessage());
-    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType Text: " + lemmaTypeIdOrText, logsList.get(2).getFormattedMessage());
+    assertEquals(String.format("No Lemma Type found by %s text", updateLemmaTypeRequest.getLemmaTypeId()), logsList.get(1).getFormattedMessage());
+    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType Text: " + updateLemmaTypeRequest.getLemmaTypeId(), logsList.get(2).getFormattedMessage());
     verify(lemmaTypeRepository, times(1)).save(any());
-    verify(textTokenRepository, times(1)).save(textToken);
   }
 
   @Test
   void addTextTokenToLemmaType_successWithLemmaTypeIdOrTextAsTextAndLemmaTypeExistByText_shouldLogAddedToLemmaType(){
     long textTokenId = 1L;
-    String lemmaTypeIdOrText = "text";
-    String lemmaToken = "lemmaToken";
-    String phraseType = "VERB";
+    UpdateLemmaTypeRequest updateLemmaTypeRequest = UpdateLemmaTypeRequest.builder()
+        .lemmaTypeId("text")
+        .lemmaToken("lemmaToken")
+        .phraseType("VERB")
+        .build();
+
     LemmaType expectedLemmaType = LemmaTypeCreator.createLemmaType(1);
     TextToken textToken = TextTokenCreator.createTextToken(1);
 
     when(textTokenRepository.findById(textTokenId)).thenReturn(textToken);
-    when(lemmaTypeRepository.findByText(lemmaTypeIdOrText)).thenReturn(expectedLemmaType);
+    when(lemmaTypeRepository.findByText(updateLemmaTypeRequest.getLemmaTypeId())).thenReturn(expectedLemmaType);
 
     List<ILoggingEvent> logsList = listAppender.list;
 
-    lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeIdOrText, lemmaToken, phraseType);
+    lemmaTypeService.addTextTokenToLemmaType(textTokenId, updateLemmaTypeRequest);
 
     assertEquals(2, logsList.size());
     assertEquals("Provided LemmaType ID or Text was Text", logsList.get(0).getFormattedMessage());
     assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType Text: text", logsList.get(1).getFormattedMessage());
     verify(lemmaTypeRepository, times(1)).save(expectedLemmaType);
-    verify(textTokenRepository, times(1)).save(textToken);
   }
 
   @Test
   void addTextTokenToLemmaType_successWithLemmaTypeIdOrTextAsTextAndLemmaTypeDoesNotExistByText_shouldLogAddedToLemmaType(){
     long textTokenId = 1L;
-    String lemmaTypeIdOrText = "text";
-    String lemmaToken = "lemmaToken";
-    String phraseType = "VERB";
+    UpdateLemmaTypeRequest updateLemmaTypeRequest = UpdateLemmaTypeRequest.builder()
+        .lemmaTypeId("text")
+        .lemmaToken("lemmaToken")
+        .phraseType("VERB")
+        .build();
+
     TextToken textToken = TextTokenCreator.createTextToken(1);
 
     when(textTokenRepository.findById(textTokenId)).thenReturn(textToken);
-    when(lemmaTypeRepository.findByText(lemmaTypeIdOrText)).thenReturn(null);
+    when(lemmaTypeRepository.findByText(updateLemmaTypeRequest.getLemmaTypeId())).thenReturn(null);
 
     List<ILoggingEvent> logsList = listAppender.list;
 
-    lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeIdOrText, lemmaToken, phraseType);
+    lemmaTypeService.addTextTokenToLemmaType(textTokenId, updateLemmaTypeRequest);
 
     assertEquals(3, logsList.size());
     assertEquals("Provided LemmaType ID or Text was Text", logsList.get(0).getFormattedMessage());
-    assertEquals("No Lemma Type found by " + lemmaTypeIdOrText + " text", logsList.get(1).getFormattedMessage());
-    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType Text: " + lemmaTypeIdOrText, logsList.get(2).getFormattedMessage());
+    assertEquals("No Lemma Type found by " + updateLemmaTypeRequest.getLemmaTypeId() + " text", logsList.get(1).getFormattedMessage());
+    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType Text: " + updateLemmaTypeRequest.getLemmaTypeId(), logsList.get(2).getFormattedMessage());
     verify(lemmaTypeRepository, times(1)).save(any());
-    verify(textTokenRepository, times(1)).save(textToken);
   }
 
   @Test
   void addTextTokenToLemmaType_successWithLemmaTypeIdOrTextAsIdAndLemmaTypeDoesNotExistByText_shouldLogAddedToLemmaType(){
     long textTokenId = 1L;
-    String lemmaTypeIdOrText = "1";
-    String lemmaToken = "lemmaToken";
-    String phraseType = "VERB";
+    UpdateLemmaTypeRequest updateLemmaTypeRequest = UpdateLemmaTypeRequest.builder()
+        .lemmaTypeId("1")
+        .lemmaToken("lemmaToken")
+        .phraseType("VERB")
+        .build();
+
     TextToken textToken = TextTokenCreator.createTextToken(1);
 
     when(textTokenRepository.findById(textTokenId)).thenReturn(textToken);
 
     List<ILoggingEvent> logsList = listAppender.list;
 
-    lemmaTypeService.addTextTokenToLemmaType(textTokenId, lemmaTypeIdOrText, lemmaToken, phraseType);
+    lemmaTypeService.addTextTokenToLemmaType(textTokenId, updateLemmaTypeRequest);
 
     assertEquals(2, logsList.size());
-    assertEquals("No Lemma Type found by " + lemmaTypeIdOrText + " id", logsList.get(0).getFormattedMessage());
-    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType ID: " + lemmaTypeIdOrText, logsList.get(1).getFormattedMessage());
+    assertEquals("No Lemma Type found by " + updateLemmaTypeRequest.getLemmaTypeId() + " id", logsList.get(0).getFormattedMessage());
+    assertEquals("LemmaToken: lemmaToken, PhraseType: VERB added to LemmaType ID: " + updateLemmaTypeRequest.getLemmaTypeId(), logsList.get(1).getFormattedMessage());
     verify(lemmaTypeRepository, times(1)).save(any());
     verify(textTokenRepository, times(1)).save(textToken);
   }

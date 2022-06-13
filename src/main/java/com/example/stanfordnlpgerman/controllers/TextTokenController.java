@@ -1,5 +1,7 @@
 package com.example.stanfordnlpgerman.controllers;
 
+import com.example.stanfordnlpgerman.models.dtos.NewsPaperEnum;
+import com.example.stanfordnlpgerman.models.dtos.PhraseTypeEnum;
 import com.example.stanfordnlpgerman.services.texttokenservice.TextTokenService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +32,9 @@ public class TextTokenController {
   @GetMapping("change/{textTokenId}/{textTokenText}")
   public String changeTextToken(@PathVariable long textTokenId, @PathVariable String textTokenText, Model model) {
     try {
-      model.addAttribute("addLemmaTypeToTextTokenDTO", textTokenService.findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(textTokenId, textTokenText));
+      model.addAttribute("addLemmaTypeToTextTokenDTO",
+          textTokenService.findLemmaTypeBelongingToTextTokenOrNoneIfNotPresent(textTokenId, textTokenText));
+      model.addAttribute("phraseTypes", PhraseTypeEnum.values());
       return "texttokens/add-lemma-type";
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());

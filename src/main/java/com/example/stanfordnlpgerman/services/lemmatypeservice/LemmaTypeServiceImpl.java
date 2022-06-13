@@ -3,6 +3,7 @@ package com.example.stanfordnlpgerman.services.lemmatypeservice;
 import com.example.stanfordnlpgerman.models.KeyWordsSingleton;
 import com.example.stanfordnlpgerman.models.dao.*;
 import com.example.stanfordnlpgerman.models.dtos.lemmatype.ShowMostCommonLemmasDTO;
+import com.example.stanfordnlpgerman.models.dtos.lemmatype.UpdateLemmaTypeRequest;
 import com.example.stanfordnlpgerman.models.dtos.sentence.LemmaOccurenceInSentencesDTO;
 import com.example.stanfordnlpgerman.repositories.LemmaTypeRepository;
 import com.example.stanfordnlpgerman.repositories.TextTokenRepository;
@@ -93,15 +94,17 @@ public class LemmaTypeServiceImpl implements LemmaTypeService {
     }
 
     @Override
-    public void addTextTokenToLemmaType(long textTokenId, String lemmaTypeIdOrText, String lemmaToken, String phraseType) {
+    public void addTextTokenToLemmaType(long textTokenId, UpdateLemmaTypeRequest updateLemmaTypeRequest) {
         TextToken textToken = textTokenRepository.findById(textTokenId);
         try {
             textToken.setInvalid(false);
-            Long lemmaTypeIdParsed = Long.valueOf(lemmaTypeIdOrText);
-            saveTextTokenBelongingToLemmaType(lemmaTypeIdParsed, lemmaToken, textToken, phraseType);
+            Long lemmaTypeIdParsed = Long.valueOf(updateLemmaTypeRequest.getLemmaTypeId());
+            saveTextTokenBelongingToLemmaType(lemmaTypeIdParsed, updateLemmaTypeRequest.getLemmaToken(),
+                textToken, updateLemmaTypeRequest.getPhraseType());
         } catch (NumberFormatException exception) {
             log.info("Provided LemmaType ID or Text was Text");
-            addNewTextTokenToLemmaTypeText(lemmaTypeIdOrText, lemmaToken, textToken, phraseType);
+            addNewTextTokenToLemmaTypeText(updateLemmaTypeRequest.getLemmaTypeId(),
+                updateLemmaTypeRequest.getLemmaToken(), textToken, updateLemmaTypeRequest.getPhraseType());
         }
     }
 

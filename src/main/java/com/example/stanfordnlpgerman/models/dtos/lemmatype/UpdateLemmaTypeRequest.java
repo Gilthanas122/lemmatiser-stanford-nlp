@@ -7,7 +7,8 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InvalidLemmasDTO {
-  private long textTokenId;
-  private String textTokenText;
+public class UpdateLemmaTypeRequest {
+  private String lemmaTypeId;
+  private String lemmaToken;
+  private String phraseType;
 }
