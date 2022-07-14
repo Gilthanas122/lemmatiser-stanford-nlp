@@ -22,7 +22,7 @@ public class TextToken {
   @Column(columnDefinition = "varchar(8)")
   private String phraseType;
   @Column(columnDefinition = "smallint default 0")
-  private short sentencePosition = 1;
+  private short sentencePosition = 0;
   private boolean deleted;
   private boolean invalid;
 

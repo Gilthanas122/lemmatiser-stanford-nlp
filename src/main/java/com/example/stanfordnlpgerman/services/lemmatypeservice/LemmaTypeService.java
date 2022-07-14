@@ -17,7 +17,7 @@ import java.util.Set;
 public interface LemmaTypeService {
   Set<LemmaType> findAllByText(String originalText);
 
-  List<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber, boolean keyword);
+  Set<ShowMostCommonLemmasDTO> findMostCommonLemmas(short pageNumber, boolean keyword);
 
   List<LemmaOccurenceInSentencesDTO> findLemmasAndOccurencesInSentences(List<Long> sentenceIdsContainingLemma, long lemmaTypeId);
 

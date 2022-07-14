@@ -28,11 +28,11 @@
   </div>
 
   <div th:if="*{phraseType == null || phraseType.length() == 0}">
-    <select name="phraseType">
-      <option th:field=*{phraseType}
-              th:each="phraseType : ${phraseTypes}"
-              th:value="${phraseType}" th:text="${phraseType}"></option>
-    </select>
+      <select name="phraseType">
+        <option th:field=*{phraseType}
+                th:each="phraseType : ${phraseTypes}"
+                th:value="${phraseType}" th:text="${phraseType}"></option>
+      </select>
   </div>
 
   <div th:unless="*{phraseType == null || phraseType.length() == 0}">

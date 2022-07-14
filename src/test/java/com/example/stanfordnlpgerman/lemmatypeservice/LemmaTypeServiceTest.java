@@ -92,39 +92,37 @@ public class LemmaTypeServiceTest {
   @Test
   void findMostCommonLemma_successWithKeyWordTrue_shouldReturnListShowMostCommonLemmasDTO(){
     short pageNumber = 1;
-    List<ShowMostCommonLemmasDTO> expectedShowMostCommonLemmasDTOS = createShowMostCommonLemmas();
+    Set<ShowMostCommonLemmasDTO> expectedShowMostCommonLemmasDTOS = createShowMostCommonLemmas();
 
     when(lemmaTypeRepository.findMostCommonLemmasInNewsArticlesByKeyWords(KeyWordsSingleton.getKeyWords(), PageRequest.of(pageNumber, 25, Sort.by("textTokens.size"))))
             .thenReturn(expectedShowMostCommonLemmasDTOS);
 
-    List<ShowMostCommonLemmasDTO> actualShowMostCommonLemmasDTOS = lemmaTypeService.findMostCommonLemmas(pageNumber, true);
-
+    Set<ShowMostCommonLemmasDTO> actualShowMostCommonLemmasDTOS = lemmaTypeService.findMostCommonLemmas(pageNumber, true);
     List<ILoggingEvent> logsList = listAppender.list;
 
     assertEquals(1, logsList.size());
-    assertEquals("Most common lemmas: show most common lemma text 1, show most common lemma text 2", logsList.get(0).getFormattedMessage());
+    assertTrue(logsList.get(0).getFormattedMessage().contains("show most common lemma text 1"));
+    assertTrue(logsList.get(0).getFormattedMessage().contains("show most common lemma text 2"));
     assertEquals(expectedShowMostCommonLemmasDTOS.size(), actualShowMostCommonLemmasDTOS.size());
-    assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(0), actualShowMostCommonLemmasDTOS.get(0));
-    assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(1), actualShowMostCommonLemmasDTOS.get(1));
+    assertEquals(expectedShowMostCommonLemmasDTOS, actualShowMostCommonLemmasDTOS);
   }
 
   @Test
   void findMostCommonLemma_successWithKeyWordFalse_shouldReturnListShowMostCommonLemmasDTO(){
     short pageNumber = 1;
-    List<ShowMostCommonLemmasDTO> expectedShowMostCommonLemmasDTOS = createShowMostCommonLemmas();
+    Set<ShowMostCommonLemmasDTO> expectedShowMostCommonLemmasDTOS = createShowMostCommonLemmas();
 
     when(lemmaTypeRepository.findMostCommonLemmasInNewsArticles(PageRequest.of(pageNumber, 25, Sort.by("textTokens.size"))))
             .thenReturn(expectedShowMostCommonLemmasDTOS);
 
-    List<ShowMostCommonLemmasDTO> actualShowMostCommonLemmasDTOS = lemmaTypeService.findMostCommonLemmas(pageNumber, false);
+    Set<ShowMostCommonLemmasDTO> actualShowMostCommonLemmasDTOS = lemmaTypeService.findMostCommonLemmas(pageNumber, false);
 
     List<ILoggingEvent> logsList = listAppender.list;
 
     assertEquals(1, logsList.size());
     assertEquals("Most common lemmas: show most common lemma text 1, show most common lemma text 2", logsList.get(0).getFormattedMessage());
     assertEquals(expectedShowMostCommonLemmasDTOS.size(), actualShowMostCommonLemmasDTOS.size());
-    assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(0), actualShowMostCommonLemmasDTOS.get(0));
-    assertShowMostCommonLemmas(expectedShowMostCommonLemmasDTOS.get(1), actualShowMostCommonLemmasDTOS.get(1));
+    assertEquals(expectedShowMostCommonLemmasDTOS, actualShowMostCommonLemmasDTOS);
   }
 
   @Test
@@ -356,8 +354,8 @@ public class LemmaTypeServiceTest {
     assertEquals(expected.getText(), actual.getText());
   }
 
-  private List<ShowMostCommonLemmasDTO> createShowMostCommonLemmas() {
-    List<ShowMostCommonLemmasDTO> showMostCommonLemmasDTOS = new ArrayList<>();
+  private Set<ShowMostCommonLemmasDTO> createShowMostCommonLemmas() {
+    Set<ShowMostCommonLemmasDTO> showMostCommonLemmasDTOS = new HashSet<>();
     for (int index = 1; index <= 2; index++) {
       showMostCommonLemmasDTOS.add(createShowMostCommonLemma(index));
     }

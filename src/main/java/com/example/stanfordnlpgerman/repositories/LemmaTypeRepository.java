@@ -17,13 +17,12 @@ import java.util.Set;
 @Repository
 public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, PagingAndSortingRepository<LemmaType, Long> {
 
-  @Query("SELECT lt FROM LemmaType lt JOIN lt.lemmaTokens lto " +
-          "WHERE lt.text = ?1 OR lto.text = ?1")
+  @Query("SELECT lt FROM LemmaType lt JOIN lt.lemmaTokens lto WHERE lt.text = ?1 OR lto.text = ?1")
   Set<LemmaType> findAllByLemmaText(String originalText);
 
   @Query("SELECT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
-          "FROM LemmaType lt JOIN lt.newsArticles na where size(lt.textTokens) > 0 ORDER BY size(lt.textTokens) desc")
-  List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(PageRequest pageable);
+          "FROM LemmaType lt JOIN lt.newsArticles na where size(lt.textTokens) > 0 GROUP BY lt.id ORDER BY size(lt.textTokens) desc")
+  Set<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticles(PageRequest pageable);
 
   @Query("SELECT lt.text AS lemmaText, COUNT(lt.id) AS lemmaOccurence, " +
           "(SELECT ltoriginal.text FROM LemmaType ltoriginal WHERE ltoriginal.id = ?2) AS originalLemmaText " +
@@ -34,9 +33,9 @@ public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, Pag
   @Query("UPDATE TextToken tt SET tt.invalid = false, tt.lemmaType.id = ?2 WHERE tt.text = ?1")
   void updateIfLemmaTypeHasMatchingTextTokens(String lemmaTypeText, long lemmaTypeId);
 
-  @Query("SELECT DISTINCT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
-          "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 ORDER BY size(lt.textTokens) desc")
-  List<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest pageRequest);
+  @Query("SELECT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
+          "FROM LemmaType lt JOIN lt.newsArticles na JOIN lt.textTokens tt WHERE size(lt.textTokens) > 0 AND tt.text IN ?1 OR lt.text IN ?1 GROUP BY lt.id ORDER BY size(lt.textTokens) desc")
+  Set<ShowMostCommonLemmasDTO> findMostCommonLemmasInNewsArticlesByKeyWords(Set<String> keyWords, PageRequest pageRequest);
 
   LemmaType findByText(String lemmaTypeText);
 }
