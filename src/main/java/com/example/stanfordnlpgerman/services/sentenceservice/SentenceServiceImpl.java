@@ -199,7 +199,6 @@ public class SentenceServiceImpl implements SentenceService {
                 .toList();
     }
 
-
     private List<LemmaOccurenceInSentencesDTO> createFromMapListLemmaOccurenceInSentencesDTO(Map<String, Integer> textTokensAndOccurences, String lemmaTypeText) {
         List<LemmaOccurenceInSentencesDTO> lemmaOccurenceInSentencesDTOS = new LinkedList<>();
         textTokensAndOccurences.forEach((lemmaText, occurence) -> {
