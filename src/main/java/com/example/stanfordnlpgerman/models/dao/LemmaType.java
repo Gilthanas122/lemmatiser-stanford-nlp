@@ -22,8 +22,10 @@ public class LemmaType implements Comparable<LemmaType> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  @NonNull
   private String text;
   private boolean deleted;
+  private boolean invalid;
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<Sentence> sentences = new ArrayList<>();

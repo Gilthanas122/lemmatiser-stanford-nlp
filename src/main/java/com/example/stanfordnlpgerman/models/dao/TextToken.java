@@ -25,6 +25,7 @@ public class TextToken {
   private short sentencePosition = 0;
   private boolean deleted;
   private boolean invalid;
+  private boolean removedPhrasal;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
   @JsonIgnore
