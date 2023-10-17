@@ -58,9 +58,8 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
 
   private int setRelevanceForNewsArticleByLemmaTypes(Set<LemmaType> lemmaTypes) {
     final int[] relevance = {0};
-    Set<String> keyWords = KeyWordsSingleton.getKeyWords();
     lemmaTypes.forEach(lemmaType -> {
-      if (StringUtils.isBlank(lemmaType.getText()) && keyWords.contains(lemmaType.getText())) {
+      if (StringUtils.isBlank(lemmaType.getText()) && KeyWordsSingleton.isKeyWord(lemmaType.getText())) {
         relevance[0] += 1;
       }
     });
