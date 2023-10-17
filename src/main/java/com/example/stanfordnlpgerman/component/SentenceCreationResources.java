@@ -7,13 +7,13 @@ public class SentenceCreationResources {
       "heim", "her", "her", "herab", "herauf", "heraus", "herein", "herüber", "hin", "hinab", "hinauf", "hinaus", "hinein", "hinüber", "los", "mit", "nach", "umher", "rückwärts",
       "vor", "voran", "voraus", "vorbei", "vorher", "vorwärts", "vorüber", "vorweg", "weg", "zu", "zusammen", "zurück");
 
-  private static final List<String> sentenceSignsForConjunctiveVerbs = List.of(",", ".", "?", "!", ";");
+  private static final List<String> signsForConjunctiveVerbs = List.of(",", ".", "?", "!", ";", "und", "oder");
 
   public static boolean isPhrasal(String token){
     return verbPhrasals.contains(token);
   }
 
   public static boolean isSentenceSign(String sign){
-    return sentenceSignsForConjunctiveVerbs.contains(sign);
+    return signsForConjunctiveVerbs.contains(sign);
   }
 }

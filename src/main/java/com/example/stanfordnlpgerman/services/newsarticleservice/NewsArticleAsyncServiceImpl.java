@@ -105,78 +105,113 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
   public Pair<Set<LemmaType>, List<TextToken>> createLemmaTypesFromSentences(CoreSentence coreSentence, Sentence sentence, NewsArticle newsArticle) {
     List<CoreLabel> coreLabels = coreSentence.tokens();
     Map<String, Integer> valuesByPosition = new HashMap<>(Map.of(
-        POSITION_IN_SENTENCE, 0, CORE_LABEL_POSITION, 0, CURRENT_VERB_POSITION_IN_SENTENCE, 0
+        POSITION_IN_SENTENCE, 0, CURRENT_VERB_POSITION_IN_SENTENCE, 0, CORE_LABEL_POSITION, 0
     ));
+    // POSITION_IN_SENTENCE track the order of verbs in sentence
+    // CURRENT_VERB_POSITION_IN_SENTENCE tracking the position of previous verb in sentence
+    // CORE_LABEL_POSITION track core label position for creating phraseType
     List<LemmaType> currentVerbLemmaTypeInSentence = Arrays.asList(new LemmaType());
 
     List<String> wordsInSentence = coreSentence.tokensAsStrings();
     List<TextToken> textTokens = new ArrayList<>();
     List<LemmaType> lemmaTypes = new ArrayList<>();
+    final boolean [] verbSwitched = {false};
 
     try {
       wordsInSentence
           .forEach(word -> {
                 log.info("Word being processed {}", word);
-                LemmaType lemmaType = null;
-                String phraseType = null;
+                LemmaType lemmaType = new LemmaType();
+                String phraseType = "";
+
                 if (SentenceCreationResources.isSentenceSign(word)) {
                   String phrasal = wordsInSentence.get(wordsInSentence.indexOf(word) - 1);
                   String verbText = currentVerbLemmaTypeInSentence.get(0).getText();
                   if (SentenceCreationResources.isPhrasal(phrasal) && !verbText.isEmpty()) {
+                    int positionToSwitch = verbSwitched[0] ? valuesByPosition.get(POSITION_IN_SENTENCE) : valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE); // in case verb has been already switched we need to use the sentence position
+                    int positionTextToken = valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE);
+                    verbSwitched[0] = true;
                     String verb = phrasal + verbText;
                     phraseType = PHRASAL_VERB;
-                    lemmaType = createLemmaTypeFromTextToken(verb, valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE), sentence, phraseType, newsArticle, currentVerbLemmaTypeInSentence,textTokens);
+                    lemmaType = createLemmaTypeFromTextToken(verb, phrasal, positionToSwitch, positionTextToken,
+                        sentence, phraseType, newsArticle, textTokens);
+                    handlePreviouslyPhrasal(textTokens, positionToSwitch);
+                    valuesByPosition.put(POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE) - 1); // we need to set it back so that ADP doesn't count as part of the sentence
                   }
-                } else {
-                  phraseType = coreLabels.get(valuesByPosition.get(CORE_LABEL_POSITION)).get(CoreAnnotations.PartOfSpeechAnnotation.class);
-                  lemmaType = createLemmaTypeFromTextToken(word, valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE), sentence, phraseType, newsArticle, currentVerbLemmaTypeInSentence,textTokens);
-                  valuesByPosition.put(POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE) +1);
-                  valuesByPosition.put(CORE_LABEL_POSITION, valuesByPosition.get(CORE_LABEL_POSITION) +1);
                 }
-                if (lemmaType != null && !phraseType.equals(PHRASAL_VERB)) {
+                if (!SentenceCreationResources.isSentenceSign(word) || List.of("und", "oder").contains(word)){
+                  // second part of if condition: in German with conjunctive sentences there is no comma before und and oder but should be processed as words
+                  // since in the previous if branch I set it to PHRASVERB it needs to be redone
+                  phraseType = coreLabels.get(valuesByPosition.get(CORE_LABEL_POSITION)).get(CoreAnnotations.PartOfSpeechAnnotation.class);
+                  if (phraseType.equals("VERB")) { // update it so that we can do the logic for phrasal verbs
+                    valuesByPosition.put(CURRENT_VERB_POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE));
+                  }
+                  lemmaType = createLemmaTypeFromTextToken(word, null, valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE),
+                      valuesByPosition.get(POSITION_IN_SENTENCE), sentence, phraseType, newsArticle, textTokens);
+                  valuesByPosition.put(POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE) + 1);
+                  valuesByPosition.put(CORE_LABEL_POSITION, valuesByPosition.get(CORE_LABEL_POSITION) + 1);
+
+                }
+                if (phraseType.equals("VERB")){
+                  currentVerbLemmaTypeInSentence.set(0, lemmaType);
+                }
+                if (lemmaType.getId() > 0 && !phraseType.equals(PHRASAL_VERB)) { // in case there was no match in DB we wish to store the given lemmaType
                   lemmaTypes.add(lemmaType);
-                } else {
+                } else if (phraseType.equals(PHRASAL_VERB)) { // in case it is a phrasal verb, we need to update previously stored lemmaType
                   lemmaTypes.set(valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE), lemmaType);
                 }
               }
           );
-    } catch (Exception e){
+    } catch (Exception e) {
       log.error("Exception occurred during processing a sentence {}", e.getMessage());
     }
     return Pair.of(new HashSet<>(lemmaTypes), textTokens);
   }
 
-  private LemmaType createLemmaTypeFromTextToken(String word, int position, Sentence sentence, String phraseType, NewsArticle newsArticle, List<LemmaType> currentVerbLemmaTypeInSentence, List<TextToken> textTokens) {
-    LemmaType lemmaType = new LemmaType();
+  private void handlePreviouslyPhrasal(List<TextToken> textTokens,int positionToUpdate) {
+    updateTextTokenForPhrasal(textTokens.size() -2, textTokens); // for phrasal
+    updateTextTokenForPhrasal(positionToUpdate, textTokens); // for previous verb
+  }
+
+  private void updateTextTokenForPhrasal(Integer positionToUpdate, List<TextToken> textTokens) {
+    TextToken previouslyPhrasal = textTokens.get(positionToUpdate);
+    previouslyPhrasal.setDeleted(true); // so that it doesn't occur in searches
+    previouslyPhrasal.setRemovedPhrasal(true); // later we can set back easier the original state
+  }
+
+  private LemmaType createLemmaTypeFromTextToken(String word, String phrasal, int verbPosition, int positionInSentence, Sentence sentence, String phraseType, NewsArticle newsArticle, List<TextToken> textTokens) {
+    String textTokenText = createTextTokenText(word, phraseType, phrasal, textTokens, verbPosition); ///create textToken but keep the previous one see next comment
     Set<LemmaType> lemmaTypesFromDatabase = lemmaTypeService.findAllByText(word);
+
     TextToken textToken = TextToken
         .builder()
-        .text(word)
-        .sentencePosition((short) position)
+        .text(textTokenText)
+        .sentencePosition((short) positionInSentence)
         .sentence(sentence)
         .phraseType(phraseType)
         .build();
-    if (phraseType.equals(PHRASAL_VERB)){
-      textTokens.set(position, textToken);
-    } else {
-      textTokens.add(textToken);
-    }
-    lemmaType = getLemmaTypeFromSet(lemmaTypesFromDatabase);
+
+    textTokens.add(textToken);
+    LemmaType lemmaType = getLemmaTypeFromSet(lemmaTypesFromDatabase);
     lemmaType.addOneTextToken(textToken);
     lemmaType.addOneSentence(sentence);
     lemmaType.addOneNewsArticle(newsArticle);
-    if (lemmaTypesFromDatabase.isEmpty()){
-      lemmaType.setInvalid(true);
+
+    if (lemmaTypesFromDatabase.isEmpty() && phraseType.equals(PHRASAL_VERB)) {
+      lemmaType.setInvalid(true); // set to invalid if phrasalform doesn't exist in db
+      lemmaType.setText(word);
     }
 
     textToken.setLemmaType(lemmaType);
-    if (lemmaTypesFromDatabase.size() != 1) {
+    if ((lemmaTypesFromDatabase.isEmpty() && phraseType.equals(PHRASAL_VERB)) || (lemmaTypesFromDatabase.size() != 1 && !phraseType.equals(PHRASAL_VERB))) {
       textToken.setInvalid(true);
     }
-    if (phraseType.equals("VERB")){
-      currentVerbLemmaTypeInSentence.set(0, lemmaType);
-    }
+
     return lemmaType;
+  }
+
+  private String createTextTokenText(String word, String phraseType, String phrasal, List<TextToken> textTokens, int position) {
+    return phraseType.equals(PHRASAL_VERB) ? phrasal + textTokens.get(position).getText() : word;
   }
 
   private LemmaType getLemmaTypeFromSet(Set<LemmaType> lemmaTypesFromDatabase) {

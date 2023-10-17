@@ -17,7 +17,7 @@ import java.util.Set;
 @Repository
 public interface LemmaTypeRepository extends JpaRepository<LemmaType, Long>, PagingAndSortingRepository<LemmaType, Long> {
 
-  @Query("SELECT lt FROM LemmaType lt JOIN lt.lemmaTokens lto WHERE lt.text = ?1 OR lto.text = ?1")
+  @Query("SELECT lt FROM LemmaType lt  LEFT JOIN lt.lemmaTokens lto WHERE lt.text = ?1 OR lto.text = ?1")
   Set<LemmaType> findAllByLemmaText(String originalText);
 
   @Query("SELECT lt.id AS lemmaTypeId, lt.text AS text, size(lt.textTokens) AS count, na.id AS newsArticleId " +
