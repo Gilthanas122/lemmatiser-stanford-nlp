@@ -133,7 +133,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                     String verb = phrasal + verbText;
                     phraseType = PHRASAL_VERB;
                     lemmaType = createLemmaTypeFromTextToken(verb, phrasal, positionToSwitch, positionTextToken,
-                        sentence, phraseType, newsArticle, textTokens);
+                        sentence, phraseType, newsArticle, textTokens, currentVerbLemmaTypeInSentence.get(0));
                     handlePreviouslyPhrasal(textTokens, positionToSwitch);
                     valuesByPosition.put(POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE) - 1); // we need to set it back so that ADP doesn't count as part of the sentence
                   }
@@ -146,7 +146,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                     valuesByPosition.put(CURRENT_VERB_POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE));
                   }
                   lemmaType = createLemmaTypeFromTextToken(word, null, valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE),
-                      valuesByPosition.get(POSITION_IN_SENTENCE), sentence, phraseType, newsArticle, textTokens);
+                      valuesByPosition.get(POSITION_IN_SENTENCE), sentence, phraseType, newsArticle, textTokens, null);
                   valuesByPosition.put(POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE) + 1);
                   valuesByPosition.put(CORE_LABEL_POSITION, valuesByPosition.get(CORE_LABEL_POSITION) + 1);
 
@@ -178,7 +178,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     previouslyPhrasal.setRemovedPhrasal(true); // later we can set back easier the original state
   }
 
-  private LemmaType createLemmaTypeFromTextToken(String word, String phrasal, int verbPosition, int positionInSentence, Sentence sentence, String phraseType, NewsArticle newsArticle, List<TextToken> textTokens) {
+  private LemmaType createLemmaTypeFromTextToken(String word, String phrasal, int verbPosition, int positionInSentence, Sentence sentence, String phraseType, NewsArticle newsArticle, List<TextToken> textTokens, LemmaType originalLemmaType) {
     String textTokenText = createTextTokenText(word, phraseType, phrasal, textTokens, verbPosition); ///create textToken but keep the previous one see next comment
     Set<LemmaType> lemmaTypesFromDatabase = lemmaTypeService.findAllByText(word);
 
@@ -195,6 +195,9 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     lemmaType.addOneTextToken(textToken);
     lemmaType.addOneSentence(sentence);
     lemmaType.addOneNewsArticle(newsArticle);
+    if (originalLemmaType != null){
+      lemmaType.setReferenceLemmaTypeId(originalLemmaType.getId());
+    }
 
     if (lemmaTypesFromDatabase.isEmpty() && phraseType.equals(PHRASAL_VERB)) {
       lemmaType.setInvalid(true); // set to invalid if phrasalform doesn't exist in db
