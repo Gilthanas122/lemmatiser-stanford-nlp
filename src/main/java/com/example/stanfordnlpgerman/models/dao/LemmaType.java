@@ -24,6 +24,7 @@ public class LemmaType implements Comparable<LemmaType> {
   private long id;
   private String text;
   private boolean deleted;
+  private boolean invalid;
 
   @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
   private List<Sentence> sentences = new ArrayList<>();
