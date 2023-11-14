@@ -169,22 +169,6 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     return Pair.of(new HashSet<>(lemmaTypes), textTokens);
   }
 
-  public static void main(String[] args) {
-    Properties germanProperties = edu.stanford.nlp.util.StringUtils.argsToProperties(
-        "-props", "StanfordCoreNLP-german.properties");
-    StanfordCoreNLP pipeline = new StanfordCoreNLP(germanProperties);    String text = "Hallo, ich leben in Österreich.";
-
-    CoreDocument coreDocument = new CoreDocument(text);
-    pipeline.annotate(coreDocument);
-
-    List<CoreLabel> coreLabelList = coreDocument.tokens();
-
-    for (CoreLabel coreLabel: coreLabelList){
-      String ner = coreLabel.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-      System.out.println(coreLabel.originalText() + "->"+ner);
-    }
-  }
-
   private void handlePreviouslyPhrasal(List<TextToken> textTokens,int positionToUpdate) {
     updateTextTokenForPhrasal(textTokens.size() -2, textTokens); // for phrasal
     updateTextTokenForPhrasal(positionToUpdate, textTokens); // for previous verb
