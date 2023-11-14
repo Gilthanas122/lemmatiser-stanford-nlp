@@ -21,6 +21,8 @@ public class TextToken {
   private String text;
   @Column(columnDefinition = "varchar(8)")
   private String phraseType;
+  @Column(columnDefinition = "varchar(20)")
+  private String ner;
   @Column(columnDefinition = "smallint default 0")
   private short sentencePosition = 0;
   private boolean deleted;

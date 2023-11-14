@@ -122,6 +122,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                 log.info("Word being processed {}", word);
                 LemmaType lemmaType = new LemmaType();
                 String phraseType = "";
+                String ner = coreLabels.get(valuesByPosition.get(CORE_LABEL_POSITION)).get(CoreAnnotations.NamedEntityTagAnnotation.class);
 
                 if (SentenceCreationResources.isSentenceSign(word)) {
                   String phrasal = wordsInSentence.get(wordsInSentence.indexOf(word) - 1);
@@ -133,7 +134,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                     String verb = phrasal + verbText;
                     phraseType = PHRASAL_VERB;
                     lemmaType = createLemmaTypeFromTextToken(verb, phrasal, positionToSwitch, positionTextToken,
-                        sentence, phraseType, newsArticle, textTokens, currentVerbLemmaTypeInSentence.get(0));
+                        sentence, phraseType, newsArticle, textTokens, currentVerbLemmaTypeInSentence.get(0), ner);
                     handlePreviouslyPhrasal(textTokens, positionToSwitch);
                     valuesByPosition.put(POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE) - 1); // we need to set it back so that ADP doesn't count as part of the sentence
                   }
@@ -142,11 +143,12 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
                   // second part of if condition: in German with conjunctive sentences there is no comma before und and oder but should be processed as words
                   // since in the previous if branch I set it to PHRASVERB it needs to be redone
                   phraseType = coreLabels.get(valuesByPosition.get(CORE_LABEL_POSITION)).get(CoreAnnotations.PartOfSpeechAnnotation.class);
+
                   if (phraseType.equals("VERB")) { // update it so that we can do the logic for phrasal verbs
                     valuesByPosition.put(CURRENT_VERB_POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE));
                   }
                   lemmaType = createLemmaTypeFromTextToken(word, null, valuesByPosition.get(CURRENT_VERB_POSITION_IN_SENTENCE),
-                      valuesByPosition.get(POSITION_IN_SENTENCE), sentence, phraseType, newsArticle, textTokens, null);
+                      valuesByPosition.get(POSITION_IN_SENTENCE), sentence, phraseType, newsArticle, textTokens, null, ner);
                   valuesByPosition.put(POSITION_IN_SENTENCE, valuesByPosition.get(POSITION_IN_SENTENCE) + 1);
                   valuesByPosition.put(CORE_LABEL_POSITION, valuesByPosition.get(CORE_LABEL_POSITION) + 1);
 
@@ -167,6 +169,22 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     return Pair.of(new HashSet<>(lemmaTypes), textTokens);
   }
 
+  public static void main(String[] args) {
+    Properties germanProperties = edu.stanford.nlp.util.StringUtils.argsToProperties(
+        "-props", "StanfordCoreNLP-german.properties");
+    StanfordCoreNLP pipeline = new StanfordCoreNLP(germanProperties);    String text = "Hallo, ich leben in Österreich.";
+
+    CoreDocument coreDocument = new CoreDocument(text);
+    pipeline.annotate(coreDocument);
+
+    List<CoreLabel> coreLabelList = coreDocument.tokens();
+
+    for (CoreLabel coreLabel: coreLabelList){
+      String ner = coreLabel.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+      System.out.println(coreLabel.originalText() + "->"+ner);
+    }
+  }
+
   private void handlePreviouslyPhrasal(List<TextToken> textTokens,int positionToUpdate) {
     updateTextTokenForPhrasal(textTokens.size() -2, textTokens); // for phrasal
     updateTextTokenForPhrasal(positionToUpdate, textTokens); // for previous verb
@@ -178,7 +196,10 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
     previouslyPhrasal.setRemovedPhrasal(true); // later we can set back easier the original state
   }
 
-  private LemmaType createLemmaTypeFromTextToken(String word, String phrasal, int verbPosition, int positionInSentence, Sentence sentence, String phraseType, NewsArticle newsArticle, List<TextToken> textTokens, LemmaType originalLemmaType) {
+  private LemmaType createLemmaTypeFromTextToken(String word, String phrasal, int verbPosition,
+                                                 int positionInSentence, Sentence sentence, String phraseType, NewsArticle newsArticle,
+                                                 List<TextToken> textTokens, LemmaType originalLemmaType,
+                                                 String ner) {
     String textTokenText = createTextTokenText(word, phraseType, phrasal, textTokens, verbPosition); ///create textToken but keep the previous one see next comment
     Set<LemmaType> lemmaTypesFromDatabase = lemmaTypeService.findAllByText(word);
 
@@ -188,6 +209,7 @@ public class NewsArticleAsyncServiceImpl implements NewsArticleAsyncService {
         .sentencePosition((short) positionInSentence)
         .sentence(sentence)
         .phraseType(phraseType)
+        .ner(ner)
         .build();
 
     textTokens.add(textToken);
